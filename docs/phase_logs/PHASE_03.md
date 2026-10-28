@@ -20,3 +20,32 @@ not the test); fork-child needed sys.modules eviction for the import block.
 billing blocked (plan Sec 17). Runner/generator/sim integration + pilot are
 Windows work: install lock, run pytest tests/test_sim.py, then a keyed pilot
 per configs/gen.yaml, pass rate computed from runs/<run_id>/episodes.jsonl.
+
+## Windows job-object fix 2026-10-28 (UNVERIFIED live; uncommitted)
+Root causes of 'job-object limit failed' x6: (1) no restype on
+CreateJobObjectW/OpenProcess -> 64-bit HANDLE truncated to 32 bits ->
+ERROR_INVALID_HANDLE everywhere; (2) DWORD*12 (48 B) for a 64 B struct,
+LimitFlags written at byte 4 not 16; (3) bare False hid the failing call.
+Fix: exact ABI structs (64/48/144 B, guarded by tests/test_win32_job.py),
+declared argtypes/restype, per-call GetLastError diagnostics surfaced in
+outcome.detail, QueryInformation round-trip kept. Fail-closed preserved.
+Also: fork replaced by spawn everywhere (measured parent VmSize 3.2 GB
+inherited across fork vs 256 MB RLIMIT_AS -> order-dependent flake in
+test_sandbox_write_escape); full suite 3x41 stable after the change.
+Memory test is now incremental growth (robust to post-start assignment).
+Windows still must prove: real Job Object path + memory bomb under the cap.
+
+## Pre-G0 changes 2026-10-28 (uncommitted; no live calls, $0 spent)
+A. Fail-closed accounting: charge() raises UnpricedModelError without a
+verified price (was: silent $0.00); set_price rejects negatives;
+load_prices() requires pricing_verified:true (configs/pricing.yaml ships
+unverified -> live calls blocked); client validates usage block
+(missing/negative/non-int rejected before charging; explicit zeros
+allowed and logged). Cap enforced cumulatively per response; failed
+attempts cost nothing client-side (server-side work unknowable: noted).
+B. G0 harness: scripts/run_g0_pilot.py + closedloop/exec/pilot.py
+(generate-once, 20 repair episodes, manifest, summarize vs 0.30) +
+episode builder/checker (sub-namespace isolation, parent-side truth) +
+facade (env.py) + summarize_run/write_manifest + shared llm_cache.json.
+Verified: abort path live (exit 2, no spend, no runs/ dir); 66/66 tests
+(excl. sim). pricing/model rates still UNVERIFIED -> pilot stays blocked.

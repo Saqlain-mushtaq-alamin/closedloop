@@ -27,8 +27,12 @@ def test_sandbox_timeout() -> None:
 
 
 def test_sandbox_memory() -> None:
-    """A 2 GB allocation under a 256 MB cap fails (killed or MemoryError)."""
-    out = run("x = bytearray(2 ** 31)")
+    """Growth past a 256 MB cap fails (MemoryError); the cap is enforced.
+
+    Incremental growth (not one 2 GB grab) so a post-start cap still trips:
+    a single giant allocation could win a race against job assignment.
+    """
+    out = run("xs = []\nwhile True:\n    xs.append(bytearray(100 * 1024 * 1024))\n")
     assert not out.ok and out.reason in ("memory", "error")
     assert out.memory_enforced, "no memory limit was enforced"
 
@@ -88,6 +92,18 @@ def test_api_result() -> None:
     """The injected namespace is usable and results are reported."""
     out = run("result = add(20, 22)\n")
     assert out.ok, out.detail
+
+
+def test_api_shape_rejected() -> None:
+    """Closures cannot cross processes: loud refusal, fast, no hang."""
+    def make():
+        base = 40
+        return lambda a: a + base
+
+    out = run_program("result = 1\n", {"f": make()}, timeout_s=10,
+                      memory_mb=256)
+    assert not out.ok and out.reason == "error"
+    assert "self-contained" in out.detail
 
 
 if __name__ == "__main__":

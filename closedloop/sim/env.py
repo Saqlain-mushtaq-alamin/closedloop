@@ -186,6 +186,15 @@ class T1Env:
         self.reset(scenario)
         rng = np.random.default_rng(seed)
         policy(self, rng)
+        return self.finish()
+
+    def run_policy(self, policy, rng) -> SimResult:  # type: ignore[no-untyped-def]
+        """Run policy against a restricted facade (sandboxed use), evaluate."""
+        policy(PolicyFacade(self), rng)
+        return self.finish()
+
+    def finish(self) -> SimResult:
+        """Settle the world, measure, and evaluate predicates."""
         tail: list[tuple[float, float, float]] = []
         for _ in range(STABLE_STEPS):
             self._step()
@@ -212,6 +221,33 @@ class T1Env:
             agreed=agreed,
             trace=list(self.trace),
         )
+
+
+class PolicyFacade:
+    """Restricted env handle for sandboxed policies: motion + sensing only.
+
+    No reset, no stepping, no body ids, no physics access: a policy can
+    drive the episode but cannot fabricate a scenario or teleport bodies.
+    """
+
+    def __init__(self, env: T1Env) -> None:
+        self._env = env
+
+    def move_to(self, pos: tuple[float, float, float], steps: int = 60) -> None:
+        """Move the hand toward pos over a fixed number of physics steps."""
+        self._env.move_hand(pos, steps)
+
+    def open_gripper(self) -> None:
+        """Open the gripper (releases any grasped body)."""
+        self._env.set_gripper(False)
+
+    def close_gripper(self, force: float) -> None:
+        """Close the gripper; grasps the cube if close, up to force newtons."""
+        self._env.set_gripper(True, force)
+
+    def get_object_pose(self, name: str):
+        """Return (position, orientation) of 'cube' or 'pad'."""
+        return self._env.object_pose(name)
 
 
 # -- scripted policies ----------------------------------------------------

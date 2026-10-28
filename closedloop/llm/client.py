@@ -77,10 +77,13 @@ class LLMClient:
     def _metered(
         self, model: str, payload: object, raw: dict[str, object], cap: int
     ) -> dict[str, object]:
-        usage = raw.get("usage", {})
-        assert isinstance(usage, dict)
-        tin = int(usage.get("prompt_tokens", 0))
-        tout = int(usage.get("completion_tokens", 0))
+        usage = raw.get("usage", None)
+        if not isinstance(usage, dict):
+            raise RuntimeError("response has no usage block: cannot cost call")
+        tin, tout = usage.get("prompt_tokens"), usage.get("completion_tokens")
+        for label, value in (("prompt_tokens", tin), ("completion_tokens", tout)):
+            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                raise RuntimeError(f"malformed usage: {label}={value!r}")
         assert tout <= cap, "model returned more tokens than max_output_tokens"
         phash = hashlib.sha256(
             __import__("json").dumps(payload, sort_keys=True).encode()

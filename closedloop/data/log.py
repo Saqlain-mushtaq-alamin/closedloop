@@ -67,3 +67,33 @@ def read_episodes(path: str | Path) -> list[EpisodeResult]:
             record.validate()
             out.append(record)
     return out
+
+
+class RunDataError(ValueError):
+    """A run directory that must not become a number (B5)."""
+
+
+def summarize_run(run_dir: str | Path) -> dict[str, float | int]:
+    """Validate a completed run and return {n, k, rate}.
+
+    Requires manifest.json with episodes_planned and exactly that many
+    parseable episode lines. Failures (truth false) count toward the rate;
+    malformed or missing data raises instead of a partial rate.
+    """
+    run_dir = Path(run_dir)
+    try:
+        manifest = json.loads((run_dir / "manifest.json").read_text())
+    except (FileNotFoundError, json.JSONDecodeError) as exc:
+        raise RunDataError(f"unreadable manifest: {exc}") from exc
+    planned = manifest.get("episodes_planned")
+    if not isinstance(planned, int) or isinstance(planned, bool) or planned <= 0:
+        raise RunDataError(f"bad episodes_planned: {planned!r}")
+    try:
+        episodes = read_episodes(run_dir / "episodes.jsonl")
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError,
+            ValueError) as exc:
+        raise RunDataError(f"unreadable episodes: {exc}") from exc
+    if len(episodes) != planned:
+        raise RunDataError(f"episodes {len(episodes)} != planned {planned}")
+    hits = sum(1 for e in episodes if e.truth_success)
+    return {"n": planned, "k": hits, "rate": hits / planned}
