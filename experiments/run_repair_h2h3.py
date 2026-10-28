@@ -50,7 +50,7 @@ from closedloop.repair.repair import (
     build_repair_prompt,
     verify_repair_acceptance,
 )
-from closedloop.sim.env import T1Env
+from closedloop.sim.env import SimResult, T1Env
 
 CACHE_PATH = ROOT / "runs" / "llm_cache.json"
 
