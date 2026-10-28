@@ -73,6 +73,30 @@ def test_certification_single_use() -> None:
     sample_certification("progB", 5, 2000000, ledger)  # other program: fine
 
 
+_EXCLUDED_DIRS = frozenset(
+    {
+        ".venv", "venv", ".git", "__pycache__", ".pytest_cache",
+        ".mypy_cache", ".ruff_cache", ".tox", "build", "dist",
+    }
+)
+
+
+def _project_python_files(root):  # type: ignore[no-untyped-def]
+    """Yield project-owned .py files (tracked or not), skipping env/caches.
+
+    Directory names are filtered BEFORE any file is read, so third-party
+    files (odd encodings, huge binaries) are never opened. Untracked project
+    files are still covered: the walk is filesystem-based, not git-based.
+    """
+    for path in root.rglob("*.py"):
+        if any(
+            part in _EXCLUDED_DIRS or part.endswith(".egg-info")
+            for part in path.parts
+        ):
+            continue
+        yield path
+
+
 def test_certification_only_via_certify() -> None:
     """H9: only closedloop/certify/ may import the certification sampler."""
     import pathlib
@@ -80,10 +104,12 @@ def test_certification_only_via_certify() -> None:
     root = pathlib.Path(__file__).resolve().parent.parent
     offenders = [
         str(p.relative_to(root))
-        for p in root.rglob("*.py")
-        if "sample_certification" in p.read_text()
+        for p in _project_python_files(root)
+        # errors="replace" decodes ASCII needles identically; it only stops
+        # a non-UTF-8 file from crashing the scan (cp1252 byte 0x81 on win).
+        if "sample_certification" in p.read_text(encoding="utf-8", errors="replace")
         and "test_" not in p.name
-        and "closedloop/data/sampler.py" not in str(p).replace("\\", "/")
-        and "closedloop/certify" not in str(p).replace("\\", "/")
+        and "closedloop/data/sampler.py" not in p.as_posix()
+        and "closedloop/certify" not in p.as_posix()
     ]
     assert offenders == [], f"certification sampler used outside certify/: {offenders}"
