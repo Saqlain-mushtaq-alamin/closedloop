@@ -135,3 +135,73 @@ def test_frozen_manifest(tmp_path) -> None:
     config_file.write_text("model: muse-spark-1.3\nepisodes: 30\n", encoding="utf-8")
     new_hash = config_hash([config_file, pricing_file])
     assert new_hash != loaded["config_hash"]
+
+
+def test_baselines_harness_structure(tmp_path) -> None:
+    """Harness generates valid logs, traces, manifest, and gap table."""
+    from experiments.run_baselines import run_baselines
+    from closedloop.data.log import read_episodes
+
+    exp_cfg = {
+        "experiment": "test_exp",
+        "task": "task_T1",
+        "model": "muse-spark-1.3",
+        "max_output_tokens": 1024,
+        "timeout_s": 30,
+        "memory_mb": 1024,
+        "difficulty": {
+            "tier": 2,
+            "bounds": {
+                "x": [-0.1, 0.1],
+                "y": [-0.1, 0.1],
+                "yaw": [-0.2, 0.2],
+                "mass": [0.05, 5.2],
+                "friction": [0.1, 1.0],
+            },
+        },
+        "trajectories": 1,
+        "held_out_per_traj": 2,
+        "max_repair_rounds": 1,
+        "seed": 500,
+        "budget_cap_usd": 1.0,
+    }
+    tasks_cfg = {"task_T1": {"description": "Pick up cube and place on pad."}}
+    pricing_cfg = {"muse-spark-1.3": [1.25, 4.25]}
+
+    class FakeBaselineClient:
+        def complete(self, model, prompt, max_output_tokens, images_b64=None):
+            return {
+                "model": model,
+                "text": json.dumps({
+                    "code": "def policy(env, rng):\n    pass\n",
+                    "rationale": "do nothing test policy",
+                }),
+                "tokens_in": 50,
+                "tokens_out": 50,
+            }
+
+    res = run_baselines(
+        "test-run-01",
+        exp_cfg=exp_cfg,
+        tasks_cfg=tasks_cfg,
+        pricing_cfg=pricing_cfg,
+        runs_dir=str(tmp_path),
+        pilot=False,
+        trajectories_override=1,
+        client=FakeBaselineClient(),
+    )
+    assert res["trajectories"] == 1
+    assert "b0" in res and "b1" in res
+
+    run_dir = tmp_path / "test-run-01"
+    assert (run_dir / "episodes.jsonl").exists()
+    assert (run_dir / "manifest.json").exists()
+    assert (run_dir / "gap_table.json").exists()
+
+    records = read_episodes(run_dir / "episodes.jsonl")
+    # 1 traj: B0 has 1 loop + 2 held-out (3 ep); B1 has 1-2 loop + 2 held-out (3-4 ep)
+    assert len(records) >= 6
+    for r in records:
+        assert r.stream == "repair"
+        assert r.judge_mode == "state"
+        assert (run_dir / r.trace_path).exists()
