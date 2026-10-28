@@ -1,12 +1,18 @@
+# Windows (PowerShell) keeps the venv interpreter at .venv/Scripts/python.exe;
+# POSIX keeps it at .venv/bin/python. GNU make sets OS=Windows_NT natively.
+ifeq ($(OS),Windows_NT)
+PY := .venv/Scripts/python
+else
 PY := .venv/bin/python
+endif
 PHASE ?=
 
 .PHONY: setup test lint controls gate report
 
 setup:
 	python3 -m venv --without-pip .venv
-	.venv/bin/python /tmp/get-pip.py
-	.venv/bin/pip install -r requirements.lock
+	$(PY) /tmp/get-pip.py
+	$(PY) -m pip install -r requirements.lock
 
 test:
 	$(PY) -m pytest tests/ -q
@@ -18,7 +24,9 @@ controls:
 	$(PY) -m pytest tests/ -q -k "compliance"
 
 gate:
-	@if [ -z "$(PHASE)" ]; then echo "usage: make gate PHASE=NN"; exit 1; fi
+ifndef PHASE
+	$(error usage: make gate PHASE=NN)
+endif
 	@bash scripts/check_no_secrets.sh
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q

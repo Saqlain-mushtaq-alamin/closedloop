@@ -1,8 +1,8 @@
 """Phase 00 compliance tests (V13, V14, H4, H2). Written first, per phase file."""
 
-import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -19,28 +19,37 @@ def test_env_ignored() -> None:
 
 
 def test_no_secrets() -> None:
-    """V13: the secrets scanner must flag a planted fake key and pass clean."""
-    script = ROOT / "scripts" / "check_no_secrets.sh"
-    assert script.exists(), "check_no_secrets.sh missing"
+    """V13: the secrets scanner must flag a planted fake key and pass clean.
+
+    Both invocations use paths relative to cwd=ROOT, so no absolute
+    Windows path ever reaches bash and no path conversion is needed.
+    """
+    assert (ROOT / "scripts" / "check_no_secrets.sh").exists()
     clean = subprocess.run(
-        ["bash", str(script)], cwd=ROOT, capture_output=True, text=True
+        ["bash", "scripts/check_no_secrets.sh"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
     )
     assert clean.returncode == 0, f"clean tree failed scan: {clean.stdout}"
-    probe = Path(os.environ.get("TMPDIR", "/tmp")) / "secret_probe"
-    probe.mkdir(exist_ok=True)
-    planted = probe / "planted.txt"
-    # Built at runtime so this test file itself never contains a key-like string.
-    planted.write_text("MODEL_" + "API_KEY = 'sk" + "-test-plant-abcdef123456'\n")
-    try:
-        hit = subprocess.run(
-            ["bash", str(script), str(probe)],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
+    # Uniquely named, untracked, removed afterwards: invisible to git ls-files.
+    with tempfile.TemporaryDirectory(prefix="secret_probe_", dir=ROOT) as tmp:
+        planted = Path(tmp) / "planted.txt"
+        # Built at runtime so this file never contains a key-like string.
+        planted.write_text(
+            "MODEL_" + "API_KEY = 'sk" + "-test-plant-abcdef123456'\n"
         )
-        assert hit.returncode != 0, "scanner missed planted fake key"
-    finally:
-        planted.unlink(missing_ok=True)
+        try:
+            rel = str(Path(tmp).relative_to(ROOT))
+            hit = subprocess.run(
+                ["bash", "scripts/check_no_secrets.sh", rel],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+            assert hit.returncode != 0, "scanner missed planted fake key"
+        finally:
+            planted.unlink(missing_ok=True)
 
 
 def test_cost_meter_cap() -> None:
