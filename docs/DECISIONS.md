@@ -28,3 +28,10 @@
 - **What happened:** Full run executed 20 trajectories per arm with 100 episodes for B0 and 108 episodes for B1 (difference 7.4% > 5%), because B1 repair attempts added episodes not matched in B0.
 - **Fix:** Adopted balanced 6-episode paired trajectory structure (1 loop, 1 retest, 4 held-out = 6 episodes/trajectory for both B0 and B1), achieving exact 120 vs 120 episode parity (0.0% difference).
 - **Action:** Preserved `runs/h1-full-01/`. Running full experiment under fresh `run_id` `h1-full-02`.
+
+## 2026-10-29 — Run falsify-pilot-01 EpisodeResult keyword argument bug
+- **Run ID:** `falsify-pilot-01`
+- **What happened:** Pilot aborted during first trial because `EpisodeResult` was instantiated with `run_id` instead of `episode_id` and missing `stream`/`task`/`program_version`.
+- **Fix:** Updated `experiments/run_falsify_pilot.py` to populate all required `EpisodeResult` fields (`episode_id`, `stream="repair"`, `task="task_T1"`, `program_version=0`).
+- **Action:** Preserved `runs/falsify-pilot-01/`. Running pilot under fresh `run_id` `falsify-pilot-02`.
+
