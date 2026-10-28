@@ -144,10 +144,7 @@ def run_repair_h2h3(
     seed_base = int(exp_cfg["seed_base"])
 
     meter = CostMeter(cap_usd=float(exp_cfg.get("budget_cap_usd", 12.0)))
-    models_dict = pricing_cfg.get("models", pricing_cfg) if isinstance(pricing_cfg, dict) else {}
-    for m, rates in models_dict.items():
-        if isinstance(rates, (list, tuple)) and len(rates) == 2:
-            meter.load_prices({m: (float(rates[0]), float(rates[1]))})
+    meter.load_prices(pricing_file)
 
     if client is None:
         client = LLMClient(meter)
