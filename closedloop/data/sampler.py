@@ -42,15 +42,21 @@ def _check_range(stream: str, seed: int, n: int) -> tuple[int, int]:
     return lo, hi
 
 
-def sample(stream: str, n: int, seed: int) -> list[dict[str, float | int]]:
+def sample(
+    stream: str,
+    n: int,
+    seed: int,
+    bounds: dict[str, tuple[float, float]] | None = None,
+) -> list[dict[str, float | int]]:
     """Draw n deterministic scenarios; scenario seeds are seed..seed+n-1."""
     _check_range(stream, seed, n)
+    active_bounds = bounds if bounds is not None else BOUNDS
     rng = np.random.default_rng(seed)
     out: list[dict[str, float | int]] = []
     for i in range(n):
         scenario = {
             key: float(rng.uniform(low, high))
-            for key, (low, high) in BOUNDS.items()
+            for key, (low, high) in active_bounds.items()
         }
         scenario["seed"] = seed + i
         out.append(scenario)
