@@ -13,3 +13,13 @@
   (`https://api.meta.ai/v1`), Spark $/Mtok, SAM 3.1 image-vs-video pricing, and
   account tier (P07/P08 caps assume Contributor tier + SAM video mode).
   Re-probe (text + image call, tokens/cost recorded here) once keys exist.
+
+## 2026-10-28 — Phase 03 G0 pilot (verified live)
+- `MODEL_API_KEY`: present and functional against `https://api.meta.ai/v1`.
+- `muse-spark-1.3` live probe observations:
+  - Model generates reasoning tokens (returned in `usage.completion_tokens_details.reasoning_tokens`).
+  - Supports `reasoning_effort: "low"` parameter at root payload level (`reasoning: {"effort": ...}` returns 400).
+  - Default reasoning effort consumes ~1022 tokens, exhausting a 1024 cap before content generation.
+  - Setting `reasoning_effort: "low"` and `max_output_tokens: 2048` yields clean structured JSON output (~600 reasoning + ~600 output tokens).
+- Live G0 pilot executed: 20 episodes, 20/20 pass rate (1.000 vs 0.30 threshold), spend $0.0055 USD.
+

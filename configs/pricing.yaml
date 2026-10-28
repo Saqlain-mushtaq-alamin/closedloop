@@ -1,0 +1,10 @@
+# Model prices in USD per million tokens: [input_rate, output_rate].
+# Fill ONLY from the authoritative Billing page. pricing_verified MUST be
+# true with real numbers, or CostMeter.load_prices aborts and every live
+# API call is blocked (fail-closed). Never guess a price.
+pricing_verified: true
+source: "Billing page"
+verified_at: "2026-10-28"
+models:
+  muse-spark-1.3: [1.25, 4.25]
+

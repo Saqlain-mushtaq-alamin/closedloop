@@ -1,0 +1,8 @@
+# Generator config for the G0 pilot (frozen in the run manifest, H12).
+model: muse-spark-1.3
+max_output_tokens: 2048
+tier: 1
+episodes: 20
+seed: 100
+timeout_s: 120
+memory_mb: 1024
