@@ -34,6 +34,7 @@ class LLMClient:
         prompt: str,
         max_output_tokens: int,
         images_b64: list[str] | None = None,
+        reasoning_effort: str = "low",
     ) -> dict[str, object]:
         """POST one chat completion; returns a small dict (no key material)."""
         import json
@@ -42,6 +43,7 @@ class LLMClient:
             "model": model,
             "max_tokens": max_output_tokens,
             "messages": [{"role": "user", "content": self._message(prompt, images_b64)}],
+            "reasoning_effort": reasoning_effort,
         }
         body = json.dumps(payload).encode()
         last: Exception | None = None

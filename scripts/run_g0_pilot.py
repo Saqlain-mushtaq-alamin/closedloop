@@ -61,14 +61,27 @@ class PilotAbortLocal(RuntimeError):
 def load_cache() -> dict:
     """Shared prompt-hash response cache (reruns must not respend)."""
     if CACHE_PATH.exists():
-        return json.loads(CACHE_PATH.read_text(encoding="utf-8"))
+        try:
+            raw = json.loads(CACHE_PATH.read_text(encoding="utf-8"))
+            from closedloop.gen.generator import ProgramProposal
+            return {
+                k: ProgramProposal(**v) if isinstance(v, dict) else v
+                for k, v in raw.items()
+            }
+        except Exception:
+            return {}
     return {}
 
 
 def save_cache(cache: dict) -> None:
     """Persist the shared cache (best effort; spend safety first)."""
+    import dataclasses
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    CACHE_PATH.write_text(json.dumps(cache, indent=1, sort_keys=True))
+    serializable = {
+        k: dataclasses.asdict(v) if dataclasses.is_dataclass(v) else v
+        for k, v in cache.items()
+    }
+    CACHE_PATH.write_text(json.dumps(serializable, indent=1, sort_keys=True))
 
 
 def main(argv: list[str] | None = None) -> int:

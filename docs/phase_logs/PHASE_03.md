@@ -49,3 +49,36 @@ episode builder/checker (sub-namespace isolation, parent-side truth) +
 facade (env.py) + summarize_run/write_manifest + shared llm_cache.json.
 Verified: abort path live (exit 2, no spend, no runs/ dir); 66/66 tests
 (excl. sim). pricing/model rates still UNVERIFIED -> pilot stays blocked.
+
+## Task 4 Complete: Live G0 Pilot & Gate (2026-10-28)
+
+1. Pricing verified in configs/pricing.yaml: standard rate [1.25, 4.25] $/Mtok.
+2. Sandboxed execution fixes verified on Windows:
+   - Job Object memory limits enforced.
+   - Child worker calls os._exit(0) in finally block to prevent PyBullet C++ teardown hang.
+   - Preamble wraps episode in try/finally to close T1Env cleanly.
+   - Parent polls pipe before proc.join() to eliminate pipe buffer deadlock on large trace payloads.
+   - LLMClient sends reasoning_effort: "low" so muse-spark-1.3 does not deplete token caps on reasoning.
+   - POLICY_API_DOC clarified with return structures; get_object_pos() added to PolicyFacade.
+3. Live G0 Pilot (`g0-pilot-03`):
+   - Model: muse-spark-1.3
+   - Prompt hash: cc943e326afacfa0
+   - Tokens: 160 prompt, 1240 completion (incl. reasoning)
+   - Cost: $0.0055 USD
+   - Episodes: 20 planned, 20 executed, 0 infra errors
+   - Success rate: 20/20 = 1.000 (G0 threshold: 0.30 -> PASS)
+   - Positive margin on all 20 episodes.
+
+### make gate PHASE=03 output:
+```
+no secrets found
+closedloop/certify/stats.py: OK
+tests/test_stats.py: OK
+tests/test_coverage.py: OK
+......................................................................s  [100%]
+70 passed, 1 skipped in 14.46s
+PHASE 03: PASS
+```
+
+- Status: PASS (G0 PASS: 20/20 = 1.000)
+- Spend this phase: $0.0107 USD (total meter ledger across live probes & pilots)

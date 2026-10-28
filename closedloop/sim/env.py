@@ -249,6 +249,10 @@ class PolicyFacade:
         """Return (position, orientation) of 'cube' or 'pad'."""
         return self._env.object_pose(name)
 
+    def get_object_pos(self, name: str) -> tuple[float, float, float]:
+        """Return (x, y, z) position of 'cube' or 'pad'."""
+        return self._env.object_pose(name)[0]
+
 
 # -- scripted policies ----------------------------------------------------
 def noop_policy(env: T1Env, rng: np.random.Generator) -> None:

@@ -14,12 +14,15 @@ from __future__ import annotations
 import json
 import math
 
-ALLOW_MODULES = frozenset({"closedloop.sim.env"})
+ALLOW_MODULES = frozenset(
+    {"closedloop.sim", "numpy", "pybullet", "dataclasses", "math", "random"}
+)
 
 POLICY_API_DOC = (
     "Define policy(env, rng) using ONLY these env methods: "
-    "move_to(pos, steps=60), open_gripper(), close_gripper(force), "
-    "get_object_pose(name). "
+    "move_to(pos, steps=60) where pos is (x, y, z), open_gripper(), close_gripper(force), "
+    "get_object_pos(name) which returns (x, y, z) position, "
+    "get_object_pose(name) which returns (pos, orientation) where pos is (x, y, z). "
     "Use the provided rng for any randomness. Do not import anything."
 )
 
@@ -28,15 +31,19 @@ _sys.path.insert(0, {repo_root!r})
 from closedloop.sim.env import T1Env, PolicyFacade
 import numpy as _np
 _env = T1Env()
-_env.reset({scenario_json})
-_rng = _np.random.default_rng({seed})
-_prog_ns = {{"env": PolicyFacade(_env), "rng": _rng}}
-exec({policy_src}, _prog_ns)
-if "policy" not in _prog_ns:
-    raise NameError("program defines no policy(env, rng)")
-import dataclasses as _dc
-__result__ = _dc.asdict(_env.run_policy(_prog_ns["policy"], _rng))
+try:
+    _env.reset({scenario_json})
+    _rng = _np.random.default_rng({seed})
+    _prog_ns = {{"env": PolicyFacade(_env), "rng": _rng}}
+    exec({policy_src}, _prog_ns)
+    if "policy" not in _prog_ns:
+        raise NameError("program defines no policy(env, rng)")
+    import dataclasses as _dc
+    __result__ = _dc.asdict(_env.run_policy(_prog_ns["policy"], _rng))
+finally:
+    _env.close()
 """
+
 
 
 class EpisodeError(ValueError):

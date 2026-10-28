@@ -73,8 +73,11 @@ class RunOutcome:
 
 
 def _covered(name: str, allow: frozenset) -> bool:
-    """Exact allow-list entry, or a parent package the import system needs."""
-    return any(name == entry or entry.startswith(name + ".") for entry in allow)
+    """Exact allow-list entry, parent package, or submodule."""
+    return any(
+        name == entry or entry.startswith(name + ".") or name.startswith(entry + ".")
+        for entry in allow
+    )
 
 
 def _install_guards(api: dict, allow_modules: frozenset = frozenset()) -> None:
@@ -92,15 +95,17 @@ def _install_guards(api: dict, allow_modules: frozenset = frozenset()) -> None:
     # Already-imported modules bypass find_spec via sys.modules: evict the
     # blocked ones so the hook fires on re-import (spawn pulls in stdlib).
     for mod in [m for m in sys.modules if m.split(".")[0] in _BLOCKED_IMPORTS]:
-        del sys.modules[mod]
+        if not _covered(mod, allow_modules):
+            del sys.modules[mod]
 
     class _Guard(importlib.abc.MetaPathFinder):
         def find_spec(self, name, path=None, target=None):
             top = name.split(".")[0]
-            if top in _BLOCKED_IMPORTS:
+            if top in _BLOCKED_IMPORTS and not _covered(name, allow_modules):
                 raise ImportError("blocked in sandbox: " + name)
             if top == "closedloop" and not _covered(name, allow_modules):
                 raise ImportError("not importable in sandbox: " + name)
+
 
     sys.meta_path.insert(0, _Guard())
 
@@ -226,6 +231,7 @@ def _child_main(conn, payload) -> None:  # type: ignore[no-untyped-def]
             conn.close()
         except Exception:  # noqa: BLE001
             pass
+        os._exit(0)
 
 
 # --- Windows Job Object ABI: exact documented layout (guarded by tests) ---
@@ -411,18 +417,36 @@ def run_program(
             return RunOutcome(False, "sandbox_unsupported",
                               f"job-object limit failed: {job_detail}",
                               0.0, False)
-    proc.join(timeout_s)
+    result = None
+    deadline = time.perf_counter() + timeout_s
+    while time.perf_counter() < deadline:
+        if parent_conn.poll(0.05):
+            try:
+                result = parent_conn.recv()
+            except EOFError:
+                pass
+            break
+        if not proc.is_alive():
+            if parent_conn.poll(0.1):
+                try:
+                    result = parent_conn.recv()
+                except EOFError:
+                    pass
+            break
+    proc.join(max(0.1, deadline - time.perf_counter()) if proc.is_alive() else 0.5)
     seconds = time.perf_counter() - start
     if proc.is_alive():
         proc.terminate()
         proc.join(10)
+        parent_conn.close()
         if not keep_workdir:
             shutil.rmtree(workdir, ignore_errors=True)
             workdir = None  # type: ignore[assignment]
         return RunOutcome(False, "timeout", f"killed after {timeout_s}s",
                           seconds, memory_enforced, workdir)
-    result = (parent_conn.recv() if parent_conn.poll(10)
-              else ("error", "no result", None))
+    if result is None:
+        result = (parent_conn.recv() if parent_conn.poll(0.5)
+                  else ("error", "no result", None))
     parent_conn.close()
     if not keep_workdir:
         shutil.rmtree(workdir, ignore_errors=True)

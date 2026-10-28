@@ -64,11 +64,26 @@ def generate_task_program(
     if cache is not None and prompt_hash in cache:
         return cache[prompt_hash]
     raw = client.complete(model, prompt, max_output_tokens)
-    text = str(raw.get("text", ""))
+    text = str(raw.get("text", "")).strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
     try:
         parsed = json.loads(text)
-    except json.JSONDecodeError as exc:
-        raise InvalidProgram(f"not JSON: {exc}") from exc
+    except json.JSONDecodeError:
+        start = text.find("{")
+        end = text.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            try:
+                parsed = json.loads(text[start : end + 1])
+            except json.JSONDecodeError as exc:
+                raise InvalidProgram(f"not JSON: {exc}") from exc
+        else:
+            raise InvalidProgram("not JSON: no JSON object found")
     if (
         not isinstance(parsed, dict)
         or not isinstance(parsed.get("code"), str)
