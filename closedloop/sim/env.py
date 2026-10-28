@@ -205,7 +205,11 @@ class T1Env:
         vel, _ = p.getBaseVelocity(self.cube, physicsClientId=self.cid)
         speed = float(np.linalg.norm(vel))
         contacts = p.getContactPoints(self.cube, self.pad, physicsClientId=self.cid)
-        bottom_gap = final[2] - CUBE_HALF - PAD_TOP_Z if contacts else 9.0
+        if contacts:
+            bottom_gap = final[2] - CUBE_HALF - PAD_TOP_Z
+        else:
+            vert_gap = abs(final[2] - CUBE_HALF - PAD_TOP_Z)
+            bottom_gap = max(vert_gap, CONTACT_GAP + 0.001)
         pred1, pred2, margin = predicates.evaluate(
             final, tail, (PAD_POS[0], PAD_POS[1], PAD_TOP_Z + CUBE_HALF),
             RADIUS, STAB_TOL, CONTACT_GAP, bottom_gap, speed, SPEED_TOL,
@@ -282,7 +286,7 @@ def good_policy(env: T1Env, rng: np.random.Generator) -> None:
     above = (cube_pos[0], cube_pos[1], 0.15)
     prim.move_to(env, above, steps=40)
     prim.move_to(env, (cube_pos[0], cube_pos[1], cube_pos[2] + 0.03), steps=40)
-    prim.close_gripper(env, 30.0)
+    prim.close_gripper(env, 80.0)
     prim.move_to(env, above, steps=40)
     prim.move_to(env, (PAD_POS[0], PAD_POS[1], 0.15), steps=60)
     prim.move_to(env, (PAD_POS[0], PAD_POS[1], 0.06), steps=40)

@@ -445,8 +445,11 @@ def run_program(
         return RunOutcome(False, "timeout", f"killed after {timeout_s}s",
                           seconds, memory_enforced, workdir)
     if result is None:
-        result = (parent_conn.recv() if parent_conn.poll(0.5)
-                  else ("error", "no result", None))
+        try:
+            result = (parent_conn.recv() if parent_conn.poll(0.5)
+                      else ("error", "no result", None))
+        except (BrokenPipeError, EOFError, OSError) as exc:
+            result = ("error", f"pipe closed: {exc}", None)
     parent_conn.close()
     if not keep_workdir:
         shutil.rmtree(workdir, ignore_errors=True)

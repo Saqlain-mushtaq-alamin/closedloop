@@ -3,7 +3,7 @@ task_T1:
   description: "Pick up the cube and place it on the pad."
   nominal: {x: 0.0, y: 0.0, yaw: 0.0, mass: 0.1, friction: 0.8}
   tier1: {x: [-0.15, 0.15], y: [-0.15, 0.15], yaw: [-0.5, 0.5]}
-  tier2_mass: [0.05, 0.6]
+  tier2_mass: [1.0, 11.5]
   tier2_friction: [0.1, 1.0]
   success_radius_m: 0.03
   stable_steps: 20

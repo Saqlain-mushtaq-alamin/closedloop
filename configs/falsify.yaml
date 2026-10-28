@@ -1,0 +1,33 @@
+# Configuration for Phase 05 falsifier and minimizer.
+# Frozen via manifest config_hash (H12).
+experiment: falsify_minimizer
+task: task_T1
+sampler: cmaes
+budget_per_program: 50
+seed_stream: repair
+seed_base: 10000
+
+# Distribution D parameter bounds (Tier 2 T1)
+bounds:
+  x: [-0.15, 0.15]
+  y: [-0.15, 0.15]
+  yaw: [-0.5, 0.5]
+  mass: [1.0, 11.5]
+  friction: [0.1, 1.0]
+
+# Minimizer settings
+minimizer:
+  nominal:
+    x: 0.0
+    y: 0.0
+    yaw: 0.0
+    mass: 1.0
+    friction: 0.8
+  bisection_steps: 6
+  param_order: ["x", "y", "yaw", "friction", "mass"]
+
+# Pilot evaluation settings (Task 3, V15)
+pilot:
+  num_programs: 5
+  budget: 30
+  seed: 20000
