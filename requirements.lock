@@ -1,5 +1,14 @@
+# Pinned dependencies. Install with: python -m pip install -r requirements.lock
+# Resolved for CPython 3.11.9 on win_amd64 (project interpreter, AGENTS.md).
+# History: first pinned from a Python 3.14 sandbox venv (numpy 2.5.4,
+# scipy 1.18.1); those two require Python >=3.12 and publish no cp311 wheels,
+# so they were re-resolved to the newest 3.11-compatible releases below.
+# Re-verify on 3.11.9 after any change: python -m pip install -r requirements.lock
 iniconfig==2.3.1
+numpy==2.4.2
 packaging==26.3
 pluggy==1.7.0
 pygments==2.21.0
 pytest==9.2.0
+PyYAML==6.0.3
+scipy==1.17.1

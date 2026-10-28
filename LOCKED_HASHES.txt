@@ -1,0 +1,3 @@
+c3b38cdcb1243231622b94309be154c2ec34626921617d679abe0dde017a0228  closedloop/certify/stats.py
+18662d77c4f4b147799abcfbe983d986b0c2b18919946df12ba17e8d5c7e7de0  tests/test_stats.py
+00d3e4eaaf8d496b42d433bfbde74343fd709094ba0f9771b3c7f16396721ba6  tests/test_coverage.py
