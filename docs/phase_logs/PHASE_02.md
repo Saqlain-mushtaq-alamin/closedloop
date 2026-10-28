@@ -15,3 +15,14 @@
 - Windows outlook (human must check): no win_amd64 wheels for 3.2.6/3.2.7, so
   `pip install pybullet==3.2.7` on 3.11.9 builds the 80MB sdist from source
   (needs MSVC C++ compiler; 10-30 min). STOPPING here per H17/STOP rules.
+
+## Tasks 2-4 implemented 2026-10-28 (UNVERIFIED on physics)
+Files: closedloop/sim/{__init__,env,predicates,primitives}.py,
+tests/test_sim.py (5 tests), scripts/benchmark_sim.py. All compile
+(py_compile). CANNOT execute here: no pybullet on 3.14, no Windows shell.
+Grasp model: collision-free kinematic hand + proximity fixed constraint +
+force-based slip (mass*g*1.2). V8 rule: success = both predicates agree.
+4-hour grasp time-box transfers to the Windows run. requirements.lock gains
+pybullet==3.2.7 (sdist build on Windows); THIRD_PARTY.md records zlib/libpng.
+Pending (Windows, human): smoke test, pytest tests/test_sim.py,
+scripts/benchmark_sim.py eps/sec, make gate PHASE=02.
