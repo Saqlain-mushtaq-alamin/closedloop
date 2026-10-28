@@ -57,16 +57,22 @@ def generate_task_program(
     max_output_tokens: int,
     model: str = DEFAULT_MODEL,
     feedback: str | None = None,
+    images_b64: list[str] | None = None,
     cache: dict | None = None,
 ) -> ProgramProposal:
     """Generate, gate, and return one program proposal (H4/H5/H13)."""
     prompt = build_prompt(task, primitives_doc, feedback)
     prompt_hash = CostMeter.prompt_hash(
-        {"model": model, "prompt": prompt, "max_output_tokens": max_output_tokens}
+        {
+            "model": model,
+            "prompt": prompt,
+            "max_output_tokens": max_output_tokens,
+            "has_images": len(images_b64) if images_b64 else 0,
+        }
     )
     if cache is not None and prompt_hash in cache:
         return cache[prompt_hash]
-    raw = client.complete(model, prompt, max_output_tokens)
+    raw = client.complete(model, prompt, max_output_tokens, images_b64=images_b64)
     text = str(raw.get("text", "")).strip()
     if text.startswith("```"):
         lines = text.splitlines()

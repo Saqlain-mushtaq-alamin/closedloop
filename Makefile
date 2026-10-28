@@ -30,7 +30,10 @@ endif
 	@bash scripts/check_no_secrets.sh
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q
-ifeq ($(PHASE),05)
+ifeq ($(PHASE),06)
+	@$(PY) -c "from tests.test_repair import test_repair_acceptance_rejects_regression, test_aa_null, test_budget_parity; test_repair_acceptance_rejects_regression(); test_aa_null(); test_budget_parity()"
+	@echo "PHASE 06: PASS"
+else ifeq ($(PHASE),05)
 	@$(PY) -c "from tests.test_falsify import test_minimizer_real_env, test_graded_margin_no_saturation; test_minimizer_real_env(); test_graded_margin_no_saturation()"
 	@echo "PHASE 05: PASS"
 else ifeq ($(PHASE),04)
