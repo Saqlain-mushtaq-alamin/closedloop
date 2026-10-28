@@ -13,3 +13,9 @@
   (`https://api.meta.ai/v1`), Spark $/Mtok, SAM 3.1 image-vs-video pricing, and
   account tier (P07/P08 caps assume Contributor tier + SAM video mode).
   Re-probe (text + image call, tokens/cost recorded here) once keys exist.
+
+## 2026-10-28 — Phase 03 G0 pilot attempt
+- `MODEL_API_KEY` still unset: no live call possible, $0.00 spent.
+- G0 (Spark tier-1 pass >=30%) unmeasured; blocked on key + billing clearing.
+- Windows pilot command (once keyed): run generator -> runner -> log under
+  runs/<run_id>/, compute pass rate from episodes.jsonl only.
