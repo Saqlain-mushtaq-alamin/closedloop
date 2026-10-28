@@ -35,3 +35,19 @@
 - **Fix:** Updated `experiments/run_falsify_pilot.py` to populate all required `EpisodeResult` fields (`episode_id`, `stream="repair"`, `task="task_T1"`, `program_version=0`).
 - **Action:** Preserved `runs/falsify-pilot-01/`. Running pilot under fresh `run_id` `falsify-pilot-02`.
 
+## 2026-10-29 — Run falsify-pilot-02 margin saturation and unlogged minimizer episodes
+- **Run ID:** `falsify-pilot-02`
+- **What happened:**
+  1. `bottom_gap = 9.0` in `env.py:208` caused constant saturated margin `-8.995` on all off-pad failures, depriving CMA-ES of graded distance signal.
+  2. Minimizer shrinking episodes were unlogged, violating H10.
+  3. Manifest recorded pre-commit SHA.
+  4. Nominal mass was 0.1, outside Tier 2 distribution D [1.0, 11.5].
+- **Fix:**
+  1. Replaced constant `9.0` with physical clearance `max(vert_gap, CONTACT_GAP + 0.001)` in `env.py:208`, yielding continuous, physical graded margins.
+  2. Fully instrumented and logged all minimizer and recheck episodes to `episodes.jsonl`.
+  3. Added A/A control and multi-seed evaluation.
+  4. Updated nominal mass in config to 1.0 (inside D).
+  5. Committed code so manifest git SHA matches repo state.
+- **Action:** Preserved `runs/falsify-pilot-02/`. Running full pilot under fresh `run_id` `falsify-pilot-03`.
+
+
