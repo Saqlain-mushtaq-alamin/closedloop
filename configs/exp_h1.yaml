@@ -15,7 +15,7 @@ difficulty:
     x: [-0.15, 0.15]
     y: [-0.15, 0.15]
     yaw: [-0.5, 0.5]
-    mass: [0.05, 5.2]
+    mass: [1.0, 11.5]
     friction: [0.1, 1.0]
 
 # Paired experimental design:

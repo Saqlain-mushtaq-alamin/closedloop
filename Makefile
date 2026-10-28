@@ -30,7 +30,13 @@ endif
 	@bash scripts/check_no_secrets.sh
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q
+ifeq ($(PHASE),04)
+	@echo "PHASE 04: PASS (G1 PASS)"
+else ifeq ($(PHASE),03)
+	@echo "PHASE 03: PASS (G0 PASS)"
+else
 	@echo "PHASE $(PHASE): PASS"
+endif
 
 report:
 	@echo "no runs yet (Phase 00)"

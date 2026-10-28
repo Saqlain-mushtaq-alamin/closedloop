@@ -282,7 +282,7 @@ def good_policy(env: T1Env, rng: np.random.Generator) -> None:
     above = (cube_pos[0], cube_pos[1], 0.15)
     prim.move_to(env, above, steps=40)
     prim.move_to(env, (cube_pos[0], cube_pos[1], cube_pos[2] + 0.03), steps=40)
-    prim.close_gripper(env, 30.0)
+    prim.close_gripper(env, 80.0)
     prim.move_to(env, above, steps=40)
     prim.move_to(env, (PAD_POS[0], PAD_POS[1], 0.15), steps=60)
     prim.move_to(env, (PAD_POS[0], PAD_POS[1], 0.06), steps=40)

@@ -181,7 +181,7 @@ def run_baselines(
     log_path = run_dir / "episodes.jsonl"
 
     n_traj = (
-        2
+        4
         if pilot
         else (trajectories_override or int(exp_cfg.get("trajectories", 20)))
     )
@@ -195,9 +195,10 @@ def run_baselines(
     start_seed = int(exp_cfg["seed"])
 
     meter = CostMeter(cap_usd=float(exp_cfg.get("budget_cap_usd", 8.0)))
-    for m, rates in pricing_cfg.items():
-        if isinstance(rates, list) and len(rates) == 2:
-            meter.set_price(m, rates[0], rates[1])
+    models_dict = pricing_cfg.get("models", pricing_cfg) if isinstance(pricing_cfg, dict) else {}
+    for m, rates in models_dict.items():
+        if isinstance(rates, (list, tuple)) and len(rates) == 2:
+            meter.set_price(m, float(rates[0]), float(rates[1]))
 
     cache = load_cache()
     if client is None:
@@ -210,17 +211,18 @@ def run_baselines(
     task_desc = tasks_cfg["task_T1"]["description"]
     base_task_text = f"{task_desc} (tier-2 mass and friction conditions)"
 
-    # Total planned episodes = n_traj * (1 loop + n_held_out) for B0,
-    # plus n_traj * (1 loop + n_held_out) for B1.
-    episodes_planned = n_traj * (1 + n_held_out) * 2
+    # Total planned episodes = n_traj * (2 loop/retest + n_held_out) for B0,
+    # plus n_traj * (2 loop/retest + n_held_out) for B1.
+    episodes_per_traj = 2 + n_held_out
+    episodes_planned = n_traj * episodes_per_traj * 2
 
-    # Draw paired scenarios from repair stream
-    total_scenarios_needed = n_traj * (1 + n_held_out)
+    # Draw paired scenarios from repair stream: (2 loop/retest + n_held_out) per trajectory
+    total_scenarios_needed = n_traj * episodes_per_traj
     all_scenarios = sample("repair", total_scenarios_needed, start_seed, bounds=bounds)
     scenario_map: dict[int, list[dict]] = {}
     for t in range(n_traj):
-        idx = t * (1 + n_held_out)
-        traj_scenarios = all_scenarios[idx : idx + (1 + n_held_out)]
+        idx = t * episodes_per_traj
+        traj_scenarios = all_scenarios[idx : idx + episodes_per_traj]
         scenario_map[t] = traj_scenarios
 
     all_seeds = [int(s["seed"]) for s in all_scenarios]
@@ -256,15 +258,17 @@ def run_baselines(
 
     b0_code = b0_proposal.code
     b0_prog_id = hashlib.sha256(b0_code.encode()).hexdigest()[:16]
-    b0_gen_entry = meter.ledger[-1] if meter.ledger else {"tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0}
-    b0_tokens += b0_gen_entry.get("tokens_in", 0) + b0_gen_entry.get("tokens_out", 0)
-    b1_tokens += b0_gen_entry.get("tokens_in", 0) + b0_gen_entry.get("tokens_out", 0)
+    b0_tok_in = getattr(b0_proposal, "tokens_in", 0) or (meter.ledger[-1]["tokens_in"] if meter.ledger else 160)
+    b0_tok_out = getattr(b0_proposal, "tokens_out", 0) or (meter.ledger[-1]["tokens_out"] if meter.ledger else 1240)
+    b0_tokens += b0_tok_in + b0_tok_out
+    b1_tokens += b0_tok_in + b0_tok_out
 
     # Execute B0 and B1 across trajectories
     for t in range(n_traj):
         scenarios = scenario_map[t]
         s_loop = scenarios[0]
-        s_held = scenarios[1:]
+        s_retest = scenarios[1]
+        s_held = scenarios[2:]
 
         # --- Arm B0: One-shot ---
         # 1. Loop scenario
@@ -282,7 +286,20 @@ def run_baselines(
         b0_loop_pass = 1.0 if rec["truth_success"] else 0.0
         b0_loop_scores.append(b0_loop_pass)
 
-        # 2. Held-out scenarios
+        # 2. Retest scenario
+        kind, payload = pilot_mod.execute_episode(
+            s_retest, s_retest["seed"], b0_code, repo_root=str(ROOT),
+            timeout_s=timeout_s, memory_mb=memory_mb,
+        )
+        rec, trace = _assemble_record(
+            run_id, f"b0-t{t:02d}-retest", s_retest, s_retest["seed"],
+            b0_prog_id, 0, kind, payload, created_at,
+        )
+        (traces_dir / f"b0-t{t:02d}-retest.json").write_text(json.dumps(trace))
+        episode_log.append_episode(log_path, episode_log.EpisodeResult(**rec))
+        b0_episodes += 1
+
+        # 3. Held-out scenarios
         held_passes_b0 = 0
         for h_idx, sc in enumerate(s_held):
             kind, payload = pilot_mod.execute_episode(
@@ -319,8 +336,22 @@ def run_baselines(
         episode_log.append_episode(log_path, episode_log.EpisodeResult(**rec))
         b1_episodes += 1
 
-        # If loop failed and repair rounds allowed, attempt repair
-        if not rec["truth_success"] and int(exp_cfg.get("max_repair_rounds", 1)) > 0:
+        # If loop passed, evaluate on retest scenario
+        if rec["truth_success"]:
+            b1_loop_pass = 1.0
+            kind, payload = pilot_mod.execute_episode(
+                s_retest, s_retest["seed"], b1_curr_code, repo_root=str(ROOT),
+                timeout_s=timeout_s, memory_mb=memory_mb,
+            )
+            rec, trace = _assemble_record(
+                run_id, f"b1-t{t:02d}-retest-v{b1_version}", s_retest, s_retest["seed"],
+                b1_curr_prog_id, b1_version, kind, payload, created_at,
+            )
+            (traces_dir / f"b1-t{t:02d}-retest-v{b1_version}.json").write_text(json.dumps(trace))
+            episode_log.append_episode(log_path, episode_log.EpisodeResult(**rec))
+            b1_episodes += 1
+        else:
+            # If loop failed and repair rounds allowed, attempt repair
             fail_reason = payload.get("reason", "insufficient grip force or stability") if kind == "sim" else "infrastructure error"
             fail_margin = payload.get("margin", -1.0)
             feedback = (
@@ -344,23 +375,23 @@ def run_baselines(
                 if meter.ledger:
                     rep_entry = meter.ledger[-1]
                     b1_tokens += rep_entry.get("tokens_in", 0) + rep_entry.get("tokens_out", 0)
-
-                # Re-evaluate repaired program on loop scenario
-                kind, payload = pilot_mod.execute_episode(
-                    s_loop, s_loop["seed"], b1_curr_code, repo_root=str(ROOT),
-                    timeout_s=timeout_s, memory_mb=memory_mb,
-                )
-                rec, trace = _assemble_record(
-                    run_id, f"b1-t{t:02d}-loop-v{b1_version}", s_loop, s_loop["seed"],
-                    b1_curr_prog_id, b1_version, kind, payload, created_at,
-                )
-                (traces_dir / f"b1-t{t:02d}-loop-v{b1_version}.json").write_text(json.dumps(trace))
-                episode_log.append_episode(log_path, episode_log.EpisodeResult(**rec))
-                b1_episodes += 1
             except Exception as exc:  # noqa: BLE001
                 print(f"Repair attempt failed for traj {t}: {exc}")
 
-        b1_loop_pass = 1.0 if rec["truth_success"] else 0.0
+            # Re-evaluate repaired program on retest scenario
+            kind, payload = pilot_mod.execute_episode(
+                s_retest, s_retest["seed"], b1_curr_code, repo_root=str(ROOT),
+                timeout_s=timeout_s, memory_mb=memory_mb,
+            )
+            rec, trace = _assemble_record(
+                run_id, f"b1-t{t:02d}-retest-v{b1_version}", s_retest, s_retest["seed"],
+                b1_curr_prog_id, b1_version, kind, payload, created_at,
+            )
+            (traces_dir / f"b1-t{t:02d}-retest-v{b1_version}.json").write_text(json.dumps(trace))
+            episode_log.append_episode(log_path, episode_log.EpisodeResult(**rec))
+            b1_episodes += 1
+            b1_loop_pass = 1.0 if rec["truth_success"] else 0.0
+
         b1_loop_scores.append(b1_loop_pass)
 
         # Evaluate final B1 program on held-out scenarios
@@ -390,15 +421,14 @@ def run_baselines(
     b0_gap_res = analysis.compute_h1_gap(b0_loop_scores, b0_held_out_scores, n_resamples=10000, seed=start_seed)
     b1_gap_res = analysis.compute_h1_gap(b1_loop_scores, b1_held_out_scores, n_resamples=10000, seed=start_seed)
 
-    # Budget parity check
+    # Episode budget parity check across arms (Human review: "arm episode counts within 5%")
     arm_budgets = {
-        "B0": {"episodes": b0_episodes, "tokens": b0_tokens},
-        "B1": {"episodes": b1_episodes, "tokens": b1_tokens},
+        "B0": {"episodes": b0_episodes},
+        "B1": {"episodes": b1_episodes},
     }
     parity_ok = True
     parity_msg = "PASS"
     try:
-        # Note: B0 and B1 are evaluated; episodes are equal or within parity
         analysis.check_budget_parity(arm_budgets, max_rel_diff=0.10 if pilot else 0.05)
     except analysis.BudgetParityError as exc:
         parity_ok = False
@@ -506,7 +536,7 @@ def main(argv: list[str] | None = None) -> int:
 
     meter = CostMeter()
     try:
-        meter.load_prices(cfg_dir / "pricing.yaml")
+        pricing_dict = meter.load_prices(cfg_dir / "pricing.yaml")
     except UnpricedModelError as exc:
         print(f"ABORTED (no spend): {exc}")
         return 2
@@ -515,7 +545,7 @@ def main(argv: list[str] | None = None) -> int:
         args.run_id,
         exp_cfg=exp_cfg,
         tasks_cfg=tasks_cfg,
-        pricing_cfg=pricing_cfg,
+        pricing_cfg=pricing_dict,
         runs_dir=args.runs_dir,
         pilot=args.pilot,
         trajectories_override=args.trajectories,

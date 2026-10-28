@@ -29,6 +29,9 @@ class ProgramProposal:
     rationale: str
     model: str
     prompt_hash: str
+    tokens_in: int = 0
+    tokens_out: int = 0
+    cost_usd: float = 0.0
 
 
 def build_prompt(task: str, primitives_doc: str, feedback: str | None = None) -> str:
@@ -99,6 +102,9 @@ def generate_task_program(
         rationale=str(parsed.get("rationale", "")),
         model=model,
         prompt_hash=prompt_hash,
+        tokens_in=int(raw.get("tokens_in", 0)),
+        tokens_out=int(raw.get("tokens_out", 0)),
+        cost_usd=float(raw.get("cost_usd", 0.0)),
     )
     if cache is not None:
         cache[prompt_hash] = proposal
