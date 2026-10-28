@@ -13,3 +13,21 @@ PHASE 00: PASS
 Numbers: 4/4 tests; probe spend $0.00; agent $: metered at $0 (no API calls).
 Surprises: no pytest/pip/ensurepip (bootstrapped via get-pip.py into .venv);
 no `make` on machine (needs install; Makefile present). Key env vars unset.
+
+## Final gate re-run before tag `phase-00-done` (2026-10-28)
+`make` is not installed on this machine, so the gate steps were run directly in WSL from the repo root:
+
+```
+$ bash scripts/check_no_secrets.sh
+no secrets found
+$ bash scripts/check_locked.sh
+locked check: LOCKED_HASHES.txt not present yet (pre-Phase-01 stub); PASS
+$ .venv/bin/python -m pytest tests/ -q
+....                                                                     [100%]
+4 passed in 0.34s
+PHASE 00: PASS
+```
+
+Bootstrap: the repo had no `main` branch. `main` was created at `05af8a8` (the Phase 00
+branch before the final compliance commits) and the completed phase branch was merged with
+`--no-ff`. Later phases branch from `main` and follow the same merge routine.

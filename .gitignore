@@ -1,0 +1,15 @@
+# Secrets / local environment
+.env
+.env.*
+
+# Virtualenvs and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local-only planning material
+phases/
+planning/
