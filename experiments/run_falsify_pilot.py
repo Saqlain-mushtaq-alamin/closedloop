@@ -1,8 +1,9 @@
 """Pilot evaluation for Phase 05: Falsifier vs Random Search (V15).
 
 Compares CMA-ES falsification vs uniform random search across 5 programs
-with equal budget, logging episodes to runs/<run_id>/episodes.jsonl and
-producing pilot table and minimized counterexamples.
+with equal budget, logging EVERY episode (search, minimizer shrinking steps,
+and recheck) to runs/<run_id>/episodes.jsonl (H10). Includes an A/A control
+and multi-seed evaluation.
 """
 
 from __future__ import annotations
@@ -23,14 +24,14 @@ sys.path.insert(0, str(ROOT))
 
 from closedloop.data import log as episode_log
 from closedloop.data import manifest as run_manifest
-from closedloop.falsify.falsifier import falsify, FalsificationResult
-from closedloop.falsify.minimizer import distance_to_nominal, minimize
+from closedloop.falsify.falsifier import falsify
+from closedloop.falsify.minimizer import distance_to_nominal, is_failing, minimize
 from closedloop.sim.env import T1Env, PAD_POS, SimResult
 from closedloop.sim import primitives as prim
 
 
 def git_head() -> str:
-    """Repo HEAD SHA; abort if unavailable."""
+    """Repo HEAD SHA; verify falsifier is present at this SHA."""
     try:
         out = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -44,6 +45,11 @@ def git_head() -> str:
     sha = (out.stdout or "").strip()
     if out.returncode != 0 or not sha:
         raise RuntimeError("cannot determine git HEAD")
+
+    # Verify falsifier exists at this commit or in working tree
+    falsifier_path = ROOT / "closedloop" / "falsify" / "falsifier.py"
+    if not falsifier_path.exists():
+        raise RuntimeError(f"falsifier.py not found at {falsifier_path}")
     return sha
 
 
@@ -109,8 +115,13 @@ def run_falsify_pilot(
     *,
     config_path: str = "configs/falsify.yaml",
     runs_dir: str = "runs",
+    num_seeds_per_program: int = 3,
 ) -> dict[str, Any]:
-    """Execute falsifier pilot comparing CMA-ES vs Random search on 5 programs."""
+    """Execute falsifier pilot comparing CMA-ES vs Random search across 5 programs.
+
+    All episodes (search trials, minimizer shrinking steps, and verification rechecks)
+    are logged to runs/<run_id>/episodes.jsonl (H10).
+    """
     cfg_file = ROOT / config_path
     if not cfg_file.exists():
         raise FileNotFoundError(f"Missing config: {cfg_file}")
@@ -125,6 +136,8 @@ def run_falsify_pilot(
     bounds_raw = cfg["bounds"]
     bounds = {k: tuple(v) for k, v in bounds_raw.items()}
     nominal = {k: float(v) for k, v in cfg["minimizer"]["nominal"].items()}
+    param_order = list(cfg["minimizer"].get("param_order", ["x", "y", "yaw", "friction", "mass"]))
+    bisection_steps = int(cfg["minimizer"].get("bisection_steps", 6))
     budget = int(cfg.get("pilot", {}).get("budget", 30))
     base_seed = int(cfg.get("pilot", {}).get("seed", 20000))
 
@@ -136,131 +149,229 @@ def run_falsify_pilot(
     summary_rows = []
     minimized_counterexamples = []
     used_seeds: list[int] = []
+    total_episodes_logged = 0
 
     print(f"=== Starting Phase 05 Pilot: {run_id} ===")
     print(f"Config: {config_path} (hash: {cfg_hash}), git: {git_sha[:8]}")
-    print(f"Programs: 5, Budget per search: {budget} episodes\n")
+    print(f"Programs: 5, Seeds/prog: {num_seeds_per_program}, Budget per trial: {budget} episodes\n")
 
-    for idx, (prog_id, pinfo) in enumerate(PILOT_PROGRAMS.items()):
+    for p_idx, (prog_id, pinfo) in enumerate(PILOT_PROGRAMS.items()):
         policy = make_policy(pinfo["grip_force"], pinfo["offset"])
-        prog_hash = hashlib.sha256(prog_id.encode()).hexdigest()[:16]
+
+        cmaes_failures_total = 0
+        rand_failures_total = 0
+        aa_failures_total = 0
+        cmaes_first_fails = []
+        rand_first_fails = []
+        cmaes_best_margin = 1e9
+        rand_best_margin = 1e9
+        best_overall_failure = None
 
         print(f"Evaluating {prog_id}: {pinfo['description']}")
 
-        # 1. CMA-ES falsification
-        cmaes_seed = base_seed + idx * 500
-        used_seeds.append(cmaes_seed)
+        for s_idx in range(num_seeds_per_program):
+            cmaes_seed = base_seed + p_idx * 2000 + s_idx * 200
+            rand_seed = base_seed + 10000 + p_idx * 2000 + s_idx * 200
+            aa_seed = base_seed + 20000 + p_idx * 2000 + s_idx * 200
+            used_seeds.extend([cmaes_seed, rand_seed, aa_seed])
 
-        def eval_cmaes(sc: dict) -> SimResult:
-            seed = int(sc.get("seed", cmaes_seed))
-            res = env.run_episode(policy, sc, seed)
-            rec = episode_log.EpisodeResult(
-                episode_id=f"{prog_id}-cmaes-s{seed}",
-                stream="repair",
-                task="task_T1",
-                program_id=prog_id,
-                program_version=0,
-                scenario=dict(sc),
-                seed=seed,
-                truth_success=res.truth_success,
-                truth_success_alt=res.truth_success_alt,
-                margin=res.margin,
-                judge_mode="state",
-                judge_pass=None,
-                judge_confidence=None,
-                trace_path="",
-                frames_path=None,
-                tokens_in=0,
-                tokens_out=0,
-                cost_usd=0.0,
-                created_at=created_at,
-            )
-            episode_log.append_episode(log_path, rec)
-            return res
+            # 1. CMA-ES falsification
+            def eval_cmaes(sc: dict) -> SimResult:
+                nonlocal total_episodes_logged
+                seed = int(sc.get("seed", cmaes_seed))
+                res = env.run_episode(policy, sc, seed)
+                rec = episode_log.EpisodeResult(
+                    episode_id=f"{prog_id}-cmaes-s{seed}",
+                    stream="repair",
+                    task="task_T1",
+                    program_id=prog_id,
+                    program_version=0,
+                    scenario=dict(sc),
+                    seed=seed,
+                    truth_success=res.truth_success,
+                    truth_success_alt=res.truth_success_alt,
+                    margin=res.margin,
+                    judge_mode="state",
+                    judge_pass=None,
+                    judge_confidence=None,
+                    trace_path="",
+                    frames_path=None,
+                    tokens_in=0,
+                    tokens_out=0,
+                    cost_usd=0.0,
+                    created_at=created_at,
+                )
+                episode_log.append_episode(log_path, rec)
+                total_episodes_logged += 1
+                return res
 
-        res_cmaes = falsify(eval_cmaes, bounds=bounds, budget=budget, seed=cmaes_seed, sampler_type="cmaes")
-        sims_first_cmaes = (
-            min(f["trial_index"] for f in res_cmaes.failures) + 1
-            if res_cmaes.failures
-            else None
-        )
+            res_cmaes = falsify(eval_cmaes, bounds=bounds, budget=budget, seed=cmaes_seed, sampler_type="cmaes")
+            cmaes_failures_total += len(res_cmaes.failures)
+            if res_cmaes.failures:
+                first_f = min(f["trial_index"] for f in res_cmaes.failures) + 1
+                cmaes_first_fails.append(first_f)
+                if res_cmaes.best_margin < cmaes_best_margin:
+                    cmaes_best_margin = res_cmaes.best_margin
+                    # Lowest margin failure as candidate for minimization
+                    best_overall_failure = res_cmaes.failures[0]["scenario"]
 
-        # 2. Random search baseline
-        rand_seed = base_seed + 10000 + idx * 500
-        used_seeds.append(rand_seed)
+            # 2. Random search baseline
+            def eval_rand(sc: dict) -> SimResult:
+                nonlocal total_episodes_logged
+                seed = int(sc.get("seed", rand_seed))
+                res = env.run_episode(policy, sc, seed)
+                rec = episode_log.EpisodeResult(
+                    episode_id=f"{prog_id}-rand-s{seed}",
+                    stream="repair",
+                    task="task_T1",
+                    program_id=prog_id,
+                    program_version=0,
+                    scenario=dict(sc),
+                    seed=seed,
+                    truth_success=res.truth_success,
+                    truth_success_alt=res.truth_success_alt,
+                    margin=res.margin,
+                    judge_mode="state",
+                    judge_pass=None,
+                    judge_confidence=None,
+                    trace_path="",
+                    frames_path=None,
+                    tokens_in=0,
+                    tokens_out=0,
+                    cost_usd=0.0,
+                    created_at=created_at,
+                )
+                episode_log.append_episode(log_path, rec)
+                total_episodes_logged += 1
+                return res
 
-        def eval_rand(sc: dict) -> SimResult:
-            seed = int(sc.get("seed", rand_seed))
-            res = env.run_episode(policy, sc, seed)
-            rec = episode_log.EpisodeResult(
-                episode_id=f"{prog_id}-rand-s{seed}",
-                stream="repair",
-                task="task_T1",
-                program_id=prog_id,
-                program_version=0,
-                scenario=dict(sc),
-                seed=seed,
-                truth_success=res.truth_success,
-                truth_success_alt=res.truth_success_alt,
-                margin=res.margin,
-                judge_mode="state",
-                judge_pass=None,
-                judge_confidence=None,
-                trace_path="",
-                frames_path=None,
-                tokens_in=0,
-                tokens_out=0,
-                cost_usd=0.0,
-                created_at=created_at,
-            )
-            episode_log.append_episode(log_path, rec)
-            return res
+            res_rand = falsify(eval_rand, bounds=bounds, budget=budget, seed=rand_seed, sampler_type="random")
+            rand_failures_total += len(res_rand.failures)
+            if res_rand.failures:
+                first_r = min(f["trial_index"] for f in res_rand.failures) + 1
+                rand_first_fails.append(first_r)
+                if res_rand.best_margin < rand_best_margin:
+                    rand_best_margin = res_rand.best_margin
 
-        res_rand = falsify(eval_rand, bounds=bounds, budget=budget, seed=rand_seed, sampler_type="random")
-        sims_first_rand = (
-            min(f["trial_index"] for f in res_rand.failures) + 1
-            if res_rand.failures
-            else None
-        )
+            # 3. A/A Control: independent Random search Arm B (for null baseline verification)
+            def eval_aa(sc: dict) -> SimResult:
+                nonlocal total_episodes_logged
+                seed = int(sc.get("seed", aa_seed))
+                res = env.run_episode(policy, sc, seed)
+                rec = episode_log.EpisodeResult(
+                    episode_id=f"{prog_id}-randB-s{seed}",
+                    stream="repair",
+                    task="task_T1",
+                    program_id=prog_id,
+                    program_version=0,
+                    scenario=dict(sc),
+                    seed=seed,
+                    truth_success=res.truth_success,
+                    truth_success_alt=res.truth_success_alt,
+                    margin=res.margin,
+                    judge_mode="state",
+                    judge_pass=None,
+                    judge_confidence=None,
+                    trace_path="",
+                    frames_path=None,
+                    tokens_in=0,
+                    tokens_out=0,
+                    cost_usd=0.0,
+                    created_at=created_at,
+                )
+                episode_log.append_episode(log_path, rec)
+                total_episodes_logged += 1
+                return res
 
-        # 3. Minimization of best counterexample (if any failure found)
+            res_aa = falsify(eval_aa, bounds=bounds, budget=budget, seed=aa_seed, sampler_type="random")
+            aa_failures_total += len(res_aa.failures)
+
+        # 4. Minimization of best counterexample (LOGGING ALL STEPS to episodes.jsonl)
         minimized_info = None
-        if res_cmaes.failures:
-            best_fail = res_cmaes.failures[0]["scenario"]
-            eval_min = lambda sc: env.run_episode(policy, sc, int(sc.get("seed", cmaes_seed)))
-            shrunk = minimize(best_fail, eval_fn=eval_min, nominal=nominal)
-            recheck = eval_min(shrunk)
-            d_init = distance_to_nominal(best_fail, nominal)
+        if best_overall_failure is not None:
+            min_step = 0
+
+            def eval_min_logged(sc: dict) -> SimResult:
+                nonlocal min_step, total_episodes_logged
+                min_step += 1
+                seed = base_seed + 30000 + p_idx * 500 + min_step
+                used_seeds.append(seed)
+                res = env.run_episode(policy, sc, seed)
+                rec = episode_log.EpisodeResult(
+                    episode_id=f"{prog_id}-minimize-step{min_step:02d}-s{seed}",
+                    stream="repair",
+                    task="task_T1",
+                    program_id=prog_id,
+                    program_version=0,
+                    scenario=dict(sc),
+                    seed=seed,
+                    truth_success=res.truth_success,
+                    truth_success_alt=res.truth_success_alt,
+                    margin=res.margin,
+                    judge_mode="state",
+                    judge_pass=None,
+                    judge_confidence=None,
+                    trace_path="",
+                    frames_path=None,
+                    tokens_in=0,
+                    tokens_out=0,
+                    cost_usd=0.0,
+                    created_at=created_at,
+                )
+                episode_log.append_episode(log_path, rec)
+                total_episodes_logged += 1
+                return res
+
+            shrunk = minimize(
+                best_overall_failure,
+                eval_fn=eval_min_logged,
+                nominal=nominal,
+                bisection_steps=bisection_steps,
+                param_keys=param_order,
+                bounds=bounds,
+            )
+            # Recheck verification (also logged)
+            recheck_res = eval_min_logged(shrunk)
+            recheck_fails = is_failing(recheck_res)
+
+            d_init = distance_to_nominal(best_overall_failure, nominal)
             d_shrunk = distance_to_nominal(shrunk, nominal)
+
             minimized_info = {
                 "program_id": prog_id,
-                "original_scenario": {k: round(best_fail[k], 4) for k in bounds},
+                "original_scenario": {k: round(best_overall_failure[k], 4) for k in bounds},
                 "minimized_scenario": {k: round(shrunk[k], 4) for k in bounds},
                 "distance_initial": round(d_init, 4),
                 "distance_shrunk": round(d_shrunk, 4),
                 "reduction_pct": round(100.0 * (1.0 - d_shrunk / max(d_init, 1e-6)), 1),
-                "recheck_still_fails": not recheck.truth_success,
+                "recheck_still_fails": recheck_fails,
+                "minimizer_steps_logged": min_step,
             }
             minimized_counterexamples.append(minimized_info)
 
+        total_trials = budget * num_seeds_per_program
         row = {
             "program_id": prog_id,
-            "cmaes_sims_to_first": sims_first_cmaes,
-            "rand_sims_to_first": sims_first_rand,
-            "cmaes_failures": len(res_cmaes.failures),
-            "rand_failures": len(res_rand.failures),
-            "cmaes_min_margin": round(res_cmaes.best_margin, 4),
-            "rand_min_margin": round(res_rand.best_margin, 4),
+            "total_trials_per_arm": total_trials,
+            "cmaes_failures": cmaes_failures_total,
+            "rand_failures": rand_failures_total,
+            "aa_failures": aa_failures_total,
+            "cmaes_failure_rate": round(cmaes_failures_total / total_trials, 3),
+            "rand_failure_rate": round(rand_failures_total / total_trials, 3),
+            "aa_failure_rate": round(aa_failures_total / total_trials, 3),
+            "cmaes_mean_sims_to_first": round(sum(cmaes_first_fails) / max(len(cmaes_first_fails), 1), 2),
+            "rand_mean_sims_to_first": round(sum(rand_first_fails) / max(len(rand_first_fails), 1), 2),
+            "cmaes_best_margin": round(cmaes_best_margin, 4) if cmaes_best_margin < 1e8 else None,
+            "rand_best_margin": round(rand_best_margin, 4) if rand_best_margin < 1e8 else None,
             "minimized": minimized_info is not None,
-            "minimized_still_fails": (
-                minimized_info["recheck_still_fails"] if minimized_info else None
-            ),
+            "minimized_still_fails": minimized_info["recheck_still_fails"] if minimized_info else None,
         }
         summary_rows.append(row)
-        print(f"  -> CMA-ES first failure: {sims_first_cmaes}/{budget} (failures: {len(res_cmaes.failures)}, min_margin: {res_cmaes.best_margin:.3f})")
-        print(f"  -> Random first failure: {sims_first_rand}/{budget} (failures: {len(res_rand.failures)}, min_margin: {res_rand.best_margin:.3f})")
+        print(f"  -> CMA-ES failure rate: {cmaes_failures_total}/{total_trials} ({row['cmaes_failure_rate']:.1%}), min margin: {row['cmaes_best_margin']}")
+        print(f"  -> Random failure rate: {rand_failures_total}/{total_trials} ({row['rand_failure_rate']:.1%}), min margin: {row['rand_best_margin']}")
+        print(f"  -> A/A    failure rate: {aa_failures_total}/{total_trials} ({row['aa_failure_rate']:.1%})")
         if minimized_info:
-            print(f"  -> Minimized dist: {minimized_info['distance_initial']} -> {minimized_info['distance_shrunk']} (still fails: {minimized_info['recheck_still_fails']})\n")
+            print(f"  -> Minimized: dist {minimized_info['distance_initial']} -> {minimized_info['distance_shrunk']} ({minimized_info['reduction_pct']}% reduction in {minimized_info['minimizer_steps_logged']} steps, still fails: {minimized_info['recheck_still_fails']})\n")
 
     env.close()
 
@@ -271,9 +382,14 @@ def run_falsify_pilot(
         model="none (physics simulation)",
         pricing={},
         budget_cap_usd=0.0,
-        episodes_planned=budget * 2 * len(PILOT_PROGRAMS),
-        seeds=used_seeds,
-        generation={"falsifier": "CmaEsSampler", "minimizer": "coordinate_bisection"},
+        episodes_planned=total_episodes_logged,
+        seeds=sorted(list(set(used_seeds))),
+        generation={
+            "falsifier": "CmaEsSampler",
+            "minimizer": "coordinate_bisection",
+            "seeds_per_program": num_seeds_per_program,
+            "aa_control": "RandomSampler_ArmB",
+        },
         created_at=created_at,
         status="valid",
     )
@@ -284,18 +400,20 @@ def run_falsify_pilot(
         "created_at": created_at,
         "config_hash": cfg_hash,
         "git_sha": git_sha,
+        "total_episodes_logged": total_episodes_logged,
         "summary": summary_rows,
         "minimized_counterexamples": minimized_counterexamples,
     }
     (run_dir / "pilot_table.json").write_text(json.dumps(pilot_results, indent=2))
+    print(f"Pilot {run_id} complete. Logged {total_episodes_logged} total episodes to {log_path}.")
 
     return pilot_results
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 05 falsifier pilot")
-    parser.add_argument("--run-id", default="falsify-pilot-01", help="Run ID")
+    parser.add_argument("--run-id", default="falsify-pilot-03", help="Run ID")
     parser.add_argument("--config", default="configs/falsify.yaml", help="Config file")
+    parser.add_argument("--seeds", type=int, default=3, help="Seeds per program")
     args = parser.parse_args()
-    results = run_falsify_pilot(args.run_id, config_path=args.config)
-    print("Pilot completed successfully.")
+    results = run_falsify_pilot(args.run_id, config_path=args.config, num_seeds_per_program=args.seeds)

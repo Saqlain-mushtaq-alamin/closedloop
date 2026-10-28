@@ -21,7 +21,7 @@ minimizer:
     x: 0.0
     y: 0.0
     yaw: 0.0
-    mass: 0.1
+    mass: 1.0
     friction: 0.8
   bisection_steps: 6
   param_order: ["x", "y", "yaw", "friction", "mass"]

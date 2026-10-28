@@ -33,9 +33,11 @@ class FalsificationResult:
 def _check_falsifier_seed(seed: int, budget: int) -> None:
     """Ensure seeds lie strictly within the repair stream range (H9, V4)."""
     lo, hi = STREAM_RANGES["repair"]
-    if not (lo <= seed <= hi):
-        raise LeakageError(f"seed {seed} outside repair stream range [{lo}, {hi}]")
-    if not (lo <= seed + budget - 1 <= hi):
+    if seed < lo:
+        raise LeakageError(f"seed {seed} is below repair stream range minimum {lo}")
+    if seed > hi:
+        raise LeakageError(f"seed {seed} is above repair stream range maximum {hi}")
+    if seed + budget - 1 > hi:
         raise LeakageError(
             f"seed range {seed}..{seed + budget - 1} exceeds repair stream limit {hi}"
         )
@@ -73,8 +75,10 @@ def falsify(
     study = optuna.create_study(direction="minimize", sampler=sampler)
     failures: list[dict[str, Any]] = []
     trial_scenarios: dict[int, dict[str, Any]] = {}
+    actual_eval_count = 0
 
     def objective(trial: optuna.Trial) -> float:
+        nonlocal actual_eval_count
         scenario: dict[str, Any] = {}
         for param, (low, high) in bounds.items():
             scenario[param] = float(trial.suggest_float(param, low, high))
@@ -83,6 +87,8 @@ def falsify(
         trial_scenarios[trial.number] = dict(scenario)
 
         result = eval_fn(scenario)
+        actual_eval_count += 1
+
         margin = float(
             result.get("margin", 0.0)
             if isinstance(result, dict)
@@ -101,8 +107,9 @@ def falsify(
 
     study.optimize(objective, n_trials=budget)
 
-    # Sort failures by margin ascending (most severe failure first)
-    failures.sort(key=lambda f: f["margin"])
+    # Sort failures primarily by margin ascending (most severe failure first),
+    # breaking ties deterministically by trial_index
+    failures.sort(key=lambda f: (f["margin"], f["trial_index"]))
 
     best_scenario = (
         trial_scenarios.get(study.best_trial.number)
@@ -112,7 +119,7 @@ def falsify(
 
     return FalsificationResult(
         best_margin=float(study.best_value),
-        total_evals=budget,
+        total_evals=actual_eval_count,
         failures=failures,
         best_scenario=best_scenario,
         study=study,
