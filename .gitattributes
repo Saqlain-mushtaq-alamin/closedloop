@@ -1,0 +1,2 @@
+# Normalise text files to LF so Windows and WSL checkouts stay clean.
+* text=auto eol=lf
