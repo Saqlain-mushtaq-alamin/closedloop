@@ -8,6 +8,7 @@ iniconfig==2.3.1
 numpy==2.4.2
 packaging==26.3
 pluggy==1.7.0
+pybullet==3.2.7
 pygments==2.21.0
 pytest==9.2.0
 PyYAML==6.0.3
