@@ -144,7 +144,7 @@ def run_repair_h2h3(
     seed_base = int(exp_cfg["seed_base"])
 
     meter = CostMeter(cap_usd=float(exp_cfg.get("budget_cap_usd", 12.0)))
-    meter.load_prices(pricing_file)
+    pricing_dict = meter.load_prices(pricing_file)
 
     if client is None:
         client = LLMClient(meter)
@@ -583,7 +583,7 @@ def run_repair_h2h3(
         git_sha=git_sha,
         config_hash=cfg_hash,
         model=model,
-        pricing=models_dict,
+        pricing=pricing_dict,
         budget_cap_usd=float(exp_cfg.get("budget_cap_usd", 12.0)),
         episodes_planned=sum(arm_episodes.values()),
         seeds=sorted(list(set(used_seeds))),
