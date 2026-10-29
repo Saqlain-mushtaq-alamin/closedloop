@@ -275,20 +275,19 @@ def run_judge_g2(
     logged_episodes = len([line for line in log_path.read_text().splitlines() if line.strip()])
 
     # Write Manifest (H11, H12)
-    manifest = run_manifest.RunManifest(
-        run_id=run_id,
-        experiment=str(judge_cfg.get("experiment", "exp_judge_g2")),
-        task=str(judge_cfg.get("task", "task_T1")),
-        phase="phase_07",
-        git_sha=git_head(),
-        config_hash=judge_freeze_hash,
-        pricing_hash=run_manifest.file_sha256(pricing_path),
-        budget_usd_cap=meter.cap_usd,
-        total_cost_usd=round(meter.spent_usd, 6),
-        pricing_dict=pricing_dict,
-        episodes_planned=n_succ + n_fail,
-        episodes_completed=logged_episodes,
-        summary={
+    manifest = {
+        "run_id": run_id,
+        "experiment": str(judge_cfg.get("experiment", "exp_judge_g2")),
+        "task": str(judge_cfg.get("task", "task_T1")),
+        "phase": "phase_07",
+        "git_sha": git_head(),
+        "config_hash": judge_freeze_hash,
+        "budget_cap_usd": meter.cap_usd,
+        "total_cost_usd": round(meter.spent_usd, 6),
+        "pricing_per_mtok": pricing_dict,
+        "episodes_planned": n_succ + n_fail,
+        "episodes_completed": logged_episodes,
+        "summary": {
             "tpr": report.tpr,
             "tpr_lower": report.tpr_lower,
             "fpr": report.fpr,
@@ -296,10 +295,12 @@ def run_judge_g2(
             "ceiling_target": report.ceiling_target,
             "g2_verdict": report.g2_verdict,
         },
-        created_at=created_at,
-        status="valid",
-    )
-    run_manifest.write_manifest(run_dir, manifest)
+        "created_at": created_at,
+        "status": "valid",
+    }
+    manifest_file = run_dir / "manifest.json"
+    manifest_file.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
 
     print("\n=== Calibration Complete ===", flush=True)
     print(f"TPR: {report.tpr:.4f} (Lower bound a_L: {report.tpr_lower:.4f})", flush=True)
