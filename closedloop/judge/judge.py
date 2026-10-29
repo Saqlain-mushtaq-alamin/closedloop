@@ -17,8 +17,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pybullet as p
-from PIL import Image, ImageDraw, ImageFont
+try:
+    from PIL import Image, ImageDraw
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
 
 from closedloop.llm.client import LLMClient
 from closedloop.llm.cost import CostMeter
@@ -146,36 +150,64 @@ def draw_overlay_image(
     cube_centroid: tuple[float, float] | None,
     pass_verdict: bool,
     annotation: str = "",
-) -> Image.Image:
+) -> Any:
     """Render bounding boxes, centroid crosshair, and status overlay onto image."""
-    img = Image.fromarray(rgba).convert("RGB")
-    draw = ImageDraw.Draw(img)
+    if HAS_PIL:
+        img = Image.fromarray(rgba).convert("RGB")
+        draw = ImageDraw.Draw(img)
 
-    # Pad box in green
+        # Pad box in green
+        if pad_box:
+            px1, py1, px2, py2 = pad_box
+            draw.rectangle([px1, py1, px2, py2], outline=(0, 230, 0), width=2)
+            draw.text((px1 + 2, py1 + 2), "PAD", fill=(0, 230, 0))
+
+        # Cube box in red
+        if cube_box:
+            cx1, cy1, cx2, cy2 = cube_box
+            draw.rectangle([cx1, cy1, cx2, cy2], outline=(255, 30, 30), width=2)
+            draw.text((cx1 + 2, cy1 + 2), "CUBE", fill=(255, 30, 30))
+
+        # Centroid crosshair in yellow
+        if cube_centroid:
+            cx, cy = cube_centroid
+            r = 4
+            draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 255, 0), outline=(0, 0, 0))
+
+        # Status banner
+        color = (0, 200, 0) if pass_verdict else (220, 20, 20)
+        label = f"VERDICT: {'PASS' if pass_verdict else 'FAIL'} {annotation}".strip()
+        draw.rectangle([0, 0, img.width, 18], fill=(30, 30, 30))
+        draw.text((6, 2), label, fill=color)
+
+        return img
+
+    # Pure numpy fallback when PIL is not installed
+    arr = np.array(rgba, copy=True)
+    h, w = arr.shape[:2]
     if pad_box:
-        px1, py1, px2, py2 = pad_box
-        draw.rectangle([px1, py1, px2, py2], outline=(0, 230, 0), width=2)
-        draw.text((px1 + 2, py1 + 2), "PAD", fill=(0, 230, 0))
+        px1, py1, px2, py2 = [max(0, min(v, w - 1 if idx % 2 == 0 else h - 1)) for idx, v in enumerate(pad_box)]
+        arr[py1 : min(py1 + 2, h), px1:px2] = [0, 230, 0, 255]
+        arr[max(0, py2 - 2) : py2, px1:px2] = [0, 230, 0, 255]
+        arr[py1:py2, px1 : min(px1 + 2, w)] = [0, 230, 0, 255]
+        arr[py1:py2, max(0, px2 - 2) : px2] = [0, 230, 0, 255]
 
-    # Cube box in red
     if cube_box:
-        cx1, cy1, cx2, cy2 = cube_box
-        draw.rectangle([cx1, cy1, cx2, cy2], outline=(255, 30, 30), width=2)
-        draw.text((cx1 + 2, cy1 + 2), "CUBE", fill=(255, 30, 30))
+        cx1, cy1, cx2, cy2 = [max(0, min(v, w - 1 if idx % 2 == 0 else h - 1)) for idx, v in enumerate(cube_box)]
+        arr[cy1 : min(cy1 + 2, h), cx1:cx2] = [255, 30, 30, 255]
+        arr[max(0, cy2 - 2) : cy2, cx1:cx2] = [255, 30, 30, 255]
+        arr[cy1:cy2, cx1 : min(cx1 + 2, w)] = [255, 30, 30, 255]
+        arr[cy1:cy2, max(0, cx2 - 2) : cx2] = [255, 30, 30, 255]
 
-    # Centroid crosshair in yellow
-    if cube_centroid:
-        cx, cy = cube_centroid
-        r = 4
-        draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 255, 0), outline=(0, 0, 0))
+    class _ArraySaver:
+        def __init__(self, data: np.ndarray) -> None:
+            self.data = data
 
-    # Status banner
-    color = (0, 200, 0) if pass_verdict else (220, 20, 20)
-    label = f"VERDICT: {'PASS' if pass_verdict else 'FAIL'} {annotation}".strip()
-    draw.rectangle([0, 0, img.width, 18], fill=(30, 30, 30))
-    draw.text((6, 2), label, fill=color)
+        def save(self, path: Path | str) -> None:
+            Path(path).write_bytes(base64.b64decode(encode_png_b64(self.data)))
 
-    return img
+    return _ArraySaver(arr)
+
 
 
 class VisionJudge:
