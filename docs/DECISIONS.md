@@ -50,4 +50,33 @@
   5. Committed code so manifest git SHA matches repo state.
 - **Action:** Preserved `runs/falsify-pilot-02/`. Running full pilot under fresh `run_id` `falsify-pilot-03`.
 
+## 2026-10-29 — Run h2h3-full-01 review invalidation and harness overhaul
+- **Run ID:** `h2h3-full-01`
+- **What happened:**
+  1. A/A control was a deterministic replay: prompt text excluded seed and rounded scenario coordinates, so B2_alt hit the prompt-hash cache from B2, yielding element-wise identical proposals, identical token counts (39,120), and CI [0, 0] with zero variance.
+  2. V6 budget parity was never enforced in runner; real tokens differed by 16.1% (B3: 41,609 vs B1: 34,925), and B1 was padded with dummy evaluations at a fixed scenario rather than uniform exploration.
+  3. Damage rate was hardcoded to `False`, `RepairEvaluator` was not instantiated, regression set was only `[nominal]`, and candidates were evaluated twice on counterexamples.
+  4. B3 filmstrip passed a no-op dummy policy, capturing static scenes without event boundaries or real motion, and no frames were logged.
+  5. B1 prompt omitted current program code, failing to isolate counterexample quality from prompt visibility.
+  6. Phase 06 gate in Makefile ran synthetic test functions without inspecting actual run results.
+- **Fix:**
+  1. Made B2_alt an independent replicate with a disjoint seed stream (+300000) and separate generation namespace; implemented pre-declared rerun on exclude-0.
+  2. Replaced dummy padding with symmetric 17-episode random search in B1; aligned prompt structures; explicitly called and enforced `check_budget_parity(budgets, max_rel_diff=0.05)`.
+  3. Instantiated `RepairEvaluator` per arm, accumulated regression sets across trajectories, evaluated candidates once on counterexample, and evaluated all stages so damage is tracked.
+  4. Implemented real event-boundary filmstrip capture (`EventFilmstripWrapper`), executing actual policy code and saving multi-frame traces to `runs/<run_id>/frames/`.
+  5. Harmonized repair prompt structure across B1, B2, B3 via `build_repair_prompt`.
+  6. Implemented `verify_phase_06_gate` in runner and called it directly from `Makefile gate (PHASE=06)`.
+- **Action:** Preserved `runs/h2h3-full-01/`. Rerunning full experiment under fresh `run_id` `h2h3-full-02`.
+
+## 2026-10-30 — Run h2h3-full-02 episode parity discrepancy and resolution
+- **Run ID:** `h2h3-full-02`
+- **What happened:**
+  1. Episode parity failed V6 (647 vs 589 episodes, difference 8.96% > 5.00%) because `RepairEvaluator` accumulated accepted counterexamples across all 20 trajectories into a single global regression set. Because B1 had more acceptances early on, its regression set grew to 6-7 scenarios, causing it to run more validation episodes per candidate than B3.
+  2. Tokens differed by 7.50% between B2 and B1 due to natural LLM completion length variation without a trajectory-level token cap.
+- **Fix:**
+  1. Scoped `RepairEvaluator` per trajectory session (Plan §10/§12), initializing each trajectory with `nominal` and evaluating a fixed 7 validation episodes (1 CE + 1 nominal + 5 rerun) per candidate across all arms, while sharing `DamageAccounting` across trajectories. This guarantees exact mathematical episode parity: exactly 580 episodes per arm (0.00% difference).
+  2. Enforced a per-trajectory token cap (`min(r_tok_in + r_tok_out, 1950)`), ensuring token parity stays well within 5% (observed 3.47%).
+  3. Attached proposal tokens and cost directly to candidate episodes in `episodes.jsonl` and repair traces in `repair_traces.json`.
+- **Action:** Preserved `runs/h2h3-full-02/`. Executed full run under fresh `run_id` `h2h3-full-03`, passing all validity checks (V5, V6, V7, H2, H3).
+
 

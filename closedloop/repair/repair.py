@@ -70,10 +70,15 @@ class RepairCandidate:
 class RepairEvaluator:
     """Manages acceptance checks, regression set accumulation, and damage accounting (V7)."""
 
-    def __init__(self, falsifier_budget: int = 10, seed: int = 15000) -> None:
+    def __init__(
+        self,
+        falsifier_budget: int = 10,
+        seed: int = 15000,
+        accounting: DamageAccounting | None = None,
+    ) -> None:
         self.falsifier_budget = falsifier_budget
         self.seed = seed
-        self.accounting = DamageAccounting()
+        self.accounting = accounting if accounting is not None else DamageAccounting()
         self.regression_set: list[dict[str, Any]] = []
 
     def add_to_regression_set(self, scenario: dict[str, Any]) -> None:
@@ -85,24 +90,28 @@ class RepairEvaluator:
         counterexample: dict[str, Any],
         falsifier_fn: Callable[[Callable[[dict[str, Any]], Any]], dict[str, Any] | None] | None = None,
     ) -> tuple[bool, str, dict[str, Any]]:
-        # 1. Check counterexample fix
+        # Stage 1: Check counterexample fix
         ce_res = candidate_eval_fn(counterexample)
         fixed_ce = not is_failing(ce_res)
 
-        # 2. Check regression damage
+        # Stage 2: Check regression damage against all accumulated scenarios
         damaged_reg = False
-        if fixed_ce:
-            for sc in self.regression_set:
-                if is_failing(candidate_eval_fn(sc)):
-                    damaged_reg = True
-                    break
+        failed_reg_id = None
+        failed_reg_res = None
+        for sc in self.regression_set:
+            reg_res = candidate_eval_fn(sc)
+            if is_failing(reg_res):
+                damaged_reg = True
+                if failed_reg_id is None:
+                    failed_reg_id = sc.get("id", str(sc.get("seed", sc.get("mass", "unknown"))))
+                    failed_reg_res = reg_res
 
-        accepted, reason, details = verify_repair_acceptance(
-            candidate_eval_fn=candidate_eval_fn,
-            counterexample=counterexample,
-            regression_set=self.regression_set,
-            falsifier_fn=falsifier_fn,
-        )
+        # Stage 3: Short falsifier rerun (run across all candidates to maintain fixed verification budget)
+        rerun_fail = None
+        if falsifier_fn is not None:
+            rerun_fail = falsifier_fn(candidate_eval_fn)
+
+        accepted = fixed_ce and (not damaged_reg) and (rerun_fail is None)
 
         self.accounting.record_attempt(
             fixed_counterexample=fixed_ce,
@@ -112,6 +121,22 @@ class RepairEvaluator:
 
         if accepted:
             self.add_to_regression_set(counterexample)
+            reason = "accepted"
+            details = {"stage": 3}
+        elif not fixed_ce:
+            margin = (
+                ce_res.get("margin", -1.0)
+                if isinstance(ce_res, dict)
+                else getattr(ce_res, "margin", -1.0)
+            )
+            reason = "Failed counterexample"
+            details = {"stage": 1, "margin": float(margin), "scenario": dict(counterexample), "result": ce_res}
+        elif damaged_reg:
+            reason = f"Regression on earlier scenario: {failed_reg_id}"
+            details = {"stage": 2, "failed_regression_id": failed_reg_id, "result": failed_reg_res}
+        else:
+            reason = "Failed short falsifier rerun"
+            details = {"stage": 3, "failing_scenario": dict(rerun_fail) if rerun_fail else {}}
 
         return accepted, reason, details
 

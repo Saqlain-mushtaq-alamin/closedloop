@@ -31,7 +31,8 @@ endif
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q
 ifeq ($(PHASE),06)
-	@$(PY) -c "from tests.test_repair import test_repair_acceptance_rejects_regression, test_aa_null, test_budget_parity; test_repair_acceptance_rejects_regression(); test_aa_null(); test_budget_parity()"
+	@$(PY) -m pytest tests/test_repair.py -q
+	@$(PY) -c "from experiments.run_repair_h2h3 import verify_phase_06_gate; verify_phase_06_gate()"
 	@echo "PHASE 06: PASS"
 else ifeq ($(PHASE),05)
 	@$(PY) -c "from tests.test_falsify import test_minimizer_real_env, test_graded_margin_no_saturation; test_minimizer_real_env(); test_graded_margin_no_saturation()"
