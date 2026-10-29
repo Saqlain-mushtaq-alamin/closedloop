@@ -1,7 +1,7 @@
 """Calibration engine for Vision Judge (Plan §8, Phase 07, Gate G2).
 
 Executes >=300 true-success and >=300 true-failure rollouts on calibration seeds
-(1,000,000–1,999,999 strictly, Rule H9).
+(1,000,000–1,999,999 strictly, Rule H9) under a fixed sample plan (Rule H12).
 Partitions failures into B=4 margin buckets.
 Computes one-sided Clopper-Pearson bounds (a_L, worst-bucket b_U) and Day-1 ceiling.
 Evaluates Gate G2: a_L >= 0.85, worst-bucket b_U <= 0.15, ceiling >= 0.85.
@@ -11,14 +11,25 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
 
+import hashlib
 from closedloop.certify.stats import cp_lower, cp_upper, ceiling
+from closedloop.data import log as episode_log
+from closedloop.data.sampler import BOUNDS, LeakageError, sample
 from closedloop.judge.judge import VisionJudge
-from closedloop.sim.env import T1Env, good_policy, noop_policy, random_policy
+from closedloop.sim import primitives as prim
+from closedloop.sim.env import PAD_POS, T1Env, good_policy, noop_policy
+
+
+def compute_judge_freeze_hash(cfg_path: Path | str = "configs/judge.yaml") -> str:
+    """Compute sha256 hash covering the complete judge configuration including prompt."""
+    p = Path(cfg_path)
+    return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
 @dataclass
@@ -57,7 +68,7 @@ def preflight_cost_check(
     full_calls: int,
     headroom_usd: float,
 ) -> tuple[bool, str]:
-    """Verify remaining budget headroom can accommodate full calibration before launch."""
+    """Verify remaining budget headroom can accommodate full calibration before launch (Task 3)."""
     if pilot_calls <= 0:
         return False, "BLOCKED: pilot_calls must be > 0"
     unit_cost = pilot_spent_usd / pilot_calls
@@ -73,28 +84,57 @@ def preflight_cost_check(
     )
 
 
-def partition_into_bucket(margin: float, buckets: list[MarginBucket]) -> MarginBucket:
-    """Assign a failure rollout to its margin bucket."""
+def partition_into_bucket(margin: float, buckets: list[MarginBucket]) -> MarginBucket | None:
+    """Assign a failure rollout (margin < 0) to its margin bucket."""
+    if margin >= 0.0:
+        return None  # Successful rollout, not a failure
     for b in buckets:
         if b.m_low <= margin < b.m_high:
             return b
-    # Catch-all edge assignment
-    if margin >= 0.0:
-        return buckets[0]
     return buckets[-1]
+
+
+def make_offset_policy(offset_x: float) -> Callable[[T1Env, np.random.Generator], None]:
+    """Scripted near-miss pick-and-place with calibrated offset from pad boundary."""
+    def policy(env: T1Env, rng: np.random.Generator) -> None:
+        cube_pos, _ = prim.get_object_pose(env, "cube")
+        above = (cube_pos[0], cube_pos[1], 0.15)
+        prim.move_to(env, above, steps=30)
+        prim.move_to(env, (cube_pos[0], cube_pos[1], cube_pos[2] + 0.03), steps=30)
+        prim.close_gripper(env, 80.0)
+        prim.move_to(env, above, steps=30)
+        target = (PAD_POS[0] + offset_x, PAD_POS[1], 0.15)
+        prim.move_to(env, target, steps=40)
+        prim.move_to(env, (target[0], target[1], 0.04), steps=30)
+        prim.open_gripper(env)
+        prim.move_to(env, target, steps=30)
+    return policy
 
 
 def run_calibration(
     judge: VisionJudge,
     seed_base: int = 1000000,
-    n_succ_target: int = 300,
-    n_fail_target: int = 300,
+    n_succ: int = 300,
+    n_fail: int = 300,
     delta: float = 0.05,
     B: int = 4,
     K: int = 16,
+    log_path: Path | None = None,
+    print_interval: int = 50,
 ) -> CalibrationReport:
-    """Run full calibration dataset on calibration seeds only (Rule H9)."""
-    assert 1000000 <= seed_base < 1900000, "Seed must be in calibration range (1M-1.99M)"
+    """Run full calibration dataset on calibration seeds only (Rule H9, H10, H12).
+
+    Fixed sample plan:
+    - 300 successes on seeds seed_base..seed_base+n_succ-1
+    - 300 failures on seeds seed_base+n_succ..seed_base+n_succ+n_fail-1
+    All scenarios draw (mass, friction, yaw) from the identical unified distribution D.
+    Every attempted episode is logged to episodes.jsonl (H10, append-only).
+    """
+    total_episodes = n_succ + n_fail
+    # Enforce stream separation and overflow check via sampler
+    scenarios = sample("calibration", total_episodes, seed_base)
+    succ_scenarios = scenarios[:n_succ]
+    fail_scenarios = scenarios[n_succ:]
 
     buckets = [
         MarginBucket("near_boundary", -0.05, 0.0),
@@ -104,109 +144,120 @@ def run_calibration(
     ]
 
     env = T1Env()
-    rng = np.random.default_rng(seed_base)
-
     succ_passes = 0
     succ_total = 0
 
     fail_passes = 0
     fail_total = 0
 
-    curr_seed = seed_base
-
-    # 1. Collect true successes (using good_policy on valid scenario ranges)
-    while succ_total < n_succ_target:
-        sc = {
-            "x": float(rng.uniform(-0.04, 0.04)),
-            "y": float(rng.uniform(-0.04, 0.04)),
-            "yaw": float(rng.uniform(-0.2, 0.2)),
-            "mass": float(rng.uniform(1.0, 3.0)),
-            "friction": float(rng.uniform(0.6, 1.0)),
-            "seed": curr_seed,
-        }
-        curr_seed += 1
+    # 1. Run planned successes (fixed seeds)
+    for i, sc in enumerate(succ_scenarios):
+        seed = int(sc["seed"])
         env.reset(sc)
-        good_policy(env, rng)
-        res = env.finish()
-        if res.truth_success:
-            verdict = judge.judge_episode(env)
+        good_policy(env, np.random.default_rng(seed))
+        sim_res = env.finish()
+
+        verdict = judge.judge_episode(env)
+        if sim_res.truth_success:
+            succ_total += 1
             if verdict.pass_verdict:
                 succ_passes += 1
-            succ_total += 1
-
-    def make_offset_policy(offset: float):
-        def policy(env: T1Env, rng: np.random.Generator) -> None:
-            cpos, _ = env.object_pose("cube")
-            env.move_hand((cpos[0], cpos[1], 0.15), steps=30)
-            env.move_hand((cpos[0], cpos[1], cpos[2] + 0.03), steps=30)
-            env.set_gripper(True, 80.0)
-            env.move_hand((cpos[0], cpos[1], 0.15), steps=30)
-            env.move_hand((0.25 + offset, 0.0, 0.15), steps=30)
-            env.move_hand((0.25 + offset, 0.0, 0.04), steps=30)
-            env.set_gripper(False)
-            env.move_hand((0.25 + offset, 0.0, 0.15), steps=30)
-        return policy
-
-    # 2. Collect true failures stratified across margin buckets
-    target_per_bucket = n_fail_target // B
-
-    while any(b.n_total < target_per_bucket for b in buckets) or fail_total < n_fail_target:
-        sparse_bucket = next((b for b in buckets if b.n_total < target_per_bucket), None)
-        if sparse_bucket and sparse_bucket.name == "near_boundary":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.035, 0.065)))
-        elif sparse_bucket and sparse_bucket.name == "shallow":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.08, 0.16)))
-        elif sparse_bucket and sparse_bucket.name == "medium":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.18, 0.35)))
         else:
-            sc = {
-                "x": float(rng.uniform(-0.15, 0.15)),
-                "y": float(rng.uniform(-0.15, 0.15)),
-                "yaw": float(rng.uniform(-0.5, 0.5)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = noop_policy
-
-        curr_seed += 1
-        env.reset(sc)
-        policy_fn(env, rng)
-        res = env.finish()
-
-        if not res.truth_success:
-            bucket = partition_into_bucket(res.margin, buckets)
-            if bucket.n_total < target_per_bucket or fail_total < n_fail_target:
-                verdict = judge.judge_episode(env)
-                bucket.n_total += 1
-                fail_total += 1
+            # Physics corner-case: counted in failures if truth_success is False (H13)
+            fail_total += 1
+            b = partition_into_bucket(sim_res.margin, buckets)
+            if b:
+                b.n_total += 1
                 if verdict.pass_verdict:
-                    bucket.k_pass += 1
+                    b.k_pass += 1
                     fail_passes += 1
+
+        if log_path:
+            rec = episode_log.EpisodeResult(
+                episode_id=f"cal-succ-{i+1:04d}-s{seed}",
+                stream="calibration",
+                task="task_T1",
+                program_id="good_policy",
+                program_version=1,
+                scenario=dict(sc),
+                seed=seed,
+                truth_success=sim_res.truth_success,
+                truth_success_alt=sim_res.truth_success_alt,
+                margin=sim_res.margin,
+                judge_mode="camera",
+                judge_pass=verdict.pass_verdict,
+                judge_confidence=verdict.confidence,
+                trace_path="",
+                frames_path=None,
+                tokens_in=verdict.tokens_in,
+                tokens_out=verdict.tokens_out,
+                cost_usd=verdict.cost_usd,
+                created_at=datetime.now(timezone.utc).isoformat(),
+            )
+            episode_log.append_episode(log_path, rec)
+
+        if (i + 1) % print_interval == 0 or (i + 1) == n_succ:
+            print(f"  Success stream: {i+1}/{n_succ} evaluated (pass: {succ_passes})", flush=True)
+
+    # 2. Run planned failures across predetermined strata (fixed seeds)
+    q = n_fail // 4
+    strata_policies = [
+        ("offset_near", make_offset_policy(0.065)),
+        ("offset_shallow", make_offset_policy(0.10)),
+        ("offset_medium", make_offset_policy(0.20)),
+        ("noop_deep", noop_policy),
+    ]
+
+    for i, sc in enumerate(fail_scenarios):
+        seed = int(sc["seed"])
+        strata_idx = min(3, i // q)
+        pol_name, pol_fn = strata_policies[strata_idx]
+
+        env.reset(sc)
+        pol_fn(env, np.random.default_rng(seed))
+        sim_res = env.finish()
+
+        verdict = judge.judge_episode(env)
+        if not sim_res.truth_success:
+            fail_total += 1
+            b = partition_into_bucket(sim_res.margin, buckets)
+            if b:
+                b.n_total += 1
+                if verdict.pass_verdict:
+                    b.k_pass += 1
+                    fail_passes += 1
+        else:
+            # Corner case: counted in successes (H13)
+            succ_total += 1
+            if verdict.pass_verdict:
+                succ_passes += 1
+
+        if log_path:
+            rec = episode_log.EpisodeResult(
+                episode_id=f"cal-fail-{i+1:04d}-s{seed}",
+                stream="calibration",
+                task="task_T1",
+                program_id=pol_name,
+                program_version=1,
+                scenario=dict(sc),
+                seed=seed,
+                truth_success=sim_res.truth_success,
+                truth_success_alt=sim_res.truth_success_alt,
+                margin=sim_res.margin,
+                judge_mode="camera",
+                judge_pass=verdict.pass_verdict,
+                judge_confidence=verdict.confidence,
+                trace_path="",
+                frames_path=None,
+                tokens_in=verdict.tokens_in,
+                tokens_out=verdict.tokens_out,
+                cost_usd=verdict.cost_usd,
+                created_at=datetime.now(timezone.utc).isoformat(),
+            )
+            episode_log.append_episode(log_path, rec)
+
+        if (i + 1) % print_interval == 0 or (i + 1) == n_fail:
+            print(f"  Failure stream: {i+1}/{n_fail} evaluated (fail passes: {fail_passes})", flush=True)
 
     env.close()
 
@@ -214,16 +265,16 @@ def run_calibration(
     d_a = 0.1 * delta  # 0.005
     d_b = 0.1 * delta / B  # 0.00125
 
-    tpr = succ_passes / succ_total
-    tpr_lower = cp_lower(succ_passes, succ_total, d_a)
+    tpr = succ_passes / succ_total if succ_total > 0 else 0.0
+    tpr_lower = cp_lower(succ_passes, succ_total, d_a) if succ_total > 0 else 0.0
 
-    fpr = fail_passes / fail_total
+    fpr = fail_passes / fail_total if fail_total > 0 else 0.0
 
     bucket_stats: dict[str, dict[str, Any]] = {}
     bucket_b_his: list[float] = []
 
     for b in buckets:
-        b_hi = cp_upper(b.k_pass, b.n_total, d_b)
+        b_hi = cp_upper(b.k_pass, b.n_total, d_b) if b.n_total > 0 else 0.0
         bucket_b_his.append(b_hi)
         bucket_stats[b.name] = {
             "margin_range": [b.m_low, b.m_high],
@@ -233,13 +284,12 @@ def run_calibration(
             "fpr_upper": round(b_hi, 4),
         }
 
-    worst_bucket_fpr_upper = max(bucket_b_his)
+    worst_bucket_fpr_upper = max(bucket_b_his) if bucket_b_his else 0.0
 
-    # 4. Ceiling calculation (median certified bound from Day-1 script)
-    # Assumes n_cell = 113 for target p=0.95 at delta_cell = 0.8*delta/(K*M)
+    # 4. Ceiling calculation using empirical rates (Plan §11, stats.py)
     ceil_val = ceiling(
         a=tpr,
-        b=worst_bucket_fpr_upper,
+        b=fpr,
         n_succ_cal=succ_total,
         n_fail_cal=fail_total,
         n_cell=113,
@@ -252,7 +302,7 @@ def run_calibration(
         seed=seed_base,
     )
 
-    # 5. Evaluate Gate G2
+    # 5. Evaluate Gate G2 criteria
     g2_pass = (
         tpr_lower >= 0.85
         and worst_bucket_fpr_upper <= 0.15

@@ -1,11 +1,11 @@
 """Phase 07: Vision Judge + Calibration (Gate G2) Experiment Runner.
 
 Executes:
-1. Visual inspection of 10 overlay frames (Task 1).
+1. Visual inspection of 10 overlay frames with SAM 3.1 masks saved to disk (Task 1).
 2. Pilot calibration (~60 rollouts, 30 success / 30 failure) + V9 controls (Task 3).
 3. Cost pre-flight check projecting full run cost against remaining budget cap.
 4. Full calibration (>=300 true success, >=300 true failure) on calibration seeds
-   (1,000,000–1,999,999 strictly, Rule H9).
+   (1,000,000–1,999,999 strictly, Rule H9) under fixed sample plan (Rule H12).
 5. Margin bucketing (B=4), Clopper-Pearson bounds (a_L, worst-bucket b_U), and Day-1 ceiling.
 6. Evaluates Gate G2: a_L >= 0.85, worst-bucket b_U <= 0.15, ceiling >= 0.85.
 7. Logs all episodes to append-only episodes.jsonl (H10) and writes frozen manifest.
@@ -18,6 +18,7 @@ import base64
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone
@@ -39,22 +40,26 @@ except ImportError:
 from closedloop.certify.stats import cp_lower, cp_upper, ceiling
 from closedloop.data import log as episode_log
 from closedloop.data import manifest as run_manifest
+from closedloop.data.sampler import sample
+from closedloop.judge.calibrate import (
+    CalibrationReport,
+    MarginBucket,
+    compute_judge_freeze_hash,
+    partition_into_bucket,
+    preflight_cost_check,
+    run_calibration,
+)
 from closedloop.judge.judge import (
     VisionJudge,
     check_centroid_in_pad,
     combine_verdict,
+    draw_overlay_image,
     render_judge_frame,
-)
-from closedloop.judge.calibrate import (
-    CalibrationReport,
-    MarginBucket,
-    partition_into_bucket,
-    preflight_cost_check,
 )
 from closedloop.llm.client import LLMClient
 from closedloop.llm.cost import CostMeter
-from closedloop.sim.env import T1Env, good_policy, noop_policy, random_policy
-import subprocess
+from closedloop.sim.env import T1Env, good_policy, noop_policy
+
 
 def git_head() -> str:
     """Repo HEAD SHA; abort if unavailable."""
@@ -74,89 +79,84 @@ def git_head() -> str:
     return sha
 
 
-def save_cache(cache: dict[str, Any], path: Path = ROOT / "runs" / "llm_cache.json") -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_suffix(".tmp")
-    temp.write_text(json.dumps(cache, indent=2, sort_keys=True))
-    temp.replace(path)
 
-
-def load_cache(path: Path = ROOT / "runs" / "llm_cache.json") -> dict[str, Any]:
-    if path.exists():
+def load_run_cache(cache_path: Path) -> dict[str, Any]:
+    if cache_path.exists():
         try:
-            return json.loads(path.read_text())
+            return json.loads(cache_path.read_text(encoding="utf-8"))
         except Exception:
             return {}
     return {}
 
 
-def run_inspection_frames(env: T1Env, out_dir: Path, n_frames: int = 10) -> list[dict[str, Any]]:
-    """Capture and inspect overlay frames for human verification (Task 1)."""
+def save_run_cache(cache: dict[str, Any], cache_path: Path) -> None:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temp = cache_path.with_suffix(".tmp")
+    temp.write_text(json.dumps(cache, indent=2, sort_keys=True), encoding="utf-8")
+    temp.replace(cache_path)
+
+
+def run_inspection_frames(
+    judge: VisionJudge,
+    out_dir: Path,
+    n_frames: int = 10,
+) -> list[dict[str, Any]]:
+    """Capture and inspect overlay frames with saved visual PNGs for Task 1."""
     out_dir.mkdir(parents=True, exist_ok=True)
     inspections: list[dict[str, Any]] = []
-    rng = np.random.default_rng(1001)
+    scenarios = sample("calibration", n_frames, 1000100)
+    env = T1Env()
 
-    for i in range(n_frames):
-        # Alternate between on-pad success and off-pad failure
+    for i, sc in enumerate(scenarios):
+        seed = int(sc["seed"])
+        env.reset(sc)
         if i % 2 == 0:
-            sc = {
-                "x": float(rng.uniform(-0.03, 0.03)),
-                "y": float(rng.uniform(-0.03, 0.03)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": 1000100 + i,
-            }
-            env.reset(sc)
-            good_policy(env, rng)
-            policy_desc = "good_policy (on pad)"
+            good_policy(env, np.random.default_rng(seed))
+            pol_desc = "good_policy (on pad)"
         else:
-            sc = {
-                "x": float(rng.uniform(-0.12, 0.12)),
-                "y": float(rng.uniform(-0.12, 0.12)),
-                "yaw": float(rng.uniform(-0.4, 0.4)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": 1000100 + i,
-            }
-            env.reset(sc)
-            noop_policy(env, rng)
-            policy_desc = "noop_policy (table surface)"
+            noop_policy(env, np.random.default_rng(seed))
+            pol_desc = "noop_policy (table surface)"
 
-        res = env.finish()
-        rgba, b64, cube_mask, pad_mask = render_judge_frame(env)
-        geo_pass = check_centroid_in_pad(cube_mask, pad_mask)
+        sim_res = env.finish()
+        verdict = judge.judge_episode(env)
+        rgba, _ = render_judge_frame(env, judge.camera_cfg)
 
-        cube_pts = np.argwhere(cube_mask)
-        pad_pts = np.argwhere(pad_mask)
-        c_centroid = list(map(float, np.mean(cube_pts, axis=0))) if len(cube_pts) else None
-        p_bbox = {
-            "min": list(map(int, np.min(pad_pts, axis=0))) if len(pad_pts) else [],
-            "max": list(map(int, np.max(pad_pts, axis=0))) if len(pad_pts) else [],
-        }
+        overlay_img = draw_overlay_image(
+            rgba=rgba,
+            cube_box=verdict.cube_box,
+            pad_box=verdict.pad_box,
+            cube_centroid=verdict.cube_centroid,
+            pass_verdict=verdict.pass_verdict,
+            annotation=f"[{pol_desc}]",
+        )
+        png_path = out_dir / f"inspect_frame_{i:02d}.png"
+        overlay_img.save(png_path)
 
-        frame_file = out_dir / f"inspect_frame_{i:02d}.json"
-        record = {
+        rec = {
             "index": i,
-            "policy": policy_desc,
+            "policy": pol_desc,
+            "seed": seed,
             "scenario": sc,
-            "sim_truth_success": res.truth_success,
-            "margin": res.margin,
-            "geometric_pass": geo_pass,
-            "cube_centroid": c_centroid,
-            "pad_bbox": p_bbox,
-            "cube_pixel_count": int(np.sum(cube_mask)),
-            "pad_pixel_count": int(np.sum(pad_mask)),
-            "image_b64_sha256": hashlib.sha256(b64.encode()).hexdigest(),
+            "sim_truth_success": sim_res.truth_success,
+            "margin": sim_res.margin,
+            "verdict_pass": verdict.pass_verdict,
+            "geometric_pass": verdict.geometric_pass,
+            "spark_pass": verdict.spark_pass,
+            "cube_box": verdict.cube_box,
+            "pad_box": verdict.pad_box,
+            "cube_centroid": verdict.cube_centroid,
+            "confidence": verdict.confidence,
+            "png_file": png_path.name,
         }
-        frame_file.write_text(json.dumps(record, indent=2))
-        inspections.append(record)
+        (out_dir / f"inspect_frame_{i:02d}.json").write_text(json.dumps(rec, indent=2))
+        inspections.append(rec)
 
+    env.close()
     return inspections
 
 
 def run_judge_g2(
-    run_id: str = "judge-g2-01",
+    run_id: str = "judge-g2-02",
     pilot: bool = False,
     n_succ_override: int | None = None,
     n_fail_override: int | None = None,
@@ -165,46 +165,45 @@ def run_judge_g2(
     created_at = datetime.now(timezone.utc).isoformat()
     run_dir = ROOT / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
-    frames_dir = run_dir / "frames"
-    frames_dir.mkdir(parents=True, exist_ok=True)
     log_path = run_dir / "episodes.jsonl"
 
     judge_cfg_path = ROOT / "configs" / "judge.yaml"
     with open(judge_cfg_path, encoding="utf-8") as f:
         judge_cfg = yaml.safe_load(f)
 
-    # Compute freeze hash of judge configuration
-    judge_freeze_hash = hashlib.sha256(
-        json.dumps(judge_cfg, sort_keys=True).encode()
-    ).hexdigest()
+    judge_freeze_hash = compute_judge_freeze_hash(judge_cfg_path)
 
     # Load verified pricing and initialize CostMeter
     pricing_path = ROOT / "configs" / "pricing.yaml"
     meter = CostMeter()
     pricing_dict = meter.load_prices(pricing_path)
 
-    # Initialize LLM Client
+    # Isolated cache per run (Rule H10, H12)
+    cache_path = run_dir / "llm_cache.json"
+    cache = load_run_cache(cache_path)
+
     client = LLMClient(meter)
-    cache = load_cache()
 
     judge = VisionJudge(
         client=client,
         model=judge_cfg.get("model", "muse-spark-1.3"),
+        segmentation_model=judge_cfg.get("segmentation_model", "sam-3.1"),
         combination_rule=judge_cfg.get("combination_rule", "geometric_and_spark"),
         confidence_threshold=float(judge_cfg.get("confidence_threshold", 0.70)),
+        prompt=judge_cfg.get("prompt"),
         camera_cfg=judge_cfg.get("camera"),
         cache=cache,
     )
 
-    # Task 1: Generate 10 inspection overlay frames
-    print("--- Task 1: Generating 10 visual inspection frames ---")
-    inspect_env = T1Env()
-    inspection_records = run_inspection_frames(inspect_env, run_dir / "inspection", n_frames=10)
-    inspect_env.close()
-    print(f"Inspected 10 frames: {sum(1 for r in inspection_records if r['geometric_pass'])} on-pad, "
-          f"{sum(1 for r in inspection_records if not r['geometric_pass'])} off-pad.\n")
+    # Task 1: Generate 10 inspection overlay frames with visual images
+    print("--- Task 1: Generating 10 visual inspection frames with SAM 3.1 overlays ---", flush=True)
+    inspections = run_inspection_frames(judge, run_dir / "inspection", n_frames=10)
+    print(
+        f"Inspected 10 frames: {sum(1 for r in inspections if r['verdict_pass'])} pass, "
+        f"{sum(1 for r in inspections if not r['verdict_pass'])} fail. Overlays saved.\n",
+        flush=True,
+    )
 
-    # Determine sample sizes
     if pilot:
         n_succ = n_succ_override or 30
         n_fail = n_fail_override or 30
@@ -213,33 +212,19 @@ def run_judge_g2(
         n_fail = n_fail_override or int(judge_cfg["calibration"]["target_failures"])
 
     seed_base = int(judge_cfg["calibration"]["seed_base"])
-    # Rule H9 check: calibration stream strictly in 1,000,000–1,999,999
-    if not (1000000 <= seed_base < 1900000):
-        raise ValueError(f"H9 Violation: Calibration seed base {seed_base} not in 1,000,000–1,999,999 range")
 
-    # Define 4 margin buckets for failure stratification
-    buckets = [
-        MarginBucket("near_boundary", -0.05, 0.0),
-        MarginBucket("shallow", -0.15, -0.05),
-        MarginBucket("medium", -0.35, -0.15),
-        MarginBucket("deep", -1.00, -0.35),
-    ]
-
-    target_per_bucket = n_fail // 4
-
-    # Execute Pilot Run and Pre-Flight Cost Check
+    # Task 3: Pre-flight cost check projecting full run cost from pilot metering
     if not pilot:
-        print("--- Pre-Flight: Executing 60-rollout calibration pilot ---")
-        pilot_res = run_judge_g2(run_id=f"{run_id}-pilot", pilot=True, n_succ_override=30, n_fail_override=30)
-        pilot_spent = pilot_res["total_cost_usd"]
-        pilot_calls = pilot_res["episodes_evaluated"]
+        print("--- Pre-Flight: Executing 60-rollout calibration pilot ---", flush=True)
+        pilot_id = f"{run_id}-pilot"
+        pilot_res = run_judge_g2(run_id=pilot_id, pilot=True, n_succ_override=30, n_fail_override=30)
+        pilot_spent = float(pilot_res["total_cost_usd"])
+        pilot_calls = int(pilot_res["episodes_evaluated"])
         remaining_headroom = meter.cap_usd - meter.spent_usd
 
-        # If pilot was cached, use verified live unit cost ($0.0020/call) for robust preflight projection
-        calibrated_spent = max(pilot_spent, pilot_calls * 0.0020)
         preflight_ok, preflight_msg = preflight_cost_check(
             pilot_calls=pilot_calls,
-            pilot_spent_usd=calibrated_spent,
+            pilot_spent_usd=pilot_spent,
             full_calls=n_succ + n_fail,
             headroom_usd=remaining_headroom,
         )
@@ -249,338 +234,204 @@ def run_judge_g2(
 
     print_interval = 5 if pilot else 25
     print(f"\n=== Starting Phase 07 Vision Judge Calibration: {run_id} ===", flush=True)
-    print(f"Target Successes: {n_succ}, Target Failures: {n_fail} (B=4 buckets: {target_per_bucket}/bucket)", flush=True)
+    print(f"Target Successes: {n_succ}, Target Failures: {n_fail} (Fixed Sample Plan: {n_succ + n_fail} total)", flush=True)
     print(f"Judge Freeze Hash: {judge_freeze_hash[:16]}..., Model: {judge.model}\n", flush=True)
 
-    env = T1Env()
-    rng = np.random.default_rng(seed_base)
-    curr_seed = seed_base
-    used_seeds: list[int] = []
-
-    succ_passes = 0
-    succ_total = 0
-
-    fail_passes = 0
-    fail_total = 0
-
-    # 1. Collect true successes
-    print("Collecting true successes...")
-    while succ_total < n_succ:
-        sc = {
-            "x": float(rng.uniform(-0.04, 0.04)),
-            "y": float(rng.uniform(-0.04, 0.04)),
-            "yaw": float(rng.uniform(-0.2, 0.2)),
-            "mass": float(rng.uniform(1.0, 3.0)),
-            "friction": float(rng.uniform(0.6, 1.0)),
-            "seed": curr_seed,
-        }
-        used_seeds.append(curr_seed)
-        curr_seed += 1
-
-        env.reset(sc)
-        good_policy(env, rng)
-        res = env.finish()
-
-        if res.truth_success:
-            verdict = judge.judge_episode(env)
-            if verdict.pass_verdict:
-                succ_passes += 1
-            succ_total += 1
-
-            # Log episode (H10)
-            rec = episode_log.EpisodeResult(
-                episode_id=f"cal-succ-{succ_total:04d}-s{sc['seed']}",
-                stream="calibration",
-                task="task_T1",
-                program_id="good_policy",
-                program_version=1,
-                scenario=dict(sc),
-                seed=sc["seed"],
-                truth_success=True,
-                truth_success_alt=res.truth_success_alt,
-                margin=res.margin,
-                judge_mode="camera",
-                judge_pass=verdict.pass_verdict,
-                judge_confidence=verdict.confidence,
-                trace_path="",
-                frames_path=None,
-                tokens_in=verdict.tokens_in,
-                tokens_out=verdict.tokens_out,
-                cost_usd=verdict.cost_usd,
-                created_at=created_at,
-            )
-            episode_log.append_episode(log_path, rec)
-
-            if succ_total % print_interval == 0 or succ_total == n_succ:
-                print(f"  Successes evaluated: {succ_total}/{n_succ} (Pass: {succ_passes})", flush=True)
-
-    def make_offset_policy(offset: float):
-        def policy(env: T1Env, rng: np.random.Generator) -> None:
-            cpos, _ = env.object_pose("cube")
-            env.move_hand((cpos[0], cpos[1], 0.15), steps=30)
-            env.move_hand((cpos[0], cpos[1], cpos[2] + 0.03), steps=30)
-            env.set_gripper(True, 80.0)
-            env.move_hand((cpos[0], cpos[1], 0.15), steps=30)
-            env.move_hand((0.25 + offset, 0.0, 0.15), steps=30)
-            env.move_hand((0.25 + offset, 0.0, 0.04), steps=30)
-            env.set_gripper(False)
-            env.move_hand((0.25 + offset, 0.0, 0.15), steps=30)
-        return policy
-
-    # 2. Collect true failures stratified across 4 margin buckets
-    print("\nCollecting true failures across 4 margin buckets...", flush=True)
-    while any(b.n_total < target_per_bucket for b in buckets) or fail_total < n_fail:
-        sparse_bucket = next((b for b in buckets if b.n_total < target_per_bucket), None)
-        if sparse_bucket and sparse_bucket.name == "near_boundary":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.035, 0.065)))
-        elif sparse_bucket and sparse_bucket.name == "shallow":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.08, 0.16)))
-        elif sparse_bucket and sparse_bucket.name == "medium":
-            sc = {
-                "x": float(rng.uniform(-0.02, 0.02)),
-                "y": float(rng.uniform(-0.02, 0.02)),
-                "yaw": float(rng.uniform(-0.2, 0.2)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = make_offset_policy(float(rng.uniform(0.18, 0.35)))
-        else:
-            sc = {
-                "x": float(rng.uniform(-0.15, 0.15)),
-                "y": float(rng.uniform(-0.15, 0.15)),
-                "yaw": float(rng.uniform(-0.5, 0.5)),
-                "mass": 1.0,
-                "friction": 0.8,
-                "seed": curr_seed,
-            }
-            policy_fn = noop_policy
-
-        used_seeds.append(curr_seed)
-        curr_seed += 1
-
-        env.reset(sc)
-        policy_fn(env, rng)
-        res = env.finish()
-
-        if not res.truth_success:
-            bucket = partition_into_bucket(res.margin, buckets)
-            if bucket.n_total < target_per_bucket or fail_total < n_fail:
-                verdict = judge.judge_episode(env)
-                bucket.n_total += 1
-                fail_total += 1
-                if verdict.pass_verdict:
-                    bucket.k_pass += 1
-                    fail_passes += 1
-
-                # Log failure episode (H10)
-                rec = episode_log.EpisodeResult(
-                    episode_id=f"cal-fail-{fail_total:04d}-s{sc['seed']}",
-                    stream="calibration",
-                    task="task_T1",
-                    program_id=getattr(policy_fn, "__name__", "scripted"),
-                    program_version=1,
-                    scenario=dict(sc),
-                    seed=sc["seed"],
-                    truth_success=False,
-                    truth_success_alt=res.truth_success_alt,
-                    margin=res.margin,
-                    judge_mode="camera",
-                    judge_pass=verdict.pass_verdict,
-                    judge_confidence=verdict.confidence,
-                    trace_path=f"bucket: {bucket.name}",
-                    frames_path=None,
-                    tokens_in=verdict.tokens_in,
-                    tokens_out=verdict.tokens_out,
-                    cost_usd=verdict.cost_usd,
-                    created_at=created_at,
-                )
-                episode_log.append_episode(log_path, rec)
-
-                if fail_total % print_interval == 0 or fail_total == n_fail:
-                    print(f"  Failures evaluated: {fail_total}/{n_fail} (Pass: {fail_passes})", flush=True)
-
-    env.close()
-    save_cache(cache)
-
-    # 3. Compute Clopper-Pearson Statistics (stats.py LOCKED)
-    delta = float(judge_cfg["calibration"]["delta"])
-    B = int(judge_cfg["calibration"]["margin_buckets"])
-    K = int(judge_cfg["calibration"]["heatmap_cells"])
-
-    d_a = 0.1 * delta  # 0.005
-    d_b = 0.1 * delta / B  # 0.00125
-
-    tpr = succ_passes / succ_total
-    tpr_lower = cp_lower(succ_passes, succ_total, d_a)
-
-    fpr = fail_passes / fail_total
-
-    bucket_stats: dict[str, dict[str, Any]] = {}
-    bucket_b_his: list[float] = []
-
-    for b in buckets:
-        b_hi = cp_upper(b.k_pass, b.n_total, d_b)
-        bucket_b_his.append(b_hi)
-        bucket_stats[b.name] = {
-            "margin_range": [b.m_low, b.m_high],
-            "k_pass": b.k_pass,
-            "n_total": b.n_total,
-            "fpr": round(b.fpr, 4),
-            "fpr_upper": round(b_hi, 4),
-        }
-
-    worst_bucket_fpr_upper = max(bucket_b_his)
-
-    # 4. Day-1 Ceiling calculation
-    ceil_val = ceiling(
-        a=tpr,
-        b=worst_bucket_fpr_upper,
-        n_succ_cal=succ_total,
-        n_fail_cal=fail_total,
-        n_cell=113,
-        K=K,
-        delta=delta,
-        p=1.0,
-        B=B,
-        M=1,
-        trials=1000,
-        seed=seed_base,
+    # Execute Calibration via authoritative engine
+    report = run_calibration(
+        judge=judge,
+        seed_base=seed_base,
+        n_succ=n_succ,
+        n_fail=n_fail,
+        delta=float(judge_cfg["calibration"].get("delta", 0.05)),
+        B=int(judge_cfg["calibration"].get("margin_buckets", 4)),
+        K=int(judge_cfg["calibration"].get("heatmap_cells", 16)),
+        log_path=log_path,
+        print_interval=print_interval,
     )
 
-    # 5. Evaluate Gate G2 Thresholds
-    # G2: TPR CI lower >= 0.85, worst-bucket FPR CI upper <= 0.15, ceiling >= 0.85
-    tpr_min = float(judge_cfg["calibration"]["g2_thresholds"]["tpr_lower_min"])
-    fpr_max = float(judge_cfg["calibration"]["g2_thresholds"]["worst_bucket_fpr_upper_max"])
-    ceil_min = float(judge_cfg["calibration"]["g2_thresholds"]["ceiling_min"])
+    save_run_cache(judge.cache, cache_path)
 
-    g2_tpr_pass = tpr_lower >= tpr_min
-    g2_fpr_pass = worst_bucket_fpr_upper <= fpr_max
-    g2_ceil_pass = ceil_val >= ceil_min
-
-    g2_passed = g2_tpr_pass and g2_fpr_pass and g2_ceil_pass
-    g2_verdict = "PASS" if g2_passed else "FAIL -> Pitch B"
-
-    cal_report = {
-        "run_id": run_id,
-        "created_at": created_at,
-        "judge_freeze_hash": judge_freeze_hash,
-        "combination_rule": judge.combination_rule,
-        "episodes_evaluated": succ_total + fail_total,
-        "n_success": succ_total,
-        "n_failure": fail_total,
-        "tpr": round(float(tpr), 4),
-        "tpr_lower": round(float(tpr_lower), 4),
-        "fpr": round(float(fpr), 4),
-        "worst_bucket_fpr_upper": round(float(worst_bucket_fpr_upper), 4),
-        "margin_buckets": bucket_stats,
-        "ceiling_target": round(float(ceil_val), 4),
-        "g2_checks": {
-            "tpr_lower_ge_085": g2_tpr_pass,
-            "worst_bucket_fpr_upper_le_015": g2_fpr_pass,
-            "ceiling_ge_085": g2_ceil_pass,
-        },
-        "g2_verdict": g2_verdict,
-        "total_cost_usd": round(float(meter.spent_usd), 4),
-    }
-
+    # Save Calibration Report
     report_file = run_dir / "calibration_report.json"
-    report_file.write_text(json.dumps(cal_report, indent=2))
+    rep_dict = {
+        "run_id": run_id,
+        "n_success": report.n_success,
+        "n_failure": report.n_failure,
+        "tpr": report.tpr,
+        "tpr_lower": report.tpr_lower,
+        "fpr": report.fpr,
+        "worst_bucket_fpr_upper": report.worst_bucket_fpr_upper,
+        "margin_buckets": report.margin_buckets,
+        "ceiling_target": report.ceiling_target,
+        "g2_verdict": report.g2_verdict,
+        "judge_freeze_hash": judge_freeze_hash,
+        "total_cost_usd": round(meter.spent_usd, 6),
+        "created_at": created_at,
+    }
+    report_file.write_text(json.dumps(rep_dict, indent=2), encoding="utf-8")
 
-    # Build and write run manifest
-    manifest = run_manifest.build_manifest(
+    # Read logged episodes count
+    logged_episodes = len([line for line in log_path.read_text().splitlines() if line.strip()])
+
+    # Write Manifest (H11, H12)
+    manifest = run_manifest.RunManifest(
         run_id=run_id,
+        experiment=str(judge_cfg.get("experiment", "exp_judge_g2")),
+        task=str(judge_cfg.get("task", "task_T1")),
+        phase="phase_07",
         git_sha=git_head(),
-        config_hash=run_manifest.config_hash([judge_cfg_path, pricing_path]),
-        model=judge.model,
-        pricing=pricing_dict,
-        budget_cap_usd=float(os.environ.get("BUDGET_USD_CAP", "60")),
+        config_hash=judge_freeze_hash,
+        pricing_hash=run_manifest.file_sha256(pricing_path),
+        budget_usd_cap=meter.cap_usd,
+        total_cost_usd=round(meter.spent_usd, 6),
+        pricing_dict=pricing_dict,
         episodes_planned=n_succ + n_fail,
-        seeds=sorted(list(set(used_seeds))),
-        generation={
-            "judge_freeze_hash": judge_freeze_hash,
-            "combination_rule": judge.combination_rule,
-            "g2_verdict": g2_verdict,
-            "tpr_lower": round(float(tpr_lower), 4),
-            "worst_bucket_fpr_upper": round(float(worst_bucket_fpr_upper), 4),
+        episodes_completed=logged_episodes,
+        summary={
+            "tpr": report.tpr,
+            "tpr_lower": report.tpr_lower,
+            "fpr": report.fpr,
+            "worst_bucket_fpr_upper": report.worst_bucket_fpr_upper,
+            "ceiling_target": report.ceiling_target,
+            "g2_verdict": report.g2_verdict,
         },
         created_at=created_at,
         status="valid",
     )
     run_manifest.write_manifest(run_dir, manifest)
 
-    print("\n=== Calibration Complete ===")
-    print(f"TPR: {tpr:.4f} (Lower bound a_L: {tpr_lower:.4f})")
-    print(f"FPR: {fpr:.4f} (Worst-bucket upper bound b_U: {worst_bucket_fpr_upper:.4f})")
-    print(f"Day-1 Ceiling Target: {ceil_val:.4f}")
-    print(f"Gate G2 Verdict: {g2_verdict}")
-    print(f"Report written to: {report_file}\n")
+    print("\n=== Calibration Complete ===", flush=True)
+    print(f"TPR: {report.tpr:.4f} (Lower bound a_L: {report.tpr_lower:.4f})", flush=True)
+    print(f"FPR: {report.fpr:.4f} (Worst-bucket upper bound b_U: {report.worst_bucket_fpr_upper:.4f})", flush=True)
+    print(f"Day-1 Ceiling Target: {report.ceiling_target:.4f}", flush=True)
+    print(f"Gate G2 Verdict: {report.g2_verdict}", flush=True)
+    print(f"Total Cost USD: ${meter.spent_usd:.4f}", flush=True)
+    print(f"Report written to: {report_file}\n", flush=True)
 
-    return cal_report
+    return {
+        "run_id": run_id,
+        "episodes_evaluated": logged_episodes,
+        "total_cost_usd": meter.spent_usd,
+        "report": rep_dict,
+    }
 
 
-def verify_phase_07_gate(run_id: str = "judge-g2-01", runs_dir: str = "runs") -> None:
+def verify_phase_07_gate(run_id: str = "judge-g2-02", runs_dir: str = "runs") -> None:
     """Verify Phase 07 gate requirements on actual run artifacts (Plan §8, Phase 07)."""
     target_dir = ROOT / runs_dir / run_id
     rep_file = target_dir / "calibration_report.json"
     if not rep_file.exists():
         raise FileNotFoundError(f"Cannot verify Phase 07 gate: {rep_file} not found. Run calibration first.")
 
-    data = json.loads(rep_file.read_text(encoding="utf-8"))
+    rep_data = json.loads(rep_file.read_text(encoding="utf-8"))
+    man_file = target_dir / "manifest.json"
+    if not man_file.exists():
+        raise FileNotFoundError(f"Manifest missing: {man_file}")
+    man_data = json.loads(man_file.read_text(encoding="utf-8"))
 
-    # 1. Sample size check: >=300 success, >=300 failure (or >=30 for pilot)
-    n_succ = data.get("n_success", 0)
-    n_fail = data.get("n_failure", 0)
-    if n_succ < 30 or n_fail < 30:
-        raise AssertionError(f"Calibration counts too low: {n_succ} succ, {n_fail} fail")
+    # 1. Config freeze hash check
+    expected_freeze = compute_judge_freeze_hash()
+    actual_freeze = rep_data.get("judge_freeze_hash", "")
+    if actual_freeze != expected_freeze:
+        raise AssertionError(
+            f"Freeze hash mismatch: report {actual_freeze} != current {expected_freeze} "
+            f"(configs/judge.yaml was modified post-run)"
+        )
 
-    # 2. Check seed range compliance (Rule H9)
+    # 2. Episode log audit & recomputation
     log_file = target_dir / "episodes.jsonl"
-    if log_file.exists():
-        for line in log_file.read_text().splitlines():
-            if line.strip():
-                ep = json.loads(line)
-                sd = int(ep.get("seed", 0))
-                if not (1000000 <= sd < 2000000):
-                    raise AssertionError(f"H9 Violation: Episode seed {sd} not in calibration range [1M, 2M)")
+    if not log_file.exists():
+        raise FileNotFoundError(f"Episode log missing: {log_file}")
 
-    # 3. Check 4 margin buckets present
-    mb = data.get("margin_buckets", {})
-    if len(mb) < 4:
-        raise AssertionError(f"Margin buckets missing: found {len(mb)} < 4")
+    lines = [line.strip() for line in log_file.read_text().splitlines() if line.strip()]
+    episodes = [json.loads(line) for line in lines]
 
-    # 4. Check worst-bucket b_U reported
-    wb_u = data.get("worst_bucket_fpr_upper", 1.0)
-    if wb_u > 0.50:
-        raise AssertionError(f"Worst bucket FPR upper bound {wb_u} excessively high")
+    planned = man_data.get("episodes_planned", 0)
+    if len(episodes) != planned:
+        raise AssertionError(
+            f"Episodes planned ({planned}) != episodes logged ({len(episodes)}). "
+            f"Unlogged or uncompleted rollouts detected!"
+        )
 
-    # 5. Evaluate G2 verdict
-    g2 = data.get("g2_verdict", "")
-    if g2 not in ("PASS", "FAIL -> Pitch B"):
-        raise AssertionError(f"Invalid G2 verdict: {g2}")
+    if planned < 600:
+        raise AssertionError(f"Full calibration requires >= 600 episodes planned, found {planned}")
 
-    print(f"PHASE 07: PASS (G2 {g2})")
+    # Verify seeds strictly in calibration stream [1,000,000, 1,999,999]
+    seen_seeds: set[int] = set()
+    for ep in episodes:
+        sd = int(ep.get("seed", 0))
+        if not (1000000 <= sd < 2000000):
+            raise AssertionError(f"H9 Violation: Episode seed {sd} not in calibration range [1M, 2M)")
+        if sd in seen_seeds:
+            raise AssertionError(f"Duplicate seed {sd} found in calibration run")
+        seen_seeds.add(sd)
+
+    # Recompute TPR and FPR
+    succ_eps = [ep for ep in episodes if ep["truth_success"]]
+    fail_eps = [ep for ep in episodes if not ep["truth_success"]]
+
+    if len(succ_eps) < 300 or len(fail_eps) < 300:
+        raise AssertionError(f"Calibration counts underpowered: {len(succ_eps)} succ, {len(fail_eps)} fail")
+
+    succ_pass = sum(1 for ep in succ_eps if ep["judge_pass"])
+    recomp_tpr = succ_pass / len(succ_eps)
+    recomp_tpr_lower = cp_lower(succ_pass, len(succ_eps), 0.005)
+
+    buckets = [
+        MarginBucket("near_boundary", -0.05, 0.0),
+        MarginBucket("shallow", -0.15, -0.05),
+        MarginBucket("medium", -0.35, -0.15),
+        MarginBucket("deep", -1.00, -0.35),
+    ]
+
+    fail_pass = 0
+    for ep in fail_eps:
+        b = partition_into_bucket(ep["margin"], buckets)
+        if b:
+            b.n_total += 1
+            if ep["judge_pass"]:
+                b.k_pass += 1
+                fail_pass += 1
+
+    bucket_u_bounds = [cp_upper(b.k_pass, b.n_total, 0.00125) if b.n_total > 0 else 0.0 for b in buckets]
+    recomp_worst_bu = max(bucket_u_bounds)
+    recomp_fpr = fail_pass / len(fail_eps)
+
+    recomp_ceiling = ceiling(
+        a=recomp_tpr,
+        b=recomp_fpr,
+        n_succ_cal=len(succ_eps),
+        n_fail_cal=len(fail_eps),
+        n_cell=113,
+        K=16,
+        delta=0.05,
+        B=4,
+        seed=1000000,
+    )
+
+    # Compare with report
+    assert abs(rep_data["tpr_lower"] - recomp_tpr_lower) < 1e-3, "Reported tpr_lower mismatch"
+    assert abs(rep_data["worst_bucket_fpr_upper"] - recomp_worst_bu) < 1e-3, "Reported worst_bucket_fpr_upper mismatch"
+
+    # Evaluate G2 criteria
+    g2_criteria = (
+        recomp_tpr_lower >= 0.85
+        and recomp_worst_bu <= 0.15
+        and recomp_ceiling >= 0.85
+    )
+    expected_g2 = "PASS" if g2_criteria else "FAIL -> Pitch B"
+    actual_g2 = rep_data.get("g2_verdict", "")
+
+    if actual_g2 != expected_g2:
+        raise AssertionError(f"Gate G2 verdict inconsistency: expected {expected_g2}, got {actual_g2}")
+
+    print(f"PHASE 07: PASS (G2 {actual_g2})", flush=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 07 Vision Judge Calibration")
-    parser.add_argument("--run-id", default="judge-g2-01", help="Run ID")
+    parser.add_argument("--run-id", default="judge-g2-02", help="Run ID")
     parser.add_argument("--pilot", action="store_true", help="Run pilot calibration (~60 rollouts)")
     parser.add_argument("--n-succ", type=int, default=None, help="Target successes override")
     parser.add_argument("--n-fail", type=int, default=None, help="Target failures override")
@@ -588,7 +439,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.verify_gate:
-        verify_phase_07_gate(args.run_id)
+        verify_phase_07_gate(run_id=args.run_id)
     else:
         run_judge_g2(
             run_id=args.run_id,
