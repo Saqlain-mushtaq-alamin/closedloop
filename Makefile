@@ -30,7 +30,10 @@ endif
 	@bash scripts/check_no_secrets.sh
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q
-ifeq ($(PHASE),06)
+ifeq ($(PHASE),07)
+	@$(PY) -m pytest tests/test_judge.py -q
+	@$(PY) -c "from experiments.run_judge_g2 import verify_phase_07_gate; verify_phase_07_gate()"
+else ifeq ($(PHASE),06)
 	@$(PY) -m pytest tests/test_repair.py -q
 	@$(PY) -c "from experiments.run_repair_h2h3 import verify_phase_06_gate; verify_phase_06_gate()"
 	@echo "PHASE 06: PASS"

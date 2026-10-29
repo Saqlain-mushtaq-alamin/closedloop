@@ -79,4 +79,14 @@
   3. Attached proposal tokens and cost directly to candidate episodes in `episodes.jsonl` and repair traces in `repair_traces.json`.
 - **Action:** Preserved `runs/h2h3-full-02/`. Executed full run under fresh `run_id` `h2h3-full-03`, passing all validity checks (V5, V6, V7, H2, H3).
 
+## 2026-10-30 — Phase 07 Vision Judge Combination Rule and Gate G2 Verdict
+- **Decision on Combination Rule [OPEN -> FROZEN]:** Frozen rule is `geometric AND spark`. The final vision judge verdict requires that both the physical mask grounding (cube 2D centroid within pad bounding region) and the multimodal reasoning model (`muse-spark-1.3` structured JSON verdict with confidence >= 0.70) agree on success. This prevents false passes from visual hallucination on off-pad near-misses.
+- **Run ID:** `judge-g2-01`
+- **What happened:**
+  - Evaluated on calibration stream (seeds 1,000,000–1,999,999 strictly, Rule H9): 300 true successes, 366 true failures stratified across B=4 margin buckets.
+  - TPR was 1.0000 with one-sided Clopper-Pearson lower bound $a_L = 0.9825 \ge 0.85$ (PASS).
+  - Day-1 ceiling target was $0.9106 \ge 0.85$ (PASS).
+  - Worst-bucket FPR upper bound was $b_U = 0.2186 > 0.15$, concentrated specifically in the near-boundary bucket ($m \in [-0.05, 0.0]$, where 6 false passes occurred among 75 boundary near-misses; all deeper buckets had $b_U \le 0.0976$).
+- **Action (Gate G2 Go/No-Go):** In strict accordance with `phases/PHASE_07_vision_judge.md` and Rule H7/H8 ("Outside: FPR >0.15 concentrated in near-boundary bucket -> expected failure mode; do not drop bucket - G2 fails honestly. Fail any -> Pitch B, no camera certificates"), Gate G2 is resolved as `FAIL -> Pitch B`. Camera-mode certificates are blocked for Phase 08. The project transitions to the committed baseline **Pitch B**: SAM is retained for failure frame annotations, and Phase 08 certifies programs under state-mode truth.
+
 

@@ -1,0 +1,34 @@
+# Configuration for Phase 07 Vision Judge + Calibration (Gate G2).
+# Frozen at gate (H11, H12).
+experiment: exp_judge_g2
+task: task_T1
+model: muse-spark-1.3
+combination_rule: geometric_and_spark
+confidence_threshold: 0.70
+max_output_tokens: 1024
+
+camera:
+  cameraTargetPosition: [0.15, 0.0, 0.05]
+  distance: 0.6
+  yaw: 45
+  pitch: -35
+  roll: 0
+  upAxisIndex: 2
+  fov: 60
+  nearVal: 0.05
+  farVal: 2.0
+  width: 128
+  height: 128
+
+calibration:
+  seed_base: 1000000
+  stream: calibration
+  target_successes: 300
+  target_failures: 300
+  margin_buckets: 4
+  delta: 0.05
+  heatmap_cells: 16
+  g2_thresholds:
+    tpr_lower_min: 0.85
+    worst_bucket_fpr_upper_max: 0.15
+    ceiling_min: 0.85
