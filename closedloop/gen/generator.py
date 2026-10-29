@@ -9,6 +9,7 @@ Prompt-hash caching avoids re-spending calls on reruns.
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 from dataclasses import dataclass
 
@@ -57,16 +58,29 @@ def generate_task_program(
     max_output_tokens: int,
     model: str = DEFAULT_MODEL,
     feedback: str | None = None,
+    images_b64: list[str] | None = None,
     cache: dict | None = None,
+    cache_key_extra: str | None = None,
 ) -> ProgramProposal:
     """Generate, gate, and return one program proposal (H4/H5/H13)."""
     prompt = build_prompt(task, primitives_doc, feedback)
-    prompt_hash = CostMeter.prompt_hash(
-        {"model": model, "prompt": prompt, "max_output_tokens": max_output_tokens}
+    images_hash = (
+        [hashlib.sha256(b.encode("ascii")).hexdigest()[:16] for b in images_b64]
+        if images_b64
+        else []
     )
+    cache_meta = {
+        "model": model,
+        "prompt": prompt,
+        "max_output_tokens": max_output_tokens,
+        "image_hashes": images_hash,
+    }
+    if cache_key_extra:
+        cache_meta["extra"] = cache_key_extra
+    prompt_hash = CostMeter.prompt_hash(cache_meta)
     if cache is not None and prompt_hash in cache:
         return cache[prompt_hash]
-    raw = client.complete(model, prompt, max_output_tokens)
+    raw = client.complete(model, prompt, max_output_tokens, images_b64=images_b64)
     text = str(raw.get("text", "")).strip()
     if text.startswith("```"):
         lines = text.splitlines()
