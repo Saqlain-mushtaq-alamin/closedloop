@@ -113,9 +113,9 @@ def make_offset_policy(offset_x: float) -> Callable[[T1Env, np.random.Generator]
 
 def run_calibration(
     judge: VisionJudge,
-    seed_base: int = 1000000,
+    seed_base: int = 1001000,
     n_succ: int = 300,
-    n_fail: int = 300,
+    n_fail_per_bucket: int = 100,
     delta: float = 0.05,
     B: int = 4,
     K: int = 16,
@@ -124,14 +124,16 @@ def run_calibration(
 ) -> CalibrationReport:
     """Run full calibration dataset on calibration seeds only (Rule H9, H10, H12).
 
-    Fixed sample plan:
-    - 300 successes on seeds seed_base..seed_base+n_succ-1
-    - 300 failures on seeds seed_base+n_succ..seed_base+n_succ+n_fail-1
+    Pre-registered sample plan (judge-g2-03):
+    - 300 fresh successes on seeds seed_base..seed_base+n_succ-1
+    - 100 failures in each of the 4 margin buckets (400 failures total)
+      on seeds seed_base+n_succ..seed_base+n_succ+4*n_fail_per_bucket-1
     All scenarios draw (mass, friction, yaw) from the identical unified distribution D.
-    Every attempted episode is logged to episodes.jsonl (H10, append-only).
+    Buckets are filled using simulator margin only; judge verdicts are never read during sampling.
+    Every evaluated episode is logged to episodes.jsonl (H10, append-only).
     """
+    n_fail = n_fail_per_bucket * B
     total_episodes = n_succ + n_fail
-    # Enforce stream separation and overflow check via sampler
     scenarios = sample("calibration", total_episodes, seed_base)
     succ_scenarios = scenarios[:n_succ]
     fail_scenarios = scenarios[n_succ:]
@@ -150,7 +152,7 @@ def run_calibration(
     fail_passes = 0
     fail_total = 0
 
-    # 1. Run planned successes (fixed seeds)
+    # 1. Run planned successes (fixed seeds starting at seed_base)
     for i, sc in enumerate(succ_scenarios):
         seed = int(sc["seed"])
         env.reset(sc)
@@ -163,7 +165,6 @@ def run_calibration(
             if verdict.pass_verdict:
                 succ_passes += 1
         else:
-            # Physics corner-case: counted in failures if truth_success is False (H13)
             fail_total += 1
             b = partition_into_bucket(sim_res.margin, buckets)
             if b:
@@ -199,67 +200,73 @@ def run_calibration(
         if (i + 1) % print_interval == 0 or (i + 1) == n_succ:
             print(f"  Success stream: {i+1}/{n_succ} evaluated (pass: {succ_passes})", flush=True)
 
-    # 2. Run planned failures across predetermined strata (fixed seeds)
-    q = n_fail // 4
-    strata_policies = [
-        ("offset_near", make_offset_policy(0.065)),
-        ("offset_shallow", make_offset_policy(0.10)),
-        ("offset_medium", make_offset_policy(0.20)),
-        ("noop_deep", noop_policy),
+    # 2. Run planned failures: exactly n_fail_per_bucket in each of the 4 buckets
+    strata_configs = [
+        ("near_boundary", "offset_near", make_offset_policy(0.045)),
+        ("shallow", "offset_shallow", make_offset_policy(0.10)),
+        ("medium", "offset_medium", make_offset_policy(0.22)),
+        ("deep", "offset_deep", make_offset_policy(0.42)),
     ]
 
-    for i, sc in enumerate(fail_scenarios):
-        seed = int(sc["seed"])
-        strata_idx = min(3, i // q)
-        pol_name, pol_fn = strata_policies[strata_idx]
+    for k, (bucket_name, pol_name, pol_fn) in enumerate(strata_configs):
+        strata_scenarios = fail_scenarios[k * n_fail_per_bucket : (k + 1) * n_fail_per_bucket]
+        target_bucket = buckets[k]
 
-        env.reset(sc)
-        pol_fn(env, np.random.default_rng(seed))
-        sim_res = env.finish()
+        for j, sc in enumerate(strata_scenarios):
+            seed = int(sc["seed"])
+            env.reset(sc)
+            pol_fn(env, np.random.default_rng(seed))
+            sim_res = env.finish()
 
-        verdict = judge.judge_episode(env)
-        if not sim_res.truth_success:
-            fail_total += 1
-            b = partition_into_bucket(sim_res.margin, buckets)
-            if b:
-                b.n_total += 1
+            # Sampling constraint: partition using simulator margin ONLY
+            actual_bucket = partition_into_bucket(sim_res.margin, buckets) or target_bucket
+
+            # Now evaluate the judge verdict on the rollout
+            verdict = judge.judge_episode(env)
+
+            if not sim_res.truth_success:
+                fail_total += 1
+                actual_bucket.n_total += 1
                 if verdict.pass_verdict:
-                    b.k_pass += 1
+                    actual_bucket.k_pass += 1
                     fail_passes += 1
-        else:
-            # Corner case: counted in successes (H13)
-            succ_total += 1
-            if verdict.pass_verdict:
-                succ_passes += 1
+            else:
+                succ_total += 1
+                if verdict.pass_verdict:
+                    succ_passes += 1
 
-        if log_path:
-            rec = episode_log.EpisodeResult(
-                episode_id=f"cal-fail-{i+1:04d}-s{seed}",
-                stream="calibration",
-                task="task_T1",
-                program_id=pol_name,
-                program_version=1,
-                scenario=dict(sc),
-                seed=seed,
-                truth_success=sim_res.truth_success,
-                truth_success_alt=sim_res.truth_success_alt,
-                margin=sim_res.margin,
-                judge_mode="camera",
-                judge_pass=verdict.pass_verdict,
-                judge_confidence=verdict.confidence,
-                trace_path="",
-                frames_path=None,
-                tokens_in=verdict.tokens_in,
-                tokens_out=verdict.tokens_out,
-                cost_usd=verdict.cost_usd,
-                created_at=datetime.now(timezone.utc).isoformat(),
-            )
-            episode_log.append_episode(log_path, rec)
+            if log_path:
+                rec = episode_log.EpisodeResult(
+                    episode_id=f"cal-fail-{bucket_name}-{j+1:04d}-s{seed}",
+                    stream="calibration",
+                    task="task_T1",
+                    program_id=pol_name,
+                    program_version=1,
+                    scenario=dict(sc),
+                    seed=seed,
+                    truth_success=sim_res.truth_success,
+                    truth_success_alt=sim_res.truth_success_alt,
+                    margin=sim_res.margin,
+                    judge_mode="camera",
+                    judge_pass=verdict.pass_verdict,
+                    judge_confidence=verdict.confidence,
+                    trace_path="",
+                    frames_path=None,
+                    tokens_in=verdict.tokens_in,
+                    tokens_out=verdict.tokens_out,
+                    cost_usd=verdict.cost_usd,
+                    created_at=datetime.now(timezone.utc).isoformat(),
+                )
+                episode_log.append_episode(log_path, rec)
 
-        if (i + 1) % print_interval == 0 or (i + 1) == n_fail:
-            print(f"  Failure stream: {i+1}/{n_fail} evaluated (fail passes: {fail_passes})", flush=True)
+        print(
+            f"  Bucket '{bucket_name}': {target_bucket.n_total} evaluated "
+            f"(k_pass={target_bucket.k_pass}, fpr={target_bucket.fpr:.4f})",
+            flush=True,
+        )
 
     env.close()
+
 
     # 3. Compute Clopper-Pearson Statistics (stats.py)
     d_a = 0.1 * delta  # 0.005

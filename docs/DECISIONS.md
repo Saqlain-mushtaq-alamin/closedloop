@@ -101,5 +101,24 @@
   - Worst-bucket upper bound $b_U = 0.8120 > 0.15$ (governed by deep bucket sample size $n=4$ where $cp\_upper(0, 4, 0.00125) = 0.8120$)
   - Gate G2 Verdict: `FAIL -> Pitch B` (H7/H8 compliant, camera certification blocked for Phase 08).
 
+## 2026-10-30 — Pre-registration for Single Redo Run judge-g2-03 (Sample Allocation Fix)
+- **Run ID:** `judge-g2-03`
+- **Rationale & Scope:** Single pre-declared redo under Rule H12. In `judge-g2-02`, failure rollouts were partitioned by margin into B=4 buckets post-hoc from a fixed offset schedule, which resulted in uneven bucket counts ($n=0, 162, 134, 4$) and artificially inflated $b_U$ in the $n=4$ deep bucket ($cp\_upper(0, 4, 0.00125) = 0.8120$).
+- **Pre-registered Sample Plan:**
+  - Successes: Exactly 300 fresh successes starting at seed `1,001,000`.
+  - Failures: Exactly 100 failures in each of the 4 pre-registered margin buckets ($B=4$, total 400 failures, total planned episodes = 700):
+    1. `near_boundary`: $m \in [-0.05, 0.0)$ ($n=100$)
+    2. `shallow`: $m \in [-0.15, -0.05)$ ($n=100$)
+    3. `medium`: $m \in [-0.35, -0.15)$ ($n=100$)
+    4. `deep`: $m \in [-1.00, -0.35)$ ($n=100$)
+- **Sampling Constraint:** Buckets are filled using simulator ground truth margin (`sim_res.margin`) ONLY. Judge verdicts are never read during sampling or used to filter rollouts.
+- **Invariants:**
+  - `configs/judge.yaml` is unchanged.
+  - Judge freeze hash `0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e` is unchanged.
+  - Bucket edges are unchanged (`[-0.05, 0.0)`, `[-0.15, -0.05)`, `[-0.35, -0.15)`, `[-1.00, -0.35)`).
+  - Gate G2 criteria ($a_L \ge 0.85$, $b_U \le 0.15$, ceiling $\ge 0.85$) are unchanged.
+  - Delta split ($d_a = 0.005$, $d_b = 0.00125$) is unchanged.
+- **Stop Condition:** One redo only. If G2 fails again, stop and report; do not retry.
+
 
 

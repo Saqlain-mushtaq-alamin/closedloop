@@ -17,11 +17,13 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import pybullet as p
 try:
     from PIL import Image, ImageDraw
     HAS_PIL = True
 except ImportError:
     HAS_PIL = False
+
 
 
 from closedloop.llm.client import LLMClient

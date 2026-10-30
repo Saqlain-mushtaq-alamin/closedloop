@@ -156,7 +156,7 @@ def run_inspection_frames(
 
 
 def run_judge_g2(
-    run_id: str = "judge-g2-02",
+    run_id: str = "judge-g2-03",
     pilot: bool = False,
     n_succ_override: int | None = None,
     n_fail_override: int | None = None,
@@ -204,20 +204,23 @@ def run_judge_g2(
         flush=True,
     )
 
-    if pilot:
-        n_succ = n_succ_override or 30
-        n_fail = n_fail_override or 30
-    else:
-        n_succ = n_succ_override or int(judge_cfg["calibration"]["target_successes"])
-        n_fail = n_fail_override or int(judge_cfg["calibration"]["target_failures"])
+    # Seeds from 1,001,000 (pre-registered plan)
+    seed_base = 1001000
 
-    seed_base = int(judge_cfg["calibration"]["seed_base"])
+    if pilot:
+        n_succ = n_succ_override or 20
+        n_fail_per_bucket = (n_fail_override // 4) if n_fail_override else 10
+    else:
+        n_succ = n_succ_override or 300
+        n_fail_per_bucket = (n_fail_override // 4) if n_fail_override else 100
+
+    n_fail = n_fail_per_bucket * 4
 
     # Task 3: Pre-flight cost check projecting full run cost from pilot metering
     if not pilot:
         print("--- Pre-Flight: Executing 60-rollout calibration pilot ---", flush=True)
         pilot_id = f"{run_id}-pilot"
-        pilot_res = run_judge_g2(run_id=pilot_id, pilot=True, n_succ_override=30, n_fail_override=30)
+        pilot_res = run_judge_g2(run_id=pilot_id, pilot=True, n_succ_override=20, n_fail_override=40)
         pilot_spent = float(pilot_res["total_cost_usd"])
         pilot_calls = int(pilot_res["episodes_evaluated"])
         remaining_headroom = meter.cap_usd - meter.spent_usd
@@ -234,7 +237,11 @@ def run_judge_g2(
 
     print_interval = 5 if pilot else 25
     print(f"\n=== Starting Phase 07 Vision Judge Calibration: {run_id} ===", flush=True)
-    print(f"Target Successes: {n_succ}, Target Failures: {n_fail} (Fixed Sample Plan: {n_succ + n_fail} total)", flush=True)
+    print(
+        f"Target Successes: {n_succ}, Target Failures: {n_fail} "
+        f"(100 per bucket x 4, Total Planned: {n_succ + n_fail})",
+        flush=True,
+    )
     print(f"Judge Freeze Hash: {judge_freeze_hash[:16]}..., Model: {judge.model}\n", flush=True)
 
     # Execute Calibration via authoritative engine
@@ -242,13 +249,14 @@ def run_judge_g2(
         judge=judge,
         seed_base=seed_base,
         n_succ=n_succ,
-        n_fail=n_fail,
+        n_fail_per_bucket=n_fail_per_bucket,
         delta=float(judge_cfg["calibration"].get("delta", 0.05)),
         B=int(judge_cfg["calibration"].get("margin_buckets", 4)),
         K=int(judge_cfg["calibration"].get("heatmap_cells", 16)),
         log_path=log_path,
         print_interval=print_interval,
     )
+
 
     save_run_cache(judge.cache, cache_path)
 
@@ -318,7 +326,7 @@ def run_judge_g2(
     }
 
 
-def verify_phase_07_gate(run_id: str = "judge-g2-02", runs_dir: str = "runs") -> None:
+def verify_phase_07_gate(run_id: str = "judge-g2-03", runs_dir: str = "runs") -> None:
     """Verify Phase 07 gate requirements on actual run artifacts (Plan §8, Phase 07)."""
     target_dir = ROOT / runs_dir / run_id
     rep_file = target_dir / "calibration_report.json"
@@ -408,7 +416,7 @@ def verify_phase_07_gate(run_id: str = "judge-g2-02", runs_dir: str = "runs") ->
         K=16,
         delta=0.05,
         B=4,
-        seed=1000000,
+        seed=1001000,
     )
 
     # Compare with report
@@ -432,7 +440,8 @@ def verify_phase_07_gate(run_id: str = "judge-g2-02", runs_dir: str = "runs") ->
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Phase 07 Vision Judge Calibration")
-    parser.add_argument("--run-id", default="judge-g2-02", help="Run ID")
+    parser.add_argument("--run-id", default="judge-g2-03", help="Run ID")
+
     parser.add_argument("--pilot", action="store_true", help="Run pilot calibration (~60 rollouts)")
     parser.add_argument("--n-succ", type=int, default=None, help="Target successes override")
     parser.add_argument("--n-fail", type=int, default=None, help="Target failures override")
