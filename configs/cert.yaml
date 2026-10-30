@@ -1,0 +1,61 @@
+# Frozen configuration for Phase 08 certification (Plan §11, H11, H12).
+# Frozen via manifest config_hash.
+experiment: cert
+program_run_id: cert-mint-03
+program_file: runs/cert-mint-03/program_final.py
+program_id: bec73dec45a88431
+program_sha256: bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55
+
+# Statistical parameters (Plan §11)
+delta: 0.05
+K: 16
+B: 4
+M: 1
+
+# Targets (frozen Oct 28)
+targets:
+  headline_p: 0.95
+  state_cell_p: 0.90
+  camera_cell_p: 0.85
+
+# Sample sizes
+sample_sizes:
+  runs_per_cell: 150
+  headline_runs: 59
+  pilot_runs_per_cell: 15
+
+# Seeds (strictly in certification stream [2000000, 2999999], Rule H9)
+seeds:
+  pilot_seed_base: 2010000
+  cell_seed_base: 2000000
+  headline_seed_base: 2002400
+
+# Distribution bounds (Tier 2, matching configs/tasks.yaml)
+bounds:
+  x: [-0.15, 0.15]
+  y: [-0.15, 0.15]
+  yaw: [-0.5, 0.5]
+  mass: [1.0, 11.5]
+  friction: [0.1, 1.0]
+
+# Grid definition (4x4 mass x friction)
+grid:
+  x_axis: mass
+  y_axis: friction
+  cells_per_axis: 4
+
+# Calibrated Judge parameters (from runs/judge-g2-03/calibration_report.json)
+judge_calibration:
+  run_id: judge-g2-03
+  freeze_hash: 0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e
+  k_a: 300
+  n_a: 300
+  k_b: 2
+  n_b: 100
+  worst_bucket_fpr_upper: 0.1048
+  tpr_lower: 0.9825
+
+# Execution limits
+timeout_s: 120
+memory_mb: 1024
+budget_cap_usd: 15.0

@@ -182,6 +182,7 @@ def certify_headline(
         "mode": mode,
         "k_pass": int(k_pass),
         "n_total": int(n_total),
+        "n_cell": int(n_total),
         "delta": float(delta),
         "bound": float(bound),
         "target_p": float(target_p),
@@ -197,7 +198,7 @@ def recompute_cell_bound(
 ) -> float:
     """Independently recompute certified cell lower bound using SciPy exact formulas (V10)."""
     k_pass = int(result_dict["k_pass"])
-    n_cell = int(result_dict["n_cell"])
+    n_cell = int(result_dict.get("n_cell", result_dict.get("n_total", 0)))
 
     if mode == "state":
         if k_pass == 0:
@@ -281,8 +282,8 @@ def compute_price_plot_data(
             if not line.strip():
                 continue
             rec = json.loads(line)
-            cell_id = rec.get("cell_id")
-            if not cell_id:
+            cell_id = rec.get("cell_id") or rec.get("trace_path")
+            if not cell_id or not str(cell_id).startswith("cell_"):
                 continue
             episodes_count += 1
             if cell_id not in cell_data:
@@ -377,7 +378,7 @@ def get_cell_bounds(
     }
 
 
-def sample_certification_scenarios(
+def generate_cell_scenarios(
     program_id: str,
     n: int,
     seed: int,
