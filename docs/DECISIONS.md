@@ -134,3 +134,115 @@
 
 
 
+## 2026-10-30 - Pre-registration: single replacement repair trajectory cert-mint-01 (Phase 08 certification input)
+
+- **Why:** Phase 06 passed its gate but persisted only 200-char `code_preview` per repair (`experiments/run_repair_h2h3.py:639`,
+  `cand_code[:200] + "..."`). An exhaustive scan of all 816 JSON files under `runs/` found no full accepted program source
+  (only 31-char do-nothing policies and 203-char previews), and `runs/` is gitignored so no git recovery exists. P06 results,
+  reports, and Phase 07 results are NOT modified; this run only mints the missing Phase 08 input.
+- **Design (B1-equivalent, text-only, one trajectory):** initial Spark generation (`muse-spark-1.3`, `max_output_tokens=2048`)
+  then at most 1 repair round (plan cap is 5; P06 `max_rounds=1` replicated exactly). B1 random-search counterexample with
+  `search_budget = falsifier_budget + bisection_steps + 1 = 17` evals; repair prompt text-only
+  (`trace_summary="Naive loop failure from random parameter search"`); no filmstrip, no minimizer (faithful B1).
+- **Acceptance (plan Section 10, all three required):** (1) candidate passes the counterexample, (2) candidate passes the
+  regression set (nominal scenario plus loop scenario if the initial program passed it), (3) candidate survives a short
+  falsifier re-run with fixed budget 5 (`CmaEsSampler`, `rerun_budget=5`). Single attempt: if the candidate is rejected at
+  any stage, STOP and report; no second trajectory without human approval.
+- **Seeds (repair stream only, H9):** `seed_base=60000`: paired scenarios 60000-60005 (loop 60000, retest 60001,
+  held-out 60002-60005), B1 search RNG 160000 with episode seeds 160010-160026, evaluator/rerun base 260000
+  (rerun episodes 260000-260004). Nominal scenario seed 150027 (P06 formula gives 150000, which already appears in
+  `h2h3-full-03` episodes; 150027 is verified unused across all `runs/*/episodes.jsonl`; scenario content is the
+  unchanged config nominal). No certification seed (2,000,000+) is touched. Overlap of every other planned seed with all
+  prior runs verified empty before launch.
+- **Budgets:** sim episodes fixed by rule pre-run: 1 loop + 17 search + 1 ce + R regression + 5 rerun + 4 held-out,
+  where R = 1 + (1 if the initial program passes loop else 0), i.e. 29 or 30 total; the driver asserts logged==planned.
+  LLM calls at most 2 (1 generation + 1 repair), CostMeter cap USD 5.00 for this run. Fresh empty prompt cache (NOT the
+  shared `runs/llm_cache.json`): both calls are live, no replay of any P06 program.
+- **Loop-pass contingency (pre-registered):** if the initial program passes the loop scenario, the 17-eval search still runs
+  (fixed budget); if the search finds >=1 failure, the first failure becomes the CE and the single-repair path proceeds
+  unchanged. If zero failures are found anywhere, STOP: report v0 undefeated, mint nothing, spend nothing further.
+- **Freeze rule:** on accept only, write the COMPLETE program source to `runs/cert-mint-01/program_final.py`, plus
+  `freeze.json` (sha256, program_id, seeds, acceptance evidence) and `manifest.json` referencing the exact source file.
+  P06 gap noted: full source was never persisted; this run persists it by construction.
+
+## 2026-10-30 — Outcome of Run cert-mint-01 (Valid Refusal Accounting)
+- **Run ID:** `cert-mint-01`
+- **Result:** REJECTED — candidate passed counterexample (Stage 1) and nominal regression (Stage 2), but failed Stage 3 short falsifier re-run (4 of 5 trials failed in simulation, worst margin -0.3696 on seed 260000).
+- **Accounting & Preservation (Rule H12):** The run is preserved intact in `runs/cert-mint-01/` with 29 logged episodes. In accordance with Rule H12, a refusal is a valid experimental outcome and is not converted to a pass.
+- **Infrastructure Findings & Remediations:**
+  1. Mint driver updated to always persist `program_initial.py`, `program_candidate_v1.py`, `mint_trace.json`, and `llm_cache.json` for full traceability on both accepted and rejected runs.
+  2. Initial generation tokens and cost are now explicitly attributed to Episode 1 in `episodes.jsonl`.
+  3. Real measured counterexample margin is passed to `build_repair_prompt`.
+  4. Manifest records total `spent_usd` and structured `tokens_spent`.
+  5. Tested and verified with 7 passing unit tests in `tests/test_mint.py`.
+
+## 2026-10-30 — Pre-registration: single replacement repair trajectory cert-mint-02 (Phase 08 certification input)
+- **Run ID:** `cert-mint-02`
+- **Why:** Replace rejected trajectory `cert-mint-01` with an authorized, single pre-registered attempt using the refreshed, audited mint infrastructure.
+- **Configuration & Arm:** B1-equivalent, text-only (`muse-spark-1.3`, `max_output_tokens=2048`, `budget_cap_usd=5.0`, Tier 2 bounds from `configs/mint.yaml`). Single trajectory.
+- **Acceptance Criteria (Plan §10, exact frozen rule):**
+  1. Candidate passes the minimal counterexample.
+  2. Candidate passes the regression set (nominal scenario + loop scenario if passed by initial program).
+  3. Candidate survives short falsifier re-run (budget 5, CMA-ES sampler).
+  Refusal at any stage is a valid outcome: preserve all artifacts, report, and stop.
+- **Seeds (disjoint repair stream [0, 999999], Rule H9):**
+  - `seed_base: 500000`: paired scenarios 500000–500005 (loop 500000, retest 500001, held-out 500002–500005).
+  - Search RNG: 600000 with episode seeds 600010–600026 (17 episodes).
+  - Evaluator/rerun base: 700000 with rerun episode seeds 700000–700004 (5 episodes).
+  - Nominal scenario seed: 550027.
+  - Verification: all seeds strictly in `[0, 999999]`; zero seeds in `[400000, 999999]` were used in any previous run.
+- **Budgets:** Exactly 29 episodes (or 30 if initial loop passes: 1 loop + 17 search + 1 ce + R regression + 5 rerun + 4 held-out). At most 2 LLM calls (1 generation + 1 repair). CostMeter cap USD 5.00. Fresh empty cache (live calls, Rule H8).
+- **Post-Run Protocol:**
+  - If rejected: preserve `program_initial.py`, `program_candidate_v1.py`, `mint_trace.json`, `llm_cache.json`, manifest, and episodes. Report cost and STOP.
+  - If accepted: persist `program_final.py` and `freeze.json` (SHA-256 pin, program_id), validate freeze, report program_id and total cost, STOP. Do not begin certification.
+
+## 2026-10-31 — Outcome of Run cert-mint-02 (Valid Refusal Accounting)
+- **Run ID:** `cert-mint-02`
+- **Result:** REJECTED — candidate passed counterexample (Stage 1) and nominal regression (Stage 2), but failed Stage 3 short falsifier re-run on seed 700002 ($mass=9.1765, friction=0.4259, margin=-0.2800$).
+- **Artifacts Preserved (Rule H12):** `runs/cert-mint-02/` preserved intact with 29 logged episodes, `program_initial.py`, `program_candidate_v1.py`, `mint_trace.json`, `manifest.json`, and `llm_cache.json`.
+- **Cost:** Total API spend $0.009645 (1,806 tokens total).
+
+## 2026-10-31 — Pre-registration: single B2-guided replacement repair trajectory cert-mint-03 (Phase 08 certification input)
+- **Run ID:** `cert-mint-03`
+- **Arm:** B2 (falsifier-guided active search with coordinate minimization toward nominal, Plan §8/§10). Text-only feedback (no vision calls, no filmstrip frames).
+- **Model & Spending Cap:** `muse-spark-1.3`, `max_output_tokens=2048`, `budget_cap_usd=5.00`.
+- **Difficulty & Bounds:** Tier 2 bounds from `configs/mint.yaml` ($x, y \in [-0.15, 0.15], yaw \in [-0.5, 0.5], mass \in [1.0, 11.5], friction \in [0.1, 1.0]$).
+- **Seed Ledger (29 Episodes, strictly disjoint repair stream [0, 999999], Rule H9):**
+  - Initial generation evaluation: 1 episode, seed `750000` (`s_loop`).
+  - Falsification (CMA-ES, 10 evals): 10 episodes, seeds `760000`–`760009`.
+  - Coordinate minimization (5 parameters toward nominal): 6 episodes, seeds `770000`–`770005` (initial eval + 5 coordinate substitutions).
+  - Minimizer recheck: 1 episode, seed `770006`.
+  - *Exploration subtotal: 10 + 6 + 1 = 17 episodes.*
+  - Acceptance Stage 1 (minimized counterexample): 1 episode, seed `780000`.
+  - Acceptance Stage 2 (nominal regression): 1 episode, seed `780001`.
+  - Acceptance Stage 3 (short falsifier rerun, 5 evals): 5 episodes, seeds `790000`–`790004`.
+  - Held-out evaluation (4 reporting episodes): 4 episodes, seeds `750002`–`750005`.
+  - *Total planned episodes: 1 + 17 + 1 + 1 + 5 + 4 = 29 episodes.*
+- **Verification:** Every episode seed in the 29-episode ledger is pairwise unique, in the repair stream (`0`–`999,999`), and completely disjoint from all previous runs and all calibration (`1,000,000`–`1,999,999`) and certification (`2,000,000`–`2,999,999`) seeds.
+- **Acceptance Criteria (Plan §10, exact frozen rule):**
+  1. Candidate passes the minimized counterexample (seed `780000`).
+  2. Candidate passes the regression set (nominal seed `780001` + loop seed `750000` if passed by initial program).
+  3. Candidate survives 5-episode short falsifier rerun (seeds `790000`–`790004`).
+- **Protocol:** Execute exactly ONE trajectory.
+  - If rejected: preserve `program_initial.py`, `program_candidate_v1.py`, `mint_trace.json`, `llm_cache.json`, manifest, and episodes. Report cost and STOP. No second trajectory without human approval.
+  - If accepted: preserve `program_final.py`, `freeze.json` (SHA-256 pin, program_id), manifest, and acceptance evidence. STOP. Do not begin Phase 08 certification automatically.
+
+## 2026-10-31 — Outcome of Run cert-mint-03 (ACCEPTED)
+- **Run ID:** `cert-mint-03`
+- **Result:** **ACCEPTED** — candidate repair passed all three acceptance stages:
+  1. Stage 1 (minimized counterexample, seed 780000): PASS ($margin = +0.0050 > 0$).
+  2. Stage 2 (nominal regression, seed 780001): PASS ($margin = +0.0050 > 0$).
+  3. Stage 3 (5-episode short falsifier rerun, seeds 790000–790004): PASS (5/5 passed, min margin $+0.0050 > 0$).
+- **Held-out Rate:** 75.0% (3/4 held-out episodes passed, reporting only).
+- **Frozen Program Identification:**
+  - Program ID: `bec73dec45a88431`
+  - SHA-256 Hash: `bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55`
+  - Source File: `runs/cert-mint-03/program_final.py`
+  - Validated by: `validate_freeze(Path("runs/cert-mint-03"))`
+- **API Cost & Tokens:**
+  - Tokens: 794 input, 2,112 output (2,906 total tokens across 2 calls).
+  - Total Spend: $0.009968 (well under the $5.00 cap).
+- **Episodes:** Exactly 29 planned and 29 logged episodes in `runs/cert-mint-03/episodes.jsonl`.
+- **Status:** Program minted and frozen. Certification NOT started (awaiting human authorization).
+
+

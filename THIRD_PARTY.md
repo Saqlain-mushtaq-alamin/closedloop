@@ -21,6 +21,7 @@ Licences below verified against each package's PyPI metadata, not guessed.
 | Mako 1.4.3 | MIT | https://pypi.org/project/Mako/1.4.3/ | Alembic template dependency |
 | MarkupSafe 3.0.4 | BSD-3-Clause | https://pypi.org/project/MarkupSafe/3.0.4/ | Mako dependency |
 | typing-extensions 4.16.0 | PSF-2.0 | https://pypi.org/project/typing-extensions/4.16.0/ | Typing extensions dependency |
+| python-dotenv 1.2.4 | BSD-3-Clause | https://pypi.org/project/python-dotenv/ | Environment variable loading from .env for API keys |
 
 No URDF, mesh, texture, font, or dataset assets vendored yet (Phase 02 will add
 PyBullet + robot models here with licence and URL).
