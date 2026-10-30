@@ -119,6 +119,18 @@
   - Gate G2 criteria ($a_L \ge 0.85$, $b_U \le 0.15$, ceiling $\ge 0.85$) are unchanged.
   - Delta split ($d_a = 0.005$, $d_b = 0.00125$) is unchanged.
 - **Stop Condition:** One redo only. If G2 fails again, stop and report; do not retry.
+- **Outcome (judge-g2-03 Execution):**
+  - Planned: 700 episodes (300 successes, 400 failures). Logged: 700 episodes.
+  - Successes ($n=300$): $k=300 \rightarrow \hat{a} = 1.0000$, one-sided Clopper-Pearson lower bound $a_L = 0.9825 \ge 0.85$ (**PASS**).
+  - Failures ($n=400$, 100 per bucket):
+    - `near_boundary` ($m \in [-0.05, 0.0)$): $n=100, k=2 \rightarrow \hat{b} = 0.0200$, $b_U = 0.1048 \le 0.15$
+    - `shallow` ($m \in [-0.15, -0.05)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+    - `medium` ($m \in [-0.35, -0.15)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+    - `deep` ($m \in [-1.00, -0.35)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+  - Worst-bucket FPR upper bound: $b_U = 0.1048 \le 0.15$ (**PASS**).
+  - Day-1 Ceiling: `ceiling(a=1.0, b=0.005, n_succ_cal=300, n_fail_cal=400, n_cell=113, K=16, delta=0.05, B=4, seed=1001000)` = $0.9435 \ge 0.85$ (**PASS**).
+  - Gate G2 Verdict: **`PASS (G2 PASS)`** — unlocks camera-mode certification for Phase 08.
+
 
 
 
