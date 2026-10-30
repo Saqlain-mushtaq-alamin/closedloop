@@ -79,4 +79,58 @@
   3. Attached proposal tokens and cost directly to candidate episodes in `episodes.jsonl` and repair traces in `repair_traces.json`.
 - **Action:** Preserved `runs/h2h3-full-02/`. Executed full run under fresh `run_id` `h2h3-full-03`, passing all validity checks (V5, V6, V7, H2, H3).
 
+## 2026-10-30 — Invalidation of Run judge-g2-01 and Rerun judge-g2-02 (Adversarial Review)
+- **Run ID:** `judge-g2-01` (invalidated, kept on disk per H12)
+- **What happened (Adversarial Review Findings):**
+  1. The judge used PyBullet body-ID segmentation buffer (`img[4]`) rather than live SAM 3.1 segmentation via Meta Model API (`/v1/responses`).
+  2. Gate verification was loose: checked counts $\ge 30$, $b_U \le 0.50$, ignored freeze hash, and did not enforce `episodes_planned == episodes_observed`.
+  3. Tests in `test_judge.py` were synthetic/tautological and did not exercise production code or real V9 controls.
+  4. Failure sampling ran an outcome-dependent loop (366 collected), discarding 540 attempted episodes unlogged (H10/H13 breach), with divergent mass/friction distributions between success and failure arms.
+  5. Cost accounting logged $0.00$ because `client.py` omitted `cost_usd`, and pre-flight used an arbitrary $0.0020 floor instead of measured pilot spend.
+  6. The prompt was hardcoded in `judge.py` rather than covered by the freeze hash in `configs/judge.yaml`.
+- **Fix:**
+  1. Integrated live SAM 3.1 segmentation calling `https://api.meta.ai/v1/responses` with prompt grounding (`"red cube"`, `"green pad"`) in `LLMClient.segment()`, paired with strict geometric inner-margin test and Muse Spark 1.3 multimodal reasoning (`temperature=0.0`, `seed=42`).
+  2. Implemented fixed sample plan (Rule H12): exactly 600 calibration episodes (300 successes on seeds 1,000,000–1,000,299, 300 failures on seeds 1,000,300–1,000,599), drawing $(mass, friction, yaw)$ from the identical distribution $D$, with every episode logged append-only (H10) to `episodes.jsonl`.
+  3. Froze the complete judge configuration including prompt and camera in `configs/judge.yaml` and hashed it via `compute_judge_freeze_hash()`.
+  4. Saved 10 visual inspection PNGs with bounding box and centroid overlays to `runs/judge-g2-02/inspection/`.
+  5. Implemented live metered pilot and pre-flight cost check without invented floors.
+  6. Rewrote `test_judge.py` to assert real do-nothing control, shuffled-labels permutation test, config freeze hash, seed overflow checks, and strict geometry.
+- **Action (Gate G2 Rerun):** Executed clean run under fresh `run_id` `judge-g2-02`:
+  - TPR: 1.0000 ($a_L = 0.9825 \ge 0.85$, PASS)
+  - FPR: 0.0000 across all 300 failures
+  - Worst-bucket upper bound $b_U = 0.8120 > 0.15$ (governed by deep bucket sample size $n=4$ where $cp\_upper(0, 4, 0.00125) = 0.8120$)
+  - Gate G2 Verdict: `FAIL -> Pitch B` (H7/H8 compliant, camera certification blocked for Phase 08).
+
+## 2026-10-30 — Pre-registration for Single Redo Run judge-g2-03 (Sample Allocation Fix)
+- **Run ID:** `judge-g2-03`
+- **Rationale & Scope:** Single pre-declared redo under Rule H12. In `judge-g2-02`, failure rollouts were partitioned by margin into B=4 buckets post-hoc from a fixed offset schedule, which resulted in uneven bucket counts ($n=0, 162, 134, 4$) and artificially inflated $b_U$ in the $n=4$ deep bucket ($cp\_upper(0, 4, 0.00125) = 0.8120$).
+- **Pre-registered Sample Plan:**
+  - Successes: Exactly 300 fresh successes starting at seed `1,001,000`.
+  - Failures: Exactly 100 failures in each of the 4 pre-registered margin buckets ($B=4$, total 400 failures, total planned episodes = 700):
+    1. `near_boundary`: $m \in [-0.05, 0.0)$ ($n=100$)
+    2. `shallow`: $m \in [-0.15, -0.05)$ ($n=100$)
+    3. `medium`: $m \in [-0.35, -0.15)$ ($n=100$)
+    4. `deep`: $m \in [-1.00, -0.35)$ ($n=100$)
+- **Sampling Constraint:** Buckets are filled using simulator ground truth margin (`sim_res.margin`) ONLY. Judge verdicts are never read during sampling or used to filter rollouts.
+- **Invariants:**
+  - `configs/judge.yaml` is unchanged.
+  - Judge freeze hash `0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e` is unchanged.
+  - Bucket edges are unchanged (`[-0.05, 0.0)`, `[-0.15, -0.05)`, `[-0.35, -0.15)`, `[-1.00, -0.35)`).
+  - Gate G2 criteria ($a_L \ge 0.85$, $b_U \le 0.15$, ceiling $\ge 0.85$) are unchanged.
+  - Delta split ($d_a = 0.005$, $d_b = 0.00125$) is unchanged.
+- **Stop Condition:** One redo only. If G2 fails again, stop and report; do not retry.
+- **Outcome (judge-g2-03 Execution):**
+  - Planned: 700 episodes (300 successes, 400 failures). Logged: 700 episodes.
+  - Successes ($n=300$): $k=300 \rightarrow \hat{a} = 1.0000$, one-sided Clopper-Pearson lower bound $a_L = 0.9825 \ge 0.85$ (**PASS**).
+  - Failures ($n=400$, 100 per bucket):
+    - `near_boundary` ($m \in [-0.05, 0.0)$): $n=100, k=2 \rightarrow \hat{b} = 0.0200$, $b_U = 0.1048 \le 0.15$
+    - `shallow` ($m \in [-0.15, -0.05)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+    - `medium` ($m \in [-0.35, -0.15)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+    - `deep` ($m \in [-1.00, -0.35)$): $n=100, k=0 \rightarrow \hat{b} = 0.0000$, $b_U = 0.0647 \le 0.15$
+  - Worst-bucket FPR upper bound: $b_U = 0.1048 \le 0.15$ (**PASS**).
+  - Day-1 Ceiling: `ceiling(a=1.0, b=0.005, n_succ_cal=300, n_fail_cal=400, n_cell=113, K=16, delta=0.05, B=4, seed=1001000)` = $0.9435 \ge 0.85$ (**PASS**).
+  - Gate G2 Verdict: **`PASS (G2 PASS)`** — unlocks camera-mode certification for Phase 08.
+
+
+
 
