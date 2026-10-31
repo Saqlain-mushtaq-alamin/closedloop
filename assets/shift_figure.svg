@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 480" width="100%" height="100%" style="background:#090d16; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;">
+  <text x="380" y="45" text-anchor="middle" fill="#f8fafc" font-size="20" font-weight="700">Hypothesis H4: Certificate Refusal Under Distribution Shift</text>
+  <text x="380" y="70" text-anchor="middle" fill="#94a3b8" font-size="13">Reference D vs Shifted D' (Heavier/Lower Friction) | Bound Drop = 0.4169</text>
+  <line x1="80" y1="380" x2="700" y2="380" stroke="#334155" stroke-width="2"/>
+  <line x1="80" y1="100" x2="80" y2="380" stroke="#334155" stroke-width="2"/>
+  <line x1="80" y1="380" x2="700" y2="380" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="384" text-anchor="end" fill="#94a3b8" font-size="11">0.0</text>
+  <line x1="80" y1="328" x2="700" y2="328" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="332" text-anchor="end" fill="#94a3b8" font-size="11">0.2</text>
+  <line x1="80" y1="276" x2="700" y2="276" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="280" text-anchor="end" fill="#94a3b8" font-size="11">0.4</text>
+  <line x1="80" y1="224" x2="700" y2="224" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="228" text-anchor="end" fill="#94a3b8" font-size="11">0.6</text>
+  <line x1="80" y1="172" x2="700" y2="172" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="176" text-anchor="end" fill="#94a3b8" font-size="11">0.8</text>
+  <line x1="80" y1="120" x2="700" y2="120" stroke="#1e293b" stroke-dasharray="4"/>
+  <text x="70" y="124" text-anchor="end" fill="#94a3b8" font-size="11">1.0</text>
+  <line x1="80" y1="146" x2="700" y2="146" stroke="#ef4444" stroke-dasharray="6" stroke-width="2"/>
+  <text x="705" y="150" fill="#f87171" font-size="12" font-weight="700">Target p &ge; 0.90</text>
+  <rect x="140" y="202" width="60" height="178" fill="#3b82f6" rx="4"/>
+  <text x="170.0" y="194" text-anchor="middle" fill="#60a5fa" font-size="13" font-weight="700">68.7%</text>
+  <rect x="210" y="220" width="60" height="160" fill="#10b981" rx="4"/>
+  <text x="240.0" y="212" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">0.6186</text>
+  <text x="205" y="405" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="700">Reference D</text>
+  <text x="205" y="423" text-anchor="middle" fill="#94a3b8" font-size="11">mass [1.0, 11.5] kg</text>
+  <rect x="440" y="313" width="60" height="67" fill="#3b82f6" fill-opacity="0.6" rx="4"/>
+  <text x="470.0" y="305" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="700">26.0%</text>
+  <rect x="510" y="328" width="60" height="52" fill="#ef4444" rx="4"/>
+  <text x="540.0" y="320" text-anchor="middle" fill="#f87171" font-size="13" font-weight="700">0.2017</text>
+  <text x="505" y="405" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="700">Shifted D'</text>
+  <text x="505" y="423" text-anchor="middle" fill="#94a3b8" font-size="11">mass [6.0, 14.0] kg (slip regime)</text>
+  <rect x="360" y="115" width="280" height="75" rx="8" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="500" y="140" text-anchor="middle" fill="#a5b4fc" font-size="13" font-weight="800">GUARANTEE HONESTY FIGURE</text>
+  <text x="500" y="160" text-anchor="middle" fill="#ffffff" font-size="12">D' Bound (0.2017) &lt; Target (0.90)</text>
+  <text x="500" y="178" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="700">&rarr; Certificate Refuses on D' (PASS)</text>
+</svg>

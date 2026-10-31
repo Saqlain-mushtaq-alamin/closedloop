@@ -285,4 +285,13 @@
   4. `test_shift_seeds_in_ledger_after_run`: Verified that all shift seeds executed in `shift-full-01` are recorded in the real on-disk ledger.
 - **Action:** Human-authorized test restructuring applied to `tests/test_shift.py`.
 
+## 2026-10-31 — Phase 10 Gate G3 Feature Freeze Declaration
+- **Context:** Phase 10 Task 3 requires declaring Gate G3 Feature Freeze: "Done when: docs/DECISIONS.md freeze entry + tag; further changes only via P11 text. G3: after this gate, features frozen — bugs only, no new arms/tasks."
+- **Scope & Deliverables Frozen:**
+  1. All physical experiments, simulation environments, arms (B0, B1, B2, B3), and tasks (hero task T1) are frozen. No new arms or tasks.
+  2. All precomputed assets (`assets/`) and provenance manifest (`assets/manifest.json`) are generated strictly from logs and frozen.
+  3. The offline precomputed dashboard (`dashboard/index.html`) is frozen, verified with zero external network / API dependencies.
+  4. Subsequent changes in Phase 11 and Phase 12 are strictly limited to documentation, README, technical report, and video voiceover assets.
+- **Action:** Gate G3 feature freeze declared and logged. Tagged `eod-1102`.
+
 
