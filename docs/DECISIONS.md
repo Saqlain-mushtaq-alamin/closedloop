@@ -275,4 +275,14 @@
 - **Rationale:** The prompt and phase file instruct to run Phase 09 with focus on Hypothesis H4 (shift test) and state: "T2 only if instructed. Fallback / cut: Cut T2 first (always optional). Never cut the shift figure." To maintain strict focus on certifying and demonstrating the boundaries of guarantee transfer under distribution shift on Task T1 without unnecessary API spend or scope bloat, optional Task T2 is explicitly cut per Phase 09 guidelines.
 - **Action:** Optional Task T2 is cut. Phase 09 focuses entirely on frozen distribution shift $D \to D'$ on Task T1 with certified program `bec73dec45a88431`.
 
+## 2026-10-31 — Phase 09 Human-Authorised Fix for test_shift_disjoint_seeds (Self-Referential Test)
+- **Context:** `test_shift_disjoint_seeds` in `tests/test_shift.py` checked `overlap = shift_seeds.intersection(claimed_set)` where `claimed_set` was read from the mutable on-disk `.certification_ledger.json`. When `run_shift.py` executed, it claimed the shift seeds into the ledger, causing subsequent test executions during `make gate` to flag the runner's own claimed seeds as an overlap.
+- **Rule H7 Stop & Human Review:** The agent stopped and reported under Rule H7. The human explicitly instructed to decouple the test from the mutable ledger state and separate concerns across 4 targeted tests.
+- **Fix:**
+  1. `test_shift_disjoint_seeds`: Replaced mutable ledger read with independent planned seed ranges from `configs/cert.yaml` (2,474 planned P08 seeds); verified shift seeds in $[2000000, 2999999]$; verified pilot and full shift cohorts disjoint; verified disjointness from P08 planned seeds with vacuity guards.
+  2. `test_shift_vs_logged_p08_seeds`: Verified real `episodes.jsonl` from Phase 08 and `shift-full-01` are both non-empty and have zero seed overlap.
+  3. `test_ledger_rejects_reclaim`: Verified `CertificationLedger` raises `LeakageError` on overlapping claims using an isolated temporary ledger (`tmp_path`).
+  4. `test_shift_seeds_in_ledger_after_run`: Verified that all shift seeds executed in `shift-full-01` are recorded in the real on-disk ledger.
+- **Action:** Human-authorized test restructuring applied to `tests/test_shift.py`.
+
 

@@ -68,20 +68,27 @@ def test_shift_config_frozen() -> None:
 
 
 def test_shift_disjoint_seeds() -> None:
-    """V4: D' evaluation uses fresh seeds in certification stream, strictly no reuse."""
-    cfg_path = ROOT / "configs" / "shift.yaml"
-    if not cfg_path.exists():
+    """V4: D' evaluation uses fresh seeds in certification stream, strictly no reuse.
+
+    Builds the Phase 08 seed set from an independent source (configs/cert.yaml planned ranges),
+    not the mutable ledger.
+    """
+    shift_cfg_path = ROOT / "configs" / "shift.yaml"
+    cert_cfg_path = ROOT / "configs" / "cert.yaml"
+    if not shift_cfg_path.exists():
         pytest.fail("configs/shift.yaml missing")
+    if not cert_cfg_path.exists():
+        pytest.fail("configs/cert.yaml missing")
 
-    cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
-    pilot_base = int(cfg["seeds"]["pilot_seed_base"])
-    full_base = int(cfg["seeds"]["full_seed_base"])
-    n_pilot = int(cfg["sample_sizes"]["pilot_runs"])
-    n_full = int(cfg["sample_sizes"]["full_runs"])
+    shift_cfg = yaml.safe_load(shift_cfg_path.read_text(encoding="utf-8"))
+    pilot_base = int(shift_cfg["seeds"]["pilot_seed_base"])
+    full_base = int(shift_cfg["seeds"]["full_seed_base"])
+    n_pilot = int(shift_cfg["sample_sizes"]["pilot_runs"])
+    n_full = int(shift_cfg["sample_sizes"]["full_runs"])
 
-    shift_seeds = set(range(pilot_base, pilot_base + n_pilot)) | set(
-        range(full_base, full_base + n_full)
-    )
+    pilot_set = set(range(pilot_base, pilot_base + n_pilot))
+    full_set = set(range(full_base, full_base + n_full))
+    shift_seeds = pilot_set | full_set
 
     # All seeds must be in certification stream [2000000, 2999999] (Rule H9)
     lo, hi = STREAM_RANGES["certification"]
@@ -89,27 +96,114 @@ def test_shift_disjoint_seeds() -> None:
         assert lo <= s <= hi, f"Seed {s} outside certification range [{lo}, {hi}]"
 
     # Pilot and full seeds must be mutually disjoint
-    pilot_set = set(range(pilot_base, pilot_base + n_pilot))
-    full_set = set(range(full_base, full_base + n_full))
     assert pilot_set.isdisjoint(full_set), "Pilot and full seeds must not overlap"
 
-    # Must be completely disjoint from Phase 08 certification ledger
-    ledger_path = ROOT / "runs" / ".certification_ledger.json"
-    if ledger_path.exists():
-        data = json.loads(ledger_path.read_text(encoding="utf-8"))
-        for prog_id, claimed_seeds in data.items():
-            claimed_set = set(claimed_seeds)
-            overlap = shift_seeds.intersection(claimed_set)
-            assert (
-                not overlap
-            ), f"Shift seeds overlap with existing claimed seeds for {prog_id}: {overlap}"
+    # Build Phase 08 seed set from configs/cert.yaml independent planned ranges
+    cert_cfg = yaml.safe_load(cert_cfg_path.read_text(encoding="utf-8"))
+    p08_cell_base = int(cert_cfg["seeds"]["cell_seed_base"])
+    p08_cell_count = int(cert_cfg["sample_sizes"]["runs_per_cell"]) * int(cert_cfg.get("K", 16))
+    p08_headline_base = int(cert_cfg["seeds"]["headline_seed_base"])
+    p08_headline_count = int(cert_cfg["sample_sizes"]["headline_runs"])
+    p08_pilot_base = int(cert_cfg["seeds"]["pilot_seed_base"])
+    p08_pilot_count = int(cert_cfg["sample_sizes"]["pilot_runs_per_cell"])
 
-    # Verify LeakageError is raised if any seed is re-claimed
-    ledger = CertificationLedger()
-    prog_id = cfg.get("program_id", "test_prog")
-    ledger.claim(prog_id, [pilot_base, pilot_base + 1])
+    p08_cell_set = set(range(p08_cell_base, p08_cell_base + p08_cell_count))
+    p08_headline_set = set(range(p08_headline_base, p08_headline_base + p08_headline_count))
+    p08_pilot_set = set(range(p08_pilot_base, p08_pilot_base + p08_pilot_count))
+    p08_seeds = p08_cell_set | p08_headline_set | p08_pilot_set
+
+    # Vacuity guards: assert P08 set is non-empty and its size equals planned count from config
+    planned_p08_count = p08_cell_count + p08_headline_count + p08_pilot_count
+    assert len(p08_seeds) > 0, "Phase 08 planned seed set must not be empty"
+    assert len(p08_seeds) == planned_p08_count, (
+        f"Phase 08 planned seed count {len(p08_seeds)} != {planned_p08_count}"
+    )
+
+    # Shift set must be completely disjoint from the Phase 08 set
+    assert shift_seeds.isdisjoint(p08_seeds), (
+        f"Shift seeds overlap with Phase 08 planned seeds: {shift_seeds.intersection(p08_seeds)}"
+    )
+
+
+def test_shift_vs_logged_p08_seeds() -> None:
+    """Read the real episodes.jsonl of Phase 08 certification run(s) and of shift-full-01;
+    assert both are non-empty and disjoint.
+    """
+    p08_file = ROOT / "runs" / "cert-full-01" / "episodes.jsonl"
+    shift_file = ROOT / "runs" / "shift-full-01" / "episodes.jsonl"
+
+    if not p08_file.exists():
+        pytest.skip("runs/cert-full-01/episodes.jsonl does not exist")
+    if not shift_file.exists():
+        pytest.skip("runs/shift-full-01/episodes.jsonl does not exist")
+
+    p08_logged_seeds: set[int] = set()
+    with p08_file.open("r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                p08_logged_seeds.add(int(json.loads(line.strip())["seed"]))
+
+    # Include pilot if present
+    p08_pilot_file = ROOT / "runs" / "cert-pilot-01" / "episodes.jsonl"
+    if p08_pilot_file.exists():
+        with p08_pilot_file.open("r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    p08_logged_seeds.add(int(json.loads(line.strip())["seed"]))
+
+    shift_logged_seeds: set[int] = set()
+    with shift_file.open("r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                shift_logged_seeds.add(int(json.loads(line.strip())["seed"]))
+
+    # Assert both are non-empty and disjoint
+    assert len(p08_logged_seeds) > 0, "P08 logged seeds must be non-empty"
+    assert len(shift_logged_seeds) > 0, "Shift logged seeds must be non-empty"
+    assert p08_logged_seeds.isdisjoint(shift_logged_seeds), (
+        f"Logged shift seeds overlap with logged P08 seeds: {p08_logged_seeds.intersection(shift_logged_seeds)}"
+    )
+
+
+def test_ledger_rejects_reclaim(tmp_path: Path) -> None:
+    """Use a TEMP ledger file (pytest tmp_path), claim seeds for a program,
+    then try to claim an overlapping set; assert the ledger raises.
+    """
+    temp_ledger = tmp_path / "temp_ledger.json"
+    ledger = CertificationLedger(path=temp_ledger)
+    prog_id = "test_prog_reclaim_check"
+
+    # Valid claim
+    ledger.claim(prog_id, [2500000, 2500001, 2500002])
+
+    # Overlapping claim must raise LeakageError
     with pytest.raises(LeakageError):
-        ledger.claim(prog_id, [pilot_base + 1, pilot_base + 2])
+        ledger.claim(prog_id, [2500002, 2500003])
+
+
+def test_shift_seeds_in_ledger_after_run() -> None:
+    """If runs/shift-full-01 exists, assert every shift seed is recorded in the real ledger."""
+    shift_run_dir = ROOT / "runs" / "shift-full-01"
+    if not shift_run_dir.exists():
+        pytest.skip("runs/shift-full-01 does not exist yet")
+
+    ledger_path = ROOT / "runs" / ".certification_ledger.json"
+    assert ledger_path.exists(), "runs/.certification_ledger.json must exist"
+
+    data = json.loads(ledger_path.read_text(encoding="utf-8"))
+    shift_cfg = yaml.safe_load((ROOT / "configs" / "shift.yaml").read_text(encoding="utf-8"))
+    prog_id = shift_cfg["program_id"]
+
+    assert prog_id in data, f"Program {prog_id} not recorded in ledger"
+    claimed = set(data[prog_id])
+
+    full_base = int(shift_cfg["seeds"]["full_seed_base"])
+    n_full = int(shift_cfg["sample_sizes"]["full_runs"])
+    full_seeds = set(range(full_base, full_base + n_full))
+
+    assert full_seeds.issubset(claimed), (
+        f"Not all full shift seeds found in ledger: missing {full_seeds - claimed}"
+    )
 
 
 def test_shift_detectable_stats() -> None:
