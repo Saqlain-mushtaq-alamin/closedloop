@@ -1,0 +1,35 @@
+{
+  "accepted": true,
+  "arm": "B3",
+  "attempts": [
+    {
+      "accepted": true,
+      "attempt": 1,
+      "cost_usd": 0.007736,
+      "counterexample": {
+        "friction": 0.8,
+        "mass": 10.161121613042505,
+        "seed": 710009,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "rationale": "Failure is slip at 10.16kg with 100N grip. Weight ~100N requires ~62N per side statically (m*g/(2*mu)), so 100N has no margin for inertial loads during transport. Fix: increase close_gripper to 300N for safety factor ~3, slow down loaded moves (150-200 steps) to reduce acceleration, lift higher (0.25) and place from 0.06 to set down gently without pushing, plus dwell after close to secure grasp.",
+      "stage1_passed": true,
+      "stage2_passed": true,
+      "stage3_passed": true,
+      "tokens": [
+        878,
+        1562
+      ]
+    }
+  ],
+  "episodes_logged": 28,
+  "run_id": "round2-mint-01",
+  "source_program_v1": {
+    "path": "D:\\canvas\\closedloop\\runs\\cert-mint-03\\program_final.py",
+    "program_id": "bec73dec45a88431",
+    "sha256": "bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55"
+  },
+  "total_spend_usd": 0.007736
+}

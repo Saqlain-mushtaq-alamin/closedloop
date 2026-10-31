@@ -1,0 +1,52 @@
+{
+  "acceptance": {
+    "details": {
+      "attempt": 1,
+      "stages_passed": [
+        1,
+        2,
+        3
+      ]
+    },
+    "reason": "accepted"
+  },
+  "config_hash": "12d7c0083bbd2842",
+  "cost_usd": 0.007736,
+  "model": "muse-spark-1.3",
+  "program_id": "5f74f7762ee1f378",
+  "rationale": "Failure is slip at 10.16kg with 100N grip. Weight ~100N requires ~62N per side statically (m*g/(2*mu)), so 100N has no margin for inertial loads during transport. Fix: increase close_gripper to 300N for safety factor ~3, slow down loaded moves (150-200 steps) to reduce acceleration, lift higher (0.25) and place from 0.06 to set down gently without pushing, plus dwell after close to secure grasp.",
+  "seeds": [
+    710000,
+    710001,
+    710002,
+    710003,
+    710004,
+    710005,
+    710006,
+    710007,
+    710008,
+    710009,
+    711000,
+    711001,
+    711002,
+    711003,
+    711004,
+    711005,
+    711006,
+    711006,
+    712000,
+    713000,
+    780000,
+    700002,
+    600010,
+    714000,
+    714001,
+    714002,
+    714003,
+    714004
+  ],
+  "sha256": "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1",
+  "source_file": "program_final.py",
+  "tokens_in": 878,
+  "tokens_out": 1562
+}

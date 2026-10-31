@@ -1,0 +1,20 @@
+{
+  "8f4518b0d1d9b81f": {
+    "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+    "cost_usd": 0.0059765,
+    "model": "muse-spark-1.3",
+    "prompt_hash": "8f4518b0d1d9b81f",
+    "rationale": "Failure at mass=1.0 with force=10 indicates grip slip / failed lift. Grasp at +0.02 was too high for stable pinch and lift at 0.15 with fast steps risks slip. Fix: deeper grasp (+0.005), max close force 100 to hold 1kg with friction 0.8, slower high lift (+0.20, steps=100) for stable transport, and low gentle placement (+0.02) to avoid drop bounce causing -0.22 margin.",
+    "tokens_in": 640,
+    "tokens_out": 1218
+  },
+  "e2db6b7fb47b6c0e": {
+    "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.15)\n    env.move_to(above_cube, steps=60)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.02)\n    env.move_to(grasp_pos, steps=60)\n    env.close_gripper(10)\n    env.move_to(above_cube, steps=60)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.15)\n    env.move_to(above_pad, steps=60)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.05)\n    env.move_to(place_pos, steps=60)\n    env.open_gripper()\n    env.move_to(above_pad, steps=60)",
+    "cost_usd": 0.003992,
+    "model": "muse-spark-1.3",
+    "prompt_hash": "e2db6b7fb47b6c0e",
+    "rationale": "Simple pick-and-place: query cube and pad positions, approach from above, grasp cube, lift, transport above pad, lower, release, and retreat. Uses only allowed primitives with no imports and no unneeded randomness.",
+    "tokens_in": 154,
+    "tokens_out": 894
+  }
+}

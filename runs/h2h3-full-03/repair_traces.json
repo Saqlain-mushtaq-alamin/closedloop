@@ -1,0 +1,2480 @@
+[
+  {
+    "trajectory": 0,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.03584212628514846,
+      "y": 0.03589047964143066,
+      "yaw": -0.07324654651574358,
+      "mass": 2.411460836302531,
+      "friction": 0.5091931023315034,
+      "seed": 150010,
+      "id": "b1_rand_0"
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 602,
+    "tokens_out": 1135,
+    "frames_path": null,
+    "rationale": "Failure with mass=2.411kg and force=1.0 is insufficient grip: weight ~23.6N requires normal force ~ weight/(2*friction) ~23N, so 1.0 slips during lift (margin -0.1 = dropped). Fix: grasp deeper (cz+0.01 to envelop cube), close with 100.0 force for heavy object, lift high and slow (steps=80), place low (pz+0.02) to avoid drop bounce and ensure stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 0,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 150000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.05843096053150104,
+        "y": 0.06351914110674567,
+        "yaw": 0.0896948104599331,
+        "mass": 6.079475266036205,
+        "friction": 0.33782281673255077,
+        "seed": 250004
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1412,
+    "frames_path": null,
+    "rationale": "Nominal scenario fails indicating grasp/place not physically adequate. close_gripper(1.0) is too weak for 1kg mass causing slip/drop (margin -0.33). Lowered grasp to cz+0.01 to center fingers on cube, increased grip force to 50, raised lift to 0.25 for clearance, slowed descent and lowered release to pz+0.03 for stable placement instead of 0.05 drop, with slow steps for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 0,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 150000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.08087584857686299,
+        "y": -0.1324769712533132,
+        "yaw": -0.13344361785918857,
+        "mass": 4.020351026650309,
+        "friction": 0.21375255696438572,
+        "seed": 250000
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1312,
+    "frames_path": "frames\\b3_t00_fstrip.json",
+    "rationale": "Failure due to insufficient grip force: 1.0N cannot hold 1.0kg cube (needs ~m*g/(2*mu)=6.1N). Cube slipped during transit causing large -0.3326 margin. Fix: increase close_gripper to 30N, lift higher for clearance, and place low at +0.02 for gentle stable set-down on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 0,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 350000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.05843096053150104,
+        "y": 0.06351914110674567,
+        "yaw": 0.0896948104599331,
+        "mass": 6.079475266036205,
+        "friction": 0.33782281673255077,
+        "seed": 250004
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1200,
+    "frames_path": null,
+    "rationale": "Original grasped at cz+0.02 with only force 1.0 and released from pz+0.05. For mass=1.0 this slips and drop is unstable (margin -0.33). Fix: go deeper to cz+0.005 for centered grasp, use high force 50.0 to hold 1kg, lift/transport slowly with more steps, lower to pz+0.02 for gentle contact placement before opening.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 1,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.056424709653995875,
+      "y": 0.0009130949889957773,
+      "yaw": -0.06885911784669974,
+      "mass": 7.339798909018848,
+      "friction": 0.5831691602120117,
+      "seed": 150510,
+      "id": "b1_rand_0"
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 602,
+    "tokens_out": 1568,
+    "frames_path": null,
+    "rationale": "Failure with mass=7.34 indicates grip slip: close_gripper(1.0) is far too weak for heavy cube, causing drop and -0.1 margin. Fix: use max force 100.0 for secure grasp. Also improved robustness: deeper final approach to cz+0.01 for full finger contact, higher 0.3m lift clearance to avoid drag/collision, slower lifts (steps=120) to prevent inertial slip with heavy mass, and low 0.01m release height over pad for placement stability instead of 0.05m drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.3), steps=80)\n    env.move_to((cx, c..."
+  },
+  {
+    "trajectory": 1,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 150509
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 593,
+    "tokens_out": 1688,
+    "frames_path": null,
+    "rationale": "Original failed even nominally (margin -0.31) indicating grasp never secured. Fix: descend to cube center (cz+0.005) instead of cz+0.02 for full finger contact around sides, increase close_gripper force from 1.0 to 100.0 to hold 1kg mass, lift high vertically before lateral transit to avoid drag/slip, and descend to pz+0.02 for low gentle release for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.3), steps=60)\n    env.move_to((cx, c..."
+  },
+  {
+    "trajectory": 1,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 150509
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.009779627186765644,
+        "y": 0.11245272985332719,
+        "yaw": 0.2423862353899544,
+        "mass": 6.8089243437730484,
+        "friction": 0.8242777161673543,
+        "seed": 250503
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1049,
+    "frames_path": "frames\\b3_t01_fstrip.json",
+    "rationale": "Failure due to insufficient grasp force: 1.0N cannot hold 1.0kg cube (weight ~9.81N, required normal force > mg/(2*mu)=6.1N). Increased close_gripper to 30N for secure grasp and lowered placement to +0.02 to reduce drop distance and improve stability on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 1,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 350506
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 599,
+    "tokens_out": 1825,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0kg with force=1.0 is grip slip: friction 0.8*1N << weight ~9.8N, so cube never lifted (large negative margin). Fix: close_gripper(100.0) for adequate normal force, higher pre-grasp/lift (+0.25) for clearance and stable transport, and gentle low placement (+0.07) then retreat to ensure stable set on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 2,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.055980342646143655,
+      "y": 0.11903406393964097,
+      "yaw": -0.28984371580712887,
+      "mass": 7.568619319958659,
+      "friction": 0.8099249378566769,
+      "seed": 151010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.01623856876890889,
+        "y": 0.06160538959448414,
+        "yaw": 0.12105486863635173,
+        "mass": 9.521440673349401,
+        "friction": 0.3752547648891261,
+        "seed": 251002
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1333,
+    "frames_path": null,
+    "rationale": "Failure with mass=7.569kg indicates grip slip: old grasp at cz+0.02 was too high (grasping air/top edge) and force 1.0 too weak for heavy cube, plus release from 0.05 causes drop/bounce (margin -0.1). Fix: descend to cz+0.005 for deep encompassing grasp, use max force 100.0 to hold heavy mass with friction 0.81, slower longer steps (80-100) for stable lift/transit, and low gentle placement at pz+0.02 to ensure stability on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 2,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 151003
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.02712983453965223,
+        "y": 0.13617459940445245,
+        "yaw": 0.09421556745376591,
+        "mass": 5.909061947347385,
+        "friction": 0.82731901159945,
+        "seed": 251004
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1509,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 and margin -0.14 indicates grasp slip/drop. Original close_gripper(1.0) too weak for 1kg cube, grasp at cz+0.02 too high (fingertips above center), and release at pz+0.05 drops too high causing bounce/miss. Fix: descend to cube center cz for full contact, increase grip force to 50.0 to hold 1kg with friction 0.8, lift high and use longer steps=100 for stable trajectory, and lower to pz+0.03 for gentle set-down on pad before opening.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=100)\n    env.move_to((cx, cy, cz + 0.05), steps=100)\n    env.move_to..."
+  },
+  {
+    "trajectory": 2,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 151003
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.02712983453965223,
+        "y": 0.13617459940445245,
+        "yaw": 0.09421556745376591,
+        "mass": 5.909061947347385,
+        "friction": 0.82731901159945,
+        "seed": 251004
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1126,
+    "frames_path": "frames\\b3_t02_fstrip.json",
+    "rationale": "Failure was weak grasp: mass=1.0kg needs ~9.81N weight support, but force=1.0N caused slip/drop (margin -0.14). Increased close_gripper to 50.0N for secure grasp, slowed lift/transport with more steps for stability, and lowered placement to 0.03 for gentle set-down.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 2,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 351009
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.01623856876890889,
+        "y": 0.06160538959448414,
+        "yaw": 0.12105486863635173,
+        "mass": 9.521440673349401,
+        "friction": 0.3752547648891261,
+        "seed": 251002
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1338,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with force=1.0 indicates slip/drop. Grasp at cz+0.02 is too high (near top) and force 1.0 inadequate for 1kg cube, plus release at pz+0.05 drops too far causing bounce/miss (margin -0.14). Fix: descend to cz+0.01 for full finger contact, close with 100 force, lift high and slow (steps 100) for stable carry, descend to pz+0.03 for gentle set-down before opening.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 3,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.028264858295264844,
+      "y": 0.02696579434515667,
+      "yaw": 0.3728071438546833,
+      "mass": 2.0239984251406047,
+      "friction": 0.6368182544201075,
+      "seed": 151510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.19271244874664084,
+      "scenario": {
+        "x": 0.028264858295264844,
+        "y": 0.02696579434515667,
+        "yaw": 0.3728071438546833,
+        "mass": 2.0239984251406047,
+        "friction": 0.6368182544201075,
+        "seed": 151510,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.19271244874664084,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1188,
+    "frames_path": null,
+    "rationale": "Failure with mass=2.024kg using force=1.0 indicates slip due to insufficient grip force and high grasp (cz+0.02 only contacts top edge). Fixed by grasping lower at center (cz+0.005) for full finger contact, increasing close_gripper to 20.0 to hold heavy mass, lifting higher and placing lower (pz+0.03) for stable gentle release instead of drop from 0.05.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 3,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 151502
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.07544780932987238,
+        "y": 0.12257403707152245,
+        "yaw": 0.33572390436318045,
+        "mass": 11.422815456253558,
+        "friction": 0.41563144728497436,
+        "seed": 251500
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1228,
+    "frames_path": null,
+    "rationale": "Original failed even nominally with margin -0.17: grasp at cz+0.02 is too high to enclose cube, force 1.0 insufficient for 1kg mass causing slip during fast 60-step transport, and release at 0.05 drop causes bounce/miss. Fix: descend to cz+0.005 for full enclosure, use high force 30.0, lift higher and use slower (more steps) lift/transport for stability, and gentle low release at pz+0.015.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 3,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 151502
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.07544780932987238,
+        "y": 0.12257403707152245,
+        "yaw": 0.33572390436318045,
+        "mass": 11.422815456253558,
+        "friction": 0.41563144728497436,
+        "seed": 251500
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1587,
+    "frames_path": "frames\\b3_t03_fstrip.json",
+    "rationale": "Failure is slipping due to weak grasp: 1.0N cannot hold 1.0kg (~9.81N weight, need >6.1N normal force with mu=0.8). Increased close_gripper to 50N for secure hold. Lowered grasp to cube center and placement to 0.02m above pad to avoid drop from 0.05m and improve stability, with higher lift for safe transport.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 3,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 351500
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.219946561841979,
+      "scenario": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0,
+        "mass": 1.0,
+        "friction": 0.8,
+        "seed": 351500
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.219946561841979,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 986,
+    "frames_path": null,
+    "rationale": "Original grasped at cz+0.02 (top edge) with low force 1.0, insufficient for 1kg mass causing slip/drop (margin -0.17). Fixed with deeper centered grasp at cz+0.01, 10x grip force for heavy mass, higher lift for clearance, and low release at pz+0.02 for stable placement on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 4,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.026066362847803642,
+      "y": -0.09191084988165035,
+      "yaw": -0.38151560426518394,
+      "mass": 3.524374168857438,
+      "friction": 0.35128722983141925,
+      "seed": 152010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.13006316710661925,
+        "y": -0.11511900617364429,
+        "yaw": -0.3162848637005298,
+        "mass": 11.317480080007488,
+        "friction": 0.22844157520836217,
+        "seed": 252000
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1077,
+    "frames_path": null,
+    "rationale": "Failure due to heavy mass 3.5kg with low friction 0.35: force 1.0 insufficient (needs ~49N) so cube slipped. Also grasp at +0.02 too high and drop from +0.05 caused instability. Fix: grasp lower (+0.005), max grip force 100, slower/longer steps for heavy transport, place very low (+0.015) to avoid drop bounce, higher lift for clearance.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cpos, _ = env.get_object_pose(\"cube\")\n    cx, cy, cz = cpos\n    ppos, _ = env.get_object_pose(\"pad\")\n    px, py, pz = ppos\n    env.move_to((cx, cy, cz ..."
+  },
+  {
+    "trajectory": 4,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 152007
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.13006316710661925,
+        "y": -0.11511900617364429,
+        "yaw": -0.3162848637005298,
+        "mass": 11.317480080007488,
+        "friction": 0.22844157520836217,
+        "seed": 252000
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1699,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates weak grasp: close at cz+0.02 is too high (top pinch) and force 1.0 cannot hold 1kg, causing slip/drop (-0.326 margin). Fix: descend to cz+0.005 for centered grasp, use high force 50.0 for heavy mass/high friction variance, lift high and move slowly with larger steps for stability, and place low at pz+0.03 to avoid drop/bounce, then retreat.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.3), steps=100)\n    env.move_to((cx, cy, cz + 0.08), steps=100)\n    env.move_to(..."
+  },
+  {
+    "trajectory": 4,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 152007
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.13006316710661925,
+        "y": -0.11511900617364429,
+        "yaw": -0.3162848637005298,
+        "mass": 11.317480080007488,
+        "friction": 0.22844157520836217,
+        "seed": 252000
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1115,
+    "frames_path": "frames\\b3_t04_fstrip.json",
+    "rationale": "Failure is slipping due to insufficient grip force: 1.0N cannot hold 1.0kg cube (weight 9.81N, need F >= m*g/(2*mu) ~6.1N). Increased close_gripper to 50N for secure grasp, lowered grasp to +0.01 and release to +0.02 for stability, and used slower high-step lift/transport to avoid dynamic slip.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 4,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 352009
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.13006316710661925,
+        "y": -0.11511900617364429,
+        "yaw": -0.3162848637005298,
+        "mass": 11.317480080007488,
+        "friction": 0.22844157520836217,
+        "seed": 252000
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1387,
+    "frames_path": null,
+    "rationale": "Failure margin -0.326 matches cube never lifted (distance cube-to-pad). Grasp at cz+0.02 is too high - fingers close above center and slip. Force 1.0 is inadequate for 1kg mass. Fix: descend to cz+0.005 for deep enveloping grasp, increase close_gripper to 50.0, use slower lifts and lower release at pz+0.03 for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 5,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.057495494105080314,
+      "y": 0.0780812135330424,
+      "yaw": 0.10407623297836122,
+      "mass": 3.82772064748949,
+      "friction": 0.49214382822508107,
+      "seed": 152510,
+      "id": "b1_rand_0"
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 602,
+    "tokens_out": 1572,
+    "frames_path": null,
+    "rationale": "Failure due to weak top-grasp: cz+0.02 grazes top of cube and force 1.0 cannot hold 3.828kg with friction 0.492 (needs ~38N). Fix: descend to cz+0.005 for deep centered side grasp, close with 100.0 force, use higher lift 0.25 and slower transport steps=100 to reduce inertial slip, and place low at pz+0.02 for gentle release.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 5,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 152500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.08372514317058782,
+        "y": -0.05896698187291591,
+        "yaw": 0.16429851526727857,
+        "mass": 7.383205774370501,
+        "friction": 0.1341671191856197,
+        "seed": 252500
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1565,
+    "frames_path": null,
+    "rationale": "Original grasp at cz+0.02 targets top surface, not center, causing edge/slip grasp. Lowered grasp to cz (center) for full side contact. Increased close_gripper from 1.0 to 50.0 to hold 1kg mass with friction 0.8. Raised lift/transit to +0.3 for stable carry and lowered release to pz+0.03 for gentle set-down instead of 0.05 drop, fixing margin -0.33 place error.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz), steps=60)\n    env.close_gripper(50..."
+  },
+  {
+    "trajectory": 5,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 152500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.08372514317058782,
+        "y": -0.05896698187291591,
+        "yaw": 0.16429851526727857,
+        "mass": 7.383205774370501,
+        "friction": 0.1341671191856197,
+        "seed": 252500
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 898,
+    "frames_path": "frames\\b3_t05_fstrip.json",
+    "rationale": "Failure with mass=1.0kg friction=0.8 using force=1.0N: required pinch force ~m*g/(2*mu)=~6N, so 1N slips during lift/transport (margin -0.33). Fix: increase close_gripper to 30N for secure hold, use higher lift (+0.25) and slower (steps=100) transport for stability, and lower placement to +0.02 for gentle set-down on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 5,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 352501
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.21992428873321423,
+      "scenario": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0,
+        "mass": 1.0,
+        "friction": 0.8,
+        "seed": 352501
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.21992428873321423,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1248,
+    "frames_path": null,
+    "rationale": "Previous grasp at cz+0.02 closed above cube center so fingers missed cube, and force 1.0 insufficient for 1kg mass. Fix: descend to cz-0.01 for enveloping grasp, increase close_gripper to 10.0, vertical lift to 0.25 before lateral move to avoid drag, and lower placement to pz+0.03 for gentle set-down instead of 0.05 drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.05), steps=60)\n    env.move_to((..."
+  },
+  {
+    "trajectory": 6,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.03456422991359408,
+      "y": 0.06662773310622347,
+      "yaw": 0.45408414865317237,
+      "mass": 3.892941777909546,
+      "friction": 0.8710727417248377,
+      "seed": 153010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.015516211283470471,
+        "y": 0.05040290687180701,
+        "yaw": -0.06934710899647262,
+        "mass": 4.5136331035618635,
+        "friction": 0.4498485120572735,
+        "seed": 253004
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1260,
+    "frames_path": null,
+    "rationale": "Failure due to insufficient grip force and unstable placement: mass=3.893kg with friction 0.871 needs ~22N normal force, but policy used close_gripper(1.0) causing slip during lift/transfer. Grasp at cz+0.02 was too shallow and release at pz+0.05 was too high causing drop/bounce with -0.1 margin. Fix: deeper grasp to cz+0.01, high force 50.0 for secure hold, vertical lift to 0.25 before lateral move to avoid drag, and gentle low release at pz+0.02 for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 6,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 153002
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.015516211283470471,
+        "y": 0.05040290687180701,
+        "yaw": -0.06934710899647262,
+        "mass": 4.5136331035618635,
+        "friction": 0.4498485120572735,
+        "seed": 253004
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1313,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with force=1.0 indicates slip/drop due to insufficient grip force, plus 0.05 drop height causes bounce/slide (margin -0.24). Fix: grasp deeper at cz+0.01, use high close_gripper force 50, add settle, slow high lift with more steps, and gentle low placement at pz+0.03 with settle before retreat for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 6,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 153002
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.015516211283470471,
+        "y": 0.05040290687180701,
+        "yaw": -0.06934710899647262,
+        "mass": 4.5136331035618635,
+        "friction": 0.4498485120572735,
+        "seed": 253004
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1106,
+    "frames_path": "frames\\b3_t06_fstrip.json",
+    "rationale": "Failure was insufficient grip force: 1.0N cannot hold 1.0kg cube (weight 9.8N, needs ~6.2N with friction 0.8). Increased close_gripper to 50N for secure grasp, lowered grasp to +0.01 and placement to +0.02 for gentle stable set-down, and raised transit to +0.25 for safe lift trajectory.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 6,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 353006
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.015516211283470471,
+        "y": 0.05040290687180701,
+        "yaw": -0.06934710899647262,
+        "mass": 4.5136331035618635,
+        "friction": 0.4498485120572735,
+        "seed": 253004
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1104,
+    "frames_path": null,
+    "rationale": "Failure with force 1.0 on 1kg cube and high grasp (+0.02) caused slip/no enclosure, margin -0.24 indicates dropped cube. Fixed by descending to cube center (+0.005) to enclose sides, increasing close_gripper to 20.0 for adequate friction hold, lifting higher for clearance, and lowering release to +0.02 for stable placement on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.005), steps=60)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 7,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.13515722406414518,
+      "y": -0.1337069334064822,
+      "yaw": 0.24848717175730073,
+      "mass": 2.7588133563890755,
+      "friction": 0.1557521610574572,
+      "seed": 153510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.07684605213302279,
+        "y": 0.060652339029862834,
+        "yaw": -0.1945399911643394,
+        "mass": 6.336073416321237,
+        "friction": 0.5594457233520475,
+        "seed": 253503
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1191,
+    "frames_path": null,
+    "rationale": "Failure with mass=2.759kg and friction=0.156 is grip slip: close_gripper(1.0) too weak for heavy slippery cube, plus fast 60-step moves and 0.05 drop cause loss. Fix: max grip force 50.0, slower high-clearance vertical lift and transport with steps 80-120 to reduce inertial slip, lower release to 0.02 above pad for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 7,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 153502
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.07684605213302279,
+        "y": 0.060652339029862834,
+        "yaw": -0.1945399911643394,
+        "mass": 6.336073416321237,
+        "friction": 0.5594457233520475,
+        "seed": 253503
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1350,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates weak grasp: close_gripper(1.0) insufficient and grasp point cz+0.02 above center causes slip, plus 0.05 drop is unstable. Fix: descend to cube center for full finger contact, use high force 50.0 to hold 1kg, lift high for clearance, then gentle low placement at pz+0.03 to set cube on pad stably before release.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.05), steps=60)\n    env.move_to((..."
+  },
+  {
+    "trajectory": 7,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 153502
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.04927783570161473,
+        "y": 0.018429551858189674,
+        "yaw": 0.02602728714777469,
+        "mass": 8.752338537352422,
+        "friction": 0.4886225699840758,
+        "seed": 253501
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1039,
+    "frames_path": "frames\\b3_t07_fstrip.json",
+    "rationale": "Failure with mass=1.0kg: close_gripper(1.0N) cannot support ~9.8N weight, so cube slips during lift/transport causing -0.249 margin. Fix: use high grip force 100N to hold heavy cube, approach lower (0.01) for solid grasp, lift high and move slowly (more steps) for stable trajectory, and place low (0.015 above pad) then open to avoid drop/bounce, then retreat vertically.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 7,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 353502
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.07684605213302279,
+        "y": 0.060652339029862834,
+        "yaw": -0.1945399911643394,
+        "mass": 6.336073416321237,
+        "friction": 0.5594457233520475,
+        "seed": 253503
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1570,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with margin -0.25 indicates missed or slipped grasp. Original grasped at cz+0.02 (above center, fingertips above cube) with only force 1.0, insufficient for 1kg with mu=0.8 (needs >6N). Fix: descend TCP to cube center cz for full finger contact, increase close_gripper to 50.0 for secure hold, and place low at pz+0.03 for stable set-down instead of 0.05 drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.05), steps=60)\n    env.move_to((c..."
+  },
+  {
+    "trajectory": 8,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.03358842316810681,
+      "y": -0.13191118372665125,
+      "yaw": 0.36070088968553393,
+      "mass": 10.48541515874028,
+      "friction": 0.45055433221570407,
+      "seed": 154010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.2821995393983254,
+      "scenario": {
+        "x": -0.03358842316810681,
+        "y": -0.13191118372665125,
+        "yaw": 0.36070088968553393,
+        "mass": 10.48541515874028,
+        "friction": 0.45055433221570407,
+        "seed": 154010,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.2821995393983254,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1311,
+    "frames_path": null,
+    "rationale": "Failure with mass=10.485kg indicates grip force 1.0 insufficient leading to slip/drop (margin -0.1). Fixed by: deeper grasp (cz+0.01 to enclose cube), maximal close_gripper force 100N to hold heavy mass, higher lift and slower steps for stable transport, low gentle placement (pz+0.02) to avoid bounce/tip on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 8,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 154009
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 593,
+    "tokens_out": 1401,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 and margin -0.36 indicates dropped/slipped cube. Original close_gripper(1.0) force too low for 1kg, grasp at cz+0.02 too high for firm grasp, fast 60-step carries cause inertial slip, and release from pz+0.05 drops too high. Fix: descend to cz+0.01 for deep stable grasp, use max force 100.0, use slow high-lift and transport (100-120 steps) to reduce dynamics, and lower to pz+0.02 for gentle placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 8,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 154009
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.0024597702083474227,
+        "y": 0.04971139319014431,
+        "yaw": 0.18164126476519582,
+        "mass": 6.758430159881001,
+        "friction": 0.6014334852765169,
+        "seed": 254001
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1003,
+    "frames_path": "frames\\b3_t08_fstrip.json",
+    "rationale": "Failure due to insufficient grip force: 1.0N cannot hold 1.0kg cube (~9.81N weight) during lift/transport, causing slip/drop (margin -0.36). Fixed by increasing close_gripper to 50N for secure friction grasp, slower lift/transport steps, and lower release to 0.03m above pad for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 8,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 354006
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 599,
+    "tokens_out": 1334,
+    "frames_path": null,
+    "rationale": "Original failed with heavy 1kg cube: force 1.0 insufficient causing slip during lift/transit (large -0.36 margin = dropped far from pad), grasp at +0.02 too high for firm enveloping grasp, and release at +0.05 drops from too high. Fix: grasp centered at cube pos for full finger contact, use very high close force 100.0 to hold 1kg, higher/slower lift and transit for clearance, and low 0.02 release for gentle stable placement on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz), steps=80)\n    env.close_gripper(10..."
+  },
+  {
+    "trajectory": 9,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.043901983637097006,
+      "y": -0.01377234717024492,
+      "yaw": 0.18013977519278657,
+      "mass": 1.9485551883543417,
+      "friction": 0.995416706510804,
+      "seed": 154510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.14519351912791434,
+        "y": -0.07129024329144514,
+        "yaw": 0.2688638409225512,
+        "mass": 6.535529992252403,
+        "friction": 0.44942218229285014,
+        "seed": 254500
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1197,
+    "frames_path": null,
+    "rationale": "Failure on heavy mass 1.949kg with force=1.0 caused slip; grasp at cz+0.02 was too high (edge grasp) and fast 60-step lifts add inertia. Fix: descend to cz+0.005 for deep enveloping grasp, use high close_gripper force 50.0 for heavy cube, slower high-step lifts/carries for stability, and low 0.02 release over pad for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 9,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 154509
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.14519351912791434,
+        "y": -0.07129024329144514,
+        "yaw": 0.2688638409225512,
+        "mass": 6.535529992252403,
+        "friction": 0.44942218229285014,
+        "seed": 254500
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1402,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates grip force 1.0 was too low causing slip during lift (margin -0.245 = cube never reached pad). Increased close_gripper to 30.0 for firm grasp of heavy cube. Lowered grasp to cz+0.01 for full finger contact, added slower multi-stage approach/lift with higher steps for stability, and lowered placement to pz+0.02 with slow descent to avoid drop/bounce, then retreat.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.03), steps=80)\n    env.move_to((..."
+  },
+  {
+    "trajectory": 9,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 154509
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.14519351912791434,
+        "y": -0.07129024329144514,
+        "yaw": 0.2688638409225512,
+        "mass": 6.535529992252403,
+        "friction": 0.44942218229285014,
+        "seed": 254500
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1046,
+    "frames_path": "frames\\b3_t09_fstrip.json",
+    "rationale": "Failure was insufficient grip force: 1.0N cannot hold 1.0kg cube (~9.8N weight) causing slip/drop with margin -0.245. Increased close_gripper force to 50N for secure grasp, raised lift to 0.3m with slower steps=80 for stable transport, and lowered placement to 0.02m above pad for gentle set-down to ensure placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 9,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 354503
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 599,
+    "tokens_out": 1315,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with force=1.0 is grip slip: 1N cannot hold ~9.8N weight, margin -0.24 indicates drop far from pad. Fix: grasp slightly lower (+0.01) for firm contact, use max force 100.0, use higher lift (+0.25) and slower steps (80-100) for stable transport, and place low (+0.03) over pad before opening to ensure placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 10,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.11884707231348998,
+      "y": 0.0154110471325975,
+      "yaw": 0.3129420238580125,
+      "mass": 3.613640401950193,
+      "friction": 0.7606392618187994,
+      "seed": 155010,
+      "id": "b1_rand_0"
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 602,
+    "tokens_out": 1325,
+    "frames_path": null,
+    "rationale": "Failure on mass=3.614 with force=1.0 indicates insufficient grip force causing slip during lift/transport. Fixed by using max force 100.0, deeper grasp at +0.01, higher lift/transit at +0.35 to avoid drag/collision, slower moves (80-100 steps) for stability, and low gentle release at +0.02 over pad to prevent drop bounce (previous +0.05 drop too high).",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 10,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 155002
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.04814983578776422,
+        "y": -0.02582548435406165,
+        "yaw": -0.04526597581440295,
+        "mass": 7.563791197375471,
+        "friction": 0.4675180993173166,
+        "seed": 255002
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1097,
+    "frames_path": null,
+    "rationale": "Original failed with mass=1.0 using close_gripper(1.0) causing slip during lift/transport (margin -0.25). Increased grip force to 20.0 for heavy cube, grasped lower at +0.01 for full finger contact, lifted higher (+0.25) with slower steps=100 for stable trajectory, and placed lower (+0.02 vs +0.05) to reduce drop bounce for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=100)\n    env.move_to((cx, cy, cz + 0.01), steps=100)\n    env.close_g..."
+  },
+  {
+    "trajectory": 10,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 155002
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 799,
+    "tokens_out": 1063,
+    "frames_path": "frames\\b3_t10_fstrip.json",
+    "rationale": "Failure is weak grasp: mass=1.0kg needs ~9.81N to hold, but close_gripper(1.0) provides only 1N so cube slips/drops causing -0.25 margin. Fix increases grip force to 100N for secure hold, grasps lower (+0.01) for stable centering, lifts higher (+0.25) for clearance, and releases low (+0.02) over pad for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 10,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 355000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.04814983578776422,
+        "y": -0.02582548435406165,
+        "yaw": -0.04526597581440295,
+        "mass": 7.563791197375471,
+        "friction": 0.4675180993173166,
+        "seed": 255002
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1574,
+    "frames_path": null,
+    "rationale": "Prior grasp at cz+0.02 was too high for fingertip contact on cube center, causing slip/miss, and close force 1.0 is inadequate for 1kg mass with friction 0.8. Fixed by descending to cz+0.005 for full side contact, closing with 50 force, adding settle and high slow lift to 0.25 to avoid drag, then descending to pz+0.04 for gentle set-down instead of 0.05 drop, preventing bounce/topple that caused -0.25 margin.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 11,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.06158205285064375,
+      "y": -0.08585927612522998,
+      "yaw": 0.44266289472183673,
+      "mass": 4.862788156057676,
+      "friction": 0.9796609776374074,
+      "seed": 155510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.29239939340042964,
+      "scenario": {
+        "x": -0.06158205285064375,
+        "y": -0.08585927612522998,
+        "yaw": 0.44266289472183673,
+        "mass": 4.862788156057676,
+        "friction": 0.9796609776374074,
+        "seed": 155510,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.29239939340042964,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1437,
+    "frames_path": null,
+    "rationale": "Failure with mass=4.863kg using close_gripper(1.0) is insufficient grip force causing slip/drop during lift/transit (margin -0.1). Yaw 0.443 irrelevant for top-down grasp. Fix: grasp lower (cz+0.01) for centered contact, use high force 50.0 for heavy mass with high friction, lift higher (+0.3) with slow steps=120 to avoid inertial slip, transit slow, descend in two stages to pz+0.02 for gentle contact instead of 0.05 drop, then retreat. Maintains correct pick-place behavior.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 11,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 155501
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.0444820754992777,
+        "y": 0.012755078907437323,
+        "yaw": -0.024257398365057914,
+        "mass": 6.554807584549082,
+        "friction": 0.44955656359357277,
+        "seed": 255501
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1438,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 and margin -0.088 indicates grasp slip / failed lift: close_gripper(1.0) is too weak for 1kg cube. Fix: grasp deeper (cz+0.01 vs +0.02), use high grip force 50.0, lift higher (+0.25) and slower (steps=100) to avoid inertial slip, then place low (+0.03) over pad center and retreat vertically for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 11,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 155501
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.0444820754992777,
+        "y": 0.012755078907437323,
+        "yaw": -0.024257398365057914,
+        "mass": 6.554807584549082,
+        "friction": 0.44955656359357277,
+        "seed": 255501
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1483,
+    "frames_path": "frames\\b3_t11_fstrip.json",
+    "rationale": "Original 1.0N grip cannot hold 1.0kg cube (needs mg/(2*mu)=~6.1N). Increased to 50N, grasped deeper at cz+0.01, lift higher/slower (0.3m, 100 steps) to prevent slip/inertia drop, and placed low at pz+0.02 for gentle stable release fixing -0.0882 margin.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 11,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 355505
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.219946561841979,
+      "scenario": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0,
+        "mass": 1.0,
+        "friction": 0.8,
+        "seed": 355505
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.219946561841979,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1001,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 using force 1.0 indicates slip/drop. Increased grip force to 10.0 for heavy cube. Lowered grasp to cz+0.01 to center fingers on cube for stable friction grip, lowered place to pz+0.03 for gentle set-down to avoid bounce/tip, and used longer/higher lift for secure transport.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 12,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.06706409722804549,
+      "y": 0.132437076851548,
+      "yaw": -0.34857103924117905,
+      "mass": 6.179976177408307,
+      "friction": 0.7982294685734213,
+      "seed": 156010,
+      "id": "b1_rand_0"
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "details": {
+      "stage": 3
+    },
+    "tokens_in": 602,
+    "tokens_out": 1608,
+    "frames_path": null,
+    "rationale": "Failure was slip/drop of heavy 6.18 mass cube: grasp at cz+0.02 is at top of cube giving little contact, and close_gripper(1.0) is too weak for heavy mass, plus fast 60-step lift and 0.05 drop causes instability. Fix: grasp at center cz for full finger envelopment, use max force 100.0, slower high lift to 0.3, slow gentle descent to 0.015 for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 12,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 156009
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06851932701194333,
+        "y": 0.07885544281355181,
+        "yaw": -0.041179786390566187,
+        "mass": 7.343955058984829,
+        "friction": 0.631815942368063,
+        "seed": 256000
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1496,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with close_gripper(1.0) indicates insufficient grip force: required force ~m*g/(2*mu)=~6N, so 1.0 slips/drops. Fixed with high force 50.0. Also deepened grasp from cz+0.02 to cz+0.01 for stable enclosure, added dwell, higher lift 0.25 for clearance, and lower placement pz+0.04 for gentle stable release instead of 0.05 drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 12,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 156009
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06851932701194333,
+        "y": 0.07885544281355181,
+        "yaw": -0.041179786390566187,
+        "mass": 7.343955058984829,
+        "friction": 0.631815942368063,
+        "seed": 256000
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1234,
+    "frames_path": "frames\\b3_t12_fstrip.json",
+    "rationale": "Failure was insufficient grip force: 1.0N cannot hold 1.0kg cube (~9.8N weight) with friction 0.8, so cube slipped (margin -0.269). Fix: increase close_gripper to 50N for secure grasp, grasp lower at cz+0.01 for full contact, lift higher/slower with steps=100 for stable transport, and release lower at pz+0.02 for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 12,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 356000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06851932701194333,
+        "y": 0.07885544281355181,
+        "yaw": -0.041179786390566187,
+        "mass": 7.343955058984829,
+        "friction": 0.631815942368063,
+        "seed": 256000
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1298,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates weak grasp: close_gripper(1.0) cannot hold 1kg and grasp at cz+0.02 is at top edge causing slip, then drop far from pad (margin -0.269). Fix: grasp centered at cz+0.005 for full contact, use high force 50.0, lift higher/slower (steps 100) to avoid inertial slip, and place low at pz+0.03 with slow descent for stable release instead of 0.05 drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 13,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.13514451038607175,
+      "y": 0.11907759198824433,
+      "yaw": -0.34234881777696313,
+      "mass": 8.353475031413092,
+      "friction": 0.6232013998329804,
+      "seed": 156510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.039817670560748364,
+        "y": 0.001128165542648718,
+        "yaw": 0.0839588247146007,
+        "mass": 8.871568179745251,
+        "friction": 0.4737934521650127,
+        "seed": 256501
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1091,
+    "frames_path": null,
+    "rationale": "Failure scenario has mass=8.353kg vs gripper force 1.0, so grasp slips/drops during lift/transport causing -0.1 margin. Fix: increase close_gripper force to 100 to support heavy weight with friction 0.623, lift higher to 0.25 for clearance, use slower transport (steps=100) to reduce swing, and place low at +0.02 for gentle set-down stability instead of dropping from 0.05.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 13,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 156507
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.04636631934323911,
+        "y": 0.02032729065201519,
+        "yaw": -0.0015730232007649114,
+        "mass": 7.034071386007479,
+        "friction": 0.44577543313374357,
+        "seed": 256504
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1437,
+    "frames_path": null,
+    "rationale": "Prior grasp at cz+0.02 only pinched top edge and force 1.0 insufficient for 1kg mass, causing slip during lift/transit. Drop from pz+0.05 causes bounce off pad. Fix: descend to cube center cz for full finger contact, close with high force 50 for heavy mass, lift higher to 0.3 for safe transit, and release low at 0.02 for stable placement with slower 100-step moves.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.3), steps=100)\n    env.move_to((cx, cy, cz), steps=100)\n    env.close_gripper(5..."
+  },
+  {
+    "trajectory": 13,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 156507
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.04636631934323911,
+        "y": 0.02032729065201519,
+        "yaw": -0.0015730232007649114,
+        "mass": 7.034071386007479,
+        "friction": 0.44577543313374357,
+        "seed": 256504
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1160,
+    "frames_path": "frames\\b3_t13_fstrip.json",
+    "rationale": "Failure was weak grasp: 1.0N cannot hold 1.0kg with friction 0.8 (needs >~6N). Increased close_gripper force to 50N, descended lower to cube center (+0.01) for solid contact, lifted higher (+0.25) for clearance, and placed lower (+0.02) above pad to minimize drop and ensure stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 13,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 356500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.04636631934323911,
+        "y": 0.02032729065201519,
+        "yaw": -0.0015730232007649114,
+        "mass": 7.034071386007479,
+        "friction": 0.44577543313374357,
+        "seed": 256504
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1372,
+    "frames_path": null,
+    "rationale": "Failure with margin -0.29 on centered cube indicates grasp never held. close_gripper(1.0) provides ~1N which cannot support mass=1.0kg (~9.8N gravity), so cube slipped immediately. Fix: grasp lower (cz+0.01 vs +0.02 for full finger contact) and increase force to 50.0 for secure hold, lift higher for clearance, and release lower (pz+0.03 vs +0.05) for stable placement on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 14,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.14885575186446914,
+      "y": -0.10556691473740515,
+      "yaw": -0.14575047991384704,
+      "mass": 4.42997337866082,
+      "friction": 0.5343893914899417,
+      "seed": 157010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.3819918572318485,
+      "scenario": {
+        "x": -0.14885575186446914,
+        "y": -0.10556691473740515,
+        "yaw": -0.14575047991384704,
+        "mass": 4.42997337866082,
+        "friction": 0.5343893914899417,
+        "seed": 157010,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.3819918572318485,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1258,
+    "frames_path": null,
+    "rationale": "Failure with mass=4.43kg and friction=0.534 is grip slip: close_gripper(1.0) is far too weak for heavy cube, causing drop during lift (margin -0.1). Grasp at cz+0.02 is too high for stable pinch and 0.05 drop onto pad causes tip/bounce. Fix: go deeper (cz+0.005) for full finger contact, use high force 50.0 to hold heavy mass, add settle move, lift higher/slower with more steps (100) to avoid swing, and place low (0.02-0.03) then open and retreat vertically for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 14,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 157000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.1457903005025056,
+        "y": -0.017576585815439,
+        "yaw": -0.08150013884203744,
+        "mass": 4.6030937624306425,
+        "friction": 0.6316745028494475,
+        "seed": 257000
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1595,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0/friction=0.8 and margin -0.16 indicates weak grasp and high drop. Original used close_gripper(1.0) insufficient for 1kg cube causing slip, grasp height cz+0.02 too high for full finger contact, and place height pz+0.05 drops from 5cm causing bounce/miss. Fix: grasp low at cz+0.01 for enveloping grasp, increase force to 50.0 to hold mass, lift higher to 0.25 for clearance, place low at pz+0.025 for gentle set-down with settle step before retreat for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 14,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 157000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.1457903005025056,
+        "y": -0.017576585815439,
+        "yaw": -0.08150013884203744,
+        "mass": 4.6030937624306425,
+        "friction": 0.6316745028494475,
+        "seed": 257000
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 739,
+    "frames_path": "frames\\b3_t14_fstrip.json",
+    "rationale": "Failure due to insufficient grip force: 1.0N cannot hold 1.0kg cube (~9.81N weight) during lift/transport, causing slip/drop with margin -0.16. Fix: increase close_gripper to 50N for secure grasp, grasp lower (cz+0.01) for full contact, lift higher (+0.3) for clearance, and place low (+0.03) for gentle stable release on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 14,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 357000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.1457903005025056,
+        "y": -0.017576585815439,
+        "yaw": -0.08150013884203744,
+        "mass": 4.6030937624306425,
+        "friction": 0.6316745028494475,
+        "seed": 257000
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1271,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 using close_gripper(1.0) indicates grip force too low causing slip/drop (margin -0.16 = lost cube). Grasp at cz+0.02 too high for firm grasp and release at pz+0.05 drops from 5cm causing bounce off pad. Fix: increase grip force to 50.0, descend deeper to cz+0.01 for centered grasp, lift higher for clearance, descend to pz+0.015 for gentle set-down to ensure placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 15,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.08338110529132264,
+      "y": 0.08298459300802116,
+      "yaw": 0.083753474082221,
+      "mass": 10.81159112085736,
+      "friction": 0.30758409836028994,
+      "seed": 157510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.15613607664653575,
+      "scenario": {
+        "x": 0.08338110529132264,
+        "y": 0.08298459300802116,
+        "yaw": 0.083753474082221,
+        "mass": 10.81159112085736,
+        "friction": 0.30758409836028994,
+        "seed": 157510,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.15613607664653575,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1004,
+    "frames_path": null,
+    "rationale": "Failure with mass=10.812kg and friction=0.308 indicates slip/drop from weak grasp (force 1.0) and drop from 0.05m. Fix: max grip force 100.0 for heavy low-friction cube, slower lift/carry steps=120 for stability, lower release to 0.03m to reduce impact/bounce, higher clearance 0.25 for safe transport.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 15,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 157506
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.2203872224652028,
+      "scenario": {
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0,
+        "mass": 1.0,
+        "friction": 0.8,
+        "seed": 157506
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.2203872224652028,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1157,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates slip due to weak grasp (force 1.0) and high grasp (+0.02 above center) and high drop (+0.05). Fix: grasp at center (cz+0.0) for full finger contact, use max force 10.0 to hold 1kg cube, lift to clear, then descend to 0.02 above pad for gentle stable placement before opening.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.0), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 15,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 157506
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.11543746279426725,
+        "y": 0.060588566326920806,
+        "yaw": 0.09066987419666328,
+        "mass": 9.892625124398215,
+        "friction": 0.9683499992756627,
+        "seed": 257500
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1095,
+    "frames_path": "frames\\b3_t15_fstrip.json",
+    "rationale": "Original close_gripper(1.0) gives 1N, insufficient to hold 1.0kg cube (~9.81N weight, ~6N needed with friction 0.8). Cube slipped, causing -0.1152 margin. Fixed by increasing grip force to 100N, lowering grasp to +0.01 and release to +0.02 for stable placement, and using higher clearance and steps for stable lift trajectory.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 15,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 357500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.11543746279426725,
+        "y": 0.060588566326920806,
+        "yaw": 0.09066987419666328,
+        "mass": 9.892625124398215,
+        "friction": 0.9683499992756627,
+        "seed": 257500
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1425,
+    "frames_path": null,
+    "rationale": "Failure at nominal pose with 1kg mass indicates weak grasp and unstable place. 1.0 force insufficient for 1kg, +0.02 grasp too high causing slip, lift +0.2 too low and place +0.05 drop causes bounce/miss by 0.115m. Fix: grasp at center +0.01 for full finger contact, close with 100 force, lift high +0.3 for safe transport, descend to +0.06 for gentle low release on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.3), steps=80)\n    env.move_to((cx, c..."
+  },
+  {
+    "trajectory": 16,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.06514401135936322,
+      "y": -0.06172166977837899,
+      "yaw": 0.4812557081973903,
+      "mass": 3.2601402240030666,
+      "friction": 0.6056761890886749,
+      "seed": 158010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.012619500808376649,
+        "y": -0.06780285258185359,
+        "yaw": -0.24279284212026553,
+        "mass": 6.975414762282894,
+        "friction": 0.7473320380449687,
+        "seed": 258001
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1357,
+    "frames_path": null,
+    "rationale": "Failure with mass=3.26 due to weak grasp (force 1.0) and high grasp point (cz+0.02 = top-edge pinch) causing slip, plus 5cm drop onto pad causing bounce/miss (margin -0.1). Fix: descend to cube center (cz-0.005) for full side contact, close with high force 50.0 to hold heavy/low-friction cube, lift higher (+0.25) for clearance, and lower to pz+0.02 for gentle set-down release to ensure placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 16,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 158000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.012619500808376649,
+        "y": -0.06780285258185359,
+        "yaw": -0.24279284212026553,
+        "mass": 6.975414762282894,
+        "friction": 0.7473320380449687,
+        "seed": 258001
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1689,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0 indicates grip force 1.0 was insufficient and caused slip/drop (margin -0.25 ~ drop). Increased close_gripper force to 50.0 for secure grasp, deepened grasp to cz+0.01, raised lift to +0.30 for vertical clearance before lateral transit to avoid drag/knock, and lowered placement to gentle +0.08 release with slower steps for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 16,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 158000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.012619500808376649,
+        "y": -0.06780285258185359,
+        "yaw": -0.24279284212026553,
+        "mass": 6.975414762282894,
+        "friction": 0.7473320380449687,
+        "seed": 258001
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1293,
+    "frames_path": "frames\\b3_t16_fstrip.json",
+    "rationale": "Failure with mass=1.0kg and force=1.0N: 1N cannot support ~9.81N weight even with friction 0.8, so cube slips during lift/transport causing -0.249 margin. Fix: increase close_gripper to 50N for secure friction grasp, grasp lower (+0.01) for full contact, lift higher (+0.25) for clearance with slower steps, and release lower (+0.02) over pad for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.01), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 16,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 358000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.012619500808376649,
+        "y": -0.06780285258185359,
+        "yaw": -0.24279284212026553,
+        "mass": 6.975414762282894,
+        "friction": 0.7473320380449687,
+        "seed": 258001
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1470,
+    "frames_path": null,
+    "rationale": "Failure with margin -0.25 on nominal 1kg cube indicates grasp slip/drop during lift/transport. Original close_gripper(1.0) is far too weak for 1.0 mass. Fixed with high force 50.0, deeper grasp at cz+0.01 to center fingers, higher lift 0.25 and slower steps=100 for stable transport, and lower release at pz+0.03 for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 17,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.08401198034493325,
+      "y": -0.003217518964859889,
+      "yaw": -0.2651472607956119,
+      "mass": 5.661135002436731,
+      "friction": 0.571819014024195,
+      "seed": 158510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.011047863829724475,
+        "y": 0.008190149835319877,
+        "yaw": -0.08567098140627094,
+        "mass": 9.34056616807307,
+        "friction": 0.3044132335872216,
+        "seed": 258500
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1326,
+    "frames_path": null,
+    "rationale": "Failure due to insufficient grasp: close_gripper(1.0) cannot hold 5.66kg mass with friction 0.57, causing slip/drop (margin -0.1). Shallow grasp at cz+0.02 and high release at pz+0.05 worsen stability. Fix: deeper grasp to cz-0.01 for full contact, max force 100.0 for heavy mass, slower/higher lift (steps=100) to prevent slip, and low gentle release at pz+0.03 to place stably on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.03), steps=60)\n    env.move_to((..."
+  },
+  {
+    "trajectory": 17,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 158500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.011047863829724475,
+        "y": 0.008190149835319877,
+        "yaw": -0.08567098140627094,
+        "mass": 9.34056616807307,
+        "friction": 0.3044132335872216,
+        "seed": 258500
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1697,
+    "frames_path": null,
+    "rationale": "Failure at mass=1.0 with force=1.0 indicates slip: 1N cannot hold 1kg (~9.8N weight). Increased close_gripper to 50N to provide >6N needed with friction 0.8. Raised lift to 0.25 and slowed moves with more steps for stable transport, lowered release to 0.03 for gentle placement to avoid bounce/drop.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=100)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 17,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 158500
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.011047863829724475,
+        "y": 0.008190149835319877,
+        "yaw": -0.08567098140627094,
+        "mass": 9.34056616807307,
+        "friction": 0.3044132335872216,
+        "seed": 258500
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1180,
+    "frames_path": "frames\\b3_t17_fstrip.json",
+    "rationale": "Failure is grasp slip due to insufficient grip force: 1.0N cannot support 1.0kg cube (~9.81N weight, need >6.2N even with friction 0.8). Increased close_gripper to 50N for secure hold during lift/transport, and lowered release to pz+0.02 for stable placement with no drop bounce.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.2), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_grip..."
+  },
+  {
+    "trajectory": 17,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 358503
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.011047863829724475,
+        "y": 0.008190149835319877,
+        "yaw": -0.08567098140627094,
+        "mass": 9.34056616807307,
+        "friction": 0.3044132335872216,
+        "seed": 258500
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 2033,
+    "frames_path": null,
+    "rationale": "Original failed with empty grasp / drop: grasp at cz+0.02 closes above cube center and force 1.0 is inadequate for 1kg mass with friction 0.8, so cube slips/missed (margin -0.2 ~ cube-to-pad distance). Fix: descend to cz+0.005 for centered side grasp, increase close_gripper to 50.0 to hold 1kg, lift higher/slower (0.3, 100 steps) to avoid slip, and place low (0.03->0.02) then open for stable set on pad before retreat.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gr..."
+  },
+  {
+    "trajectory": 18,
+    "arm": "B1",
+    "counterexample": {
+      "x": -0.009850957845716934,
+      "y": -0.1076397618314288,
+      "yaw": 0.22847058107974527,
+      "mass": 10.958658989186512,
+      "friction": 0.9267934252864871,
+      "seed": 159010,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed counterexample",
+    "details": {
+      "stage": 1,
+      "margin": -0.2506698861231721,
+      "scenario": {
+        "x": -0.009850957845716934,
+        "y": -0.1076397618314288,
+        "yaw": 0.22847058107974527,
+        "mass": 10.958658989186512,
+        "friction": 0.9267934252864871,
+        "seed": 159010,
+        "id": "b1_rand_0"
+      },
+      "result": {
+        "truth_success": false,
+        "truth_success_alt": false,
+        "margin": -0.2506698861231721,
+        "final_pos": [
+          0,
+          0,
+          0
+        ],
+        "steps": 0,
+        "agreed": true,
+        "trace": []
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1121,
+    "frames_path": null,
+    "rationale": "Failure scenario has mass=10.959kg. Original close_gripper(1.0) is far too weak to hold heavy cube, causing slip/drop and -0.1 margin. Fix: use maximum grip force 100.0, slower lift/transport with more steps for heavy load, and lower placement to pz+0.02 instead of +0.05 to avoid drop bounce for stable placement on pad.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.02), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 18,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 159000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.022093203592861765,
+        "y": -0.026080125013184657,
+        "yaw": -0.11150437343857139,
+        "mass": 8.121352600402119,
+        "friction": 0.6065393854145216,
+        "seed": 259003
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1306,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0, friction=0.8 due to insufficient grip force: 1.0N cannot hold 1kg (needs >m*g/(2*mu)~6.1N). Descend was also too high (cz+0.02) giving weak pinch, and release at pz+0.05 drops too far causing bounce/miss (margin -0.34). Fix: descend to cz+0.005 for full enclosure, close with 30N for secure hold, add settle step, lift high for clearance, and lower release to pz+0.03 for stable placement.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.3), steps=80)\n    env.move_to((cx, cy, cz + 0.005), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 18,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 159000
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.01498064538571689,
+        "y": -0.045977411767373313,
+        "yaw": -0.14599821605176622,
+        "mass": 8.938280731384069,
+        "friction": 0.5631775280355988,
+        "seed": 259002
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1438,
+    "frames_path": "frames\\b3_t18_fstrip.json",
+    "rationale": "Failure due to insufficient grip force: 1.0N cannot hold 1.0kg cube (weight ~9.81N) with friction 0.8, so cube slips/drops. Increased close_gripper force to 100N for secure frictional grasp, kept low approach (0.02) and low place (0.02) with high lift (0.25) for stable transport and gentle release.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=60)\n    env.move_to((cx, cy, cz + 0.02), steps=60)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 18,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 359002
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.022093203592861765,
+        "y": -0.026080125013184657,
+        "yaw": -0.11150437343857139,
+        "mass": 8.121352600402119,
+        "friction": 0.6065393854145216,
+        "seed": 259003
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1334,
+    "frames_path": null,
+    "rationale": "Failure with mass=1.0kg friction=0.8 indicates slip: close_gripper(1.0) gives ~1N normal force, but needed ~m*g/(2*mu)=6.1N minimum. Increased to 50.0 for secure grasp. Also deepened grasp from cz+0.02 to cz+0.005 to center fingers on cube, increased lift/approach height and steps 60->100 for stable trajectory, and lowered release from pz+0.05 to pz+0.02 for gentle placement without drop/bounce.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=100)\n    env.move_to((cx, cy, cz + 0.005), steps=100)\n    env.close_..."
+  },
+  {
+    "trajectory": 19,
+    "arm": "B1",
+    "counterexample": {
+      "x": 0.10360625505080098,
+      "y": 0.026610069939988074,
+      "yaw": 0.45482289744580706,
+      "mass": 2.954416643797773,
+      "friction": 0.20918361085617,
+      "seed": 159510,
+      "id": "b1_rand_0"
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": 0.003783857594791773,
+        "y": 0.006385669668239724,
+        "yaw": 0.016639010601595006,
+        "mass": 7.874310259406058,
+        "friction": 0.7984294095252769,
+        "seed": 259502
+      }
+    },
+    "tokens_in": 602,
+    "tokens_out": 1337,
+    "frames_path": null,
+    "rationale": "Failure is slip/drop from weak grasp: mass 2.954 with friction 0.209 needs high normal force. Original close_gripper(1.0) is far too weak and placement drop from 0.05m adds disturbance. Fix: descend to cz+0.01 for full finger engagement, close with 80.0 force, use slower high-step lifts/transports to reduce inertial slip, and place low at pz+0.015 before opening for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  },
+  {
+    "trajectory": 19,
+    "arm": "B2",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 159506
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06040356488669198,
+        "y": 0.012844495198933992,
+        "yaw": 0.21256991038815198,
+        "mass": 5.663693230723486,
+        "friction": 0.7700141342602064,
+        "seed": 259503
+      }
+    },
+    "tokens_in": 593,
+    "tokens_out": 1565,
+    "frames_path": null,
+    "rationale": "Original failed with mass=1.0 because close_gripper(1.0) is too weak to hold 1kg cube, causing slip/drop with margin -0.19. Grasp at cz+0.02 was too high and moves at 60 steps too fast/jerky. Fix: grasp lower at cz+0.01, increase grip force to 50.0 for secure hold, use higher lift 0.25 and slower moves steps=100 for stable trajectory, and release low at pz+0.08 over pad for placement stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=100)\n    env.move_to((cx, cy, cz + 0.05), steps=100)\n    env.move_to..."
+  },
+  {
+    "trajectory": 19,
+    "arm": "B3",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 159506
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06040356488669198,
+        "y": 0.012844495198933992,
+        "yaw": 0.21256991038815198,
+        "mass": 5.663693230723486,
+        "friction": 0.7700141342602064,
+        "seed": 259503
+      }
+    },
+    "tokens_in": 799,
+    "tokens_out": 1234,
+    "frames_path": "frames\\b3_t19_fstrip.json",
+    "rationale": "Failure with mass=1.0kg and force=1.0N is a slip/drop: 1N cannot hold ~9.81N weight. Increased close_gripper force to 30N for secure grasp. Lowered grasp to +0.01 and release to +0.02 for better contact/stability, raised transit to +0.25 and increased steps to 80 for stable lift/transport.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, cy, cz + 0.01), steps=80)\n    env.close_gri..."
+  },
+  {
+    "trajectory": 19,
+    "arm": "B2_alt",
+    "counterexample": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0,
+      "mass": 1.0,
+      "friction": 0.8,
+      "seed": 359506
+    },
+    "accepted": false,
+    "reason": "Failed short falsifier rerun",
+    "details": {
+      "stage": 3,
+      "failing_scenario": {
+        "x": -0.06040356488669198,
+        "y": 0.012844495198933992,
+        "yaw": 0.21256991038815198,
+        "mass": 5.663693230723486,
+        "friction": 0.7700141342602064,
+        "seed": 259503
+      }
+    },
+    "tokens_in": 599,
+    "tokens_out": 1366,
+    "frames_path": null,
+    "rationale": "Original failed at nominal pose with margin -0.19 (dropped/lost cube). Root causes: close_gripper(1.0) too weak for 1kg mass causing slip during lift/transfer, grasp at cz+0.02 is fingertip/top-only grasp, and release at pz+0.05 is too high causing bounce/tip off pad. Fix: deeper grasp to cz+0.01, high grip force 50.0 to hold 1kg with friction 0.8, higher/slower lift (0.25, more steps) for stable trajectory, and low gentle placement at pz+0.02 for stability.",
+    "code_preview": "def policy(env, rng):\n    env.open_gripper()\n    cx, cy, cz = env.get_object_pos(\"cube\")\n    px, py, pz = env.get_object_pos(\"pad\")\n    env.move_to((cx, cy, cz + 0.25), steps=80)\n    env.move_to((cx, ..."
+  }
+]

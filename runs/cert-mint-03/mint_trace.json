@@ -1,0 +1,38 @@
+{
+  "acceptance": {
+    "accepted": true,
+    "details": {
+      "stage": 3
+    },
+    "reason": "accepted"
+  },
+  "arm": "B2",
+  "counterexample": {
+    "friction": 0.8,
+    "mass": 1.0,
+    "seed": 780000,
+    "x": 0.0,
+    "y": 0.0,
+    "yaw": 0.0
+  },
+  "held_out_rate": 0.75,
+  "initial_program": {
+    "cost_usd": 0.003992,
+    "program_id": "4a93ec8819a61b2a",
+    "rationale": "Simple pick-and-place: query cube and pad positions, approach from above, grasp cube, lift, transport above pad, lower, release, and retreat. Uses only allowed primitives with no imports and no unneeded randomness.",
+    "source_file": "program_initial.py",
+    "tokens_in": 154,
+    "tokens_out": 894
+  },
+  "repair_attempted": true,
+  "repair_proposal": {
+    "cost_usd": 0.0059765,
+    "program_id": "bec73dec45a88431",
+    "rationale": "Failure at mass=1.0 with force=10 indicates grip slip / failed lift. Grasp at +0.02 was too high for stable pinch and lift at 0.15 with fast steps risks slip. Fix: deeper grasp (+0.005), max close force 100 to hold 1kg with friction 0.8, slower high lift (+0.20, steps=100) for stable transport, and low gentle placement (+0.02) to avoid drop bounce causing -0.22 margin.",
+    "source_file": "program_candidate_v1.py",
+    "tokens_in": 640,
+    "tokens_out": 1218
+  },
+  "run_id": "cert-mint-03",
+  "spent_usd": 0.009968
+}

@@ -1,0 +1,1020 @@
+{
+  "run_id": "cert-full-01",
+  "pilot": false,
+  "episodes_completed": 2459,
+  "episodes_planned": 2459,
+  "program_id": "bec73dec45a88431",
+  "program_sha256": "bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55",
+  "headline_state": {
+    "mode": "state",
+    "k_pass": 35,
+    "n_total": 59,
+    "n_cell": 59,
+    "delta": 0.05,
+    "bound": 0.4778222558996564,
+    "target_p": 0.95,
+    "certified": false
+  },
+  "headline_camera": {
+    "mode": "camera",
+    "k_pass": 35,
+    "n_total": 59,
+    "n_cell": 59,
+    "delta": 0.05,
+    "bound": 0.40901745544631996,
+    "target_p": 0.85,
+    "certified": false
+  },
+  "cells": {
+    "cell_00": {
+      "cell_idx": 0,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          1.0,
+          3.625
+        ],
+        "friction": [
+          0.1,
+          0.325
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_01": {
+      "cell_idx": 1,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          1.0,
+          3.625
+        ],
+        "friction": [
+          0.325,
+          0.55
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_02": {
+      "cell_idx": 2,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          1.0,
+          3.625
+        ],
+        "friction": [
+          0.55,
+          0.775
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_03": {
+      "cell_idx": 3,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          1.0,
+          3.625
+        ],
+        "friction": [
+          0.775,
+          1.0
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_04": {
+      "cell_idx": 4,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          3.625,
+          6.25
+        ],
+        "friction": [
+          0.1,
+          0.325
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_05": {
+      "cell_idx": 5,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          3.625,
+          6.25
+        ],
+        "friction": [
+          0.325,
+          0.55
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_06": {
+      "cell_idx": 6,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          3.625,
+          6.25
+        ],
+        "friction": [
+          0.55,
+          0.775
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_07": {
+      "cell_idx": 7,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          3.625,
+          6.25
+        ],
+        "friction": [
+          0.775,
+          1.0
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 150,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.9622745506910603,
+        "target_p": 0.9,
+        "certified": true
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 150,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.9562587790813031,
+        "target_p": 0.85,
+        "certified": true
+      },
+      "recomputed_state_bound": 0.9623,
+      "recomputed_camera_bound": 0.9563
+    },
+    "cell_08": {
+      "cell_idx": 8,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          6.25,
+          8.875
+        ],
+        "friction": [
+          0.1,
+          0.325
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 134,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.80683913951291,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 134,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.781421244257785,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.8068,
+      "recomputed_camera_bound": 0.7814
+    },
+    "cell_09": {
+      "cell_idx": 9,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          6.25,
+          8.875
+        ],
+        "friction": [
+          0.325,
+          0.55
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 130,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.7745044178127655,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 130,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.7451669321318442,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.7745,
+      "recomputed_camera_bound": 0.7452
+    },
+    "cell_10": {
+      "cell_idx": 10,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          6.25,
+          8.875
+        ],
+        "friction": [
+          0.55,
+          0.775
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 127,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.7508843446780623,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 127,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.7186984130680035,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.7509,
+      "recomputed_camera_bound": 0.7187
+    },
+    "cell_11": {
+      "cell_idx": 11,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          6.25,
+          8.875
+        ],
+        "friction": [
+          0.775,
+          1.0
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 129,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.7665769077335289,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 129,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.7362821037895482,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.7666,
+      "recomputed_camera_bound": 0.7363
+    },
+    "cell_12": {
+      "cell_idx": 12,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          8.875,
+          11.5
+        ],
+        "friction": [
+          0.1,
+          0.325
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 0,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.0,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 0,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.0,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.0,
+      "recomputed_camera_bound": 0.0
+    },
+    "cell_13": {
+      "cell_idx": 13,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          8.875,
+          11.5
+        ],
+        "friction": [
+          0.325,
+          0.55
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 0,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.0,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 0,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.0,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.0,
+      "recomputed_camera_bound": 0.0
+    },
+    "cell_14": {
+      "cell_idx": 14,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          8.875,
+          11.5
+        ],
+        "friction": [
+          0.55,
+          0.775
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 0,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.0,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 0,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.0,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.0,
+      "recomputed_camera_bound": 0.0
+    },
+    "cell_15": {
+      "cell_idx": 15,
+      "bounds": {
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "mass": [
+          8.875,
+          11.5
+        ],
+        "friction": [
+          0.775,
+          1.0
+        ]
+      },
+      "n_episodes": 150,
+      "state": {
+        "mode": "state",
+        "k_pass": 0,
+        "n_cell": 150,
+        "d_cell": 0.003125,
+        "bound": 0.0,
+        "target_p": 0.9,
+        "certified": false
+      },
+      "camera": {
+        "mode": "camera",
+        "k_pass": 0,
+        "n_cell": 150,
+        "k_a": 300,
+        "n_a": 300,
+        "k_b": 2,
+        "n_b": 100,
+        "d_a": 0.005000000000000001,
+        "d_b": 0.0012500000000000002,
+        "d_cell": 0.0025000000000000005,
+        "bound": 0.0,
+        "target_p": 0.85,
+        "certified": false
+      },
+      "recomputed_state_bound": 0.0,
+      "recomputed_camera_bound": 0.0
+    }
+  },
+  "price_plot": {
+    "episodes_analyzed": 2400,
+    "cells_evaluated": 16,
+    "K": 16,
+    "cells_state_certified": 8,
+    "cells_camera_certified": 8,
+    "state_area_fraction": 0.5,
+    "camera_area_fraction": 0.5,
+    "price_of_footage_area_loss": 0.0,
+    "cell_details": {
+      "cell_00": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_01": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_02": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_03": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_04": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_05": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_06": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_07": {
+        "n_episodes": 150,
+        "state_successes": 150,
+        "camera_successes": 150,
+        "state_bound": 0.9623,
+        "camera_bound": 0.9563,
+        "state_certified": true,
+        "camera_certified": true
+      },
+      "cell_08": {
+        "n_episodes": 150,
+        "state_successes": 134,
+        "camera_successes": 134,
+        "state_bound": 0.8068,
+        "camera_bound": 0.7814,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_09": {
+        "n_episodes": 150,
+        "state_successes": 130,
+        "camera_successes": 130,
+        "state_bound": 0.7745,
+        "camera_bound": 0.7452,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_10": {
+        "n_episodes": 150,
+        "state_successes": 127,
+        "camera_successes": 127,
+        "state_bound": 0.7509,
+        "camera_bound": 0.7187,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_11": {
+        "n_episodes": 150,
+        "state_successes": 129,
+        "camera_successes": 129,
+        "state_bound": 0.7666,
+        "camera_bound": 0.7363,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_12": {
+        "n_episodes": 150,
+        "state_successes": 0,
+        "camera_successes": 0,
+        "state_bound": 0.0,
+        "camera_bound": 0.0,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_13": {
+        "n_episodes": 150,
+        "state_successes": 0,
+        "camera_successes": 0,
+        "state_bound": 0.0,
+        "camera_bound": 0.0,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_14": {
+        "n_episodes": 150,
+        "state_successes": 0,
+        "camera_successes": 0,
+        "state_bound": 0.0,
+        "camera_bound": 0.0,
+        "state_certified": false,
+        "camera_certified": false
+      },
+      "cell_15": {
+        "n_episodes": 150,
+        "state_successes": 0,
+        "camera_successes": 0,
+        "state_bound": 0.0,
+        "camera_bound": 0.0,
+        "state_certified": false,
+        "camera_certified": false
+      }
+    }
+  },
+  "spent_usd": 2.594030750000066,
+  "created_at": "2026-10-31T01:37:20.058214+00:00"
+}

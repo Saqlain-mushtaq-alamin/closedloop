@@ -12,6 +12,19 @@ __pycache__/
 pytest-of-*/
 
 # Local-only planning material
-phases/
 planning
-runs
+
+# Verifiable Evidence (Phase 10e)
+runs/*
+!runs/cert-full-01/
+!runs/cert-mint-03/
+!runs/judge-g2-03/
+!runs/shift-full-01/
+!runs/h2h3-full-03/
+!runs/h1-full-02/
+!runs/demo-sessions-01/
+!runs/cert2-full-01/
+!runs/round2-mint-01/
+!runs/.certification_ledger.json
+!runs/llm_cache.json
+runs/**/traces/

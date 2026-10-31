@@ -7,7 +7,7 @@ PY := .venv/bin/python
 endif
 PHASE ?=
 
-.PHONY: setup test lint controls gate report
+.PHONY: setup test lint controls gate report verify-evidence
 
 setup:
 	python3 -m venv --without-pip .venv
@@ -59,3 +59,6 @@ endif
 
 report:
 	@$(PY) -m closedloop.report.generate_assets
+
+verify-evidence:
+	@$(PY) scripts/verify_evidence.py

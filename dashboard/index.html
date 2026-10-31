@@ -730,6 +730,11 @@
   </style>
 </head>
 <body>
+  <noscript>
+    <div style="background: rgba(244, 63, 94, 0.2); border-bottom: 1px solid var(--rose); padding: 16px; text-align: center; color: #fff; font-weight: 600;">
+      Interactive Judge Console requires JavaScript to run the offline data explorer and Clopper-Pearson verifier.
+    </div>
+  </noscript>
 
   <!-- Sticky Header -->
   <header>
@@ -741,6 +746,9 @@
       </div>
       <div class="badge-pill badge-pill-pass">
         Gate G3 Frozen
+      </div>
+      <div class="badge-pill badge-pill-pass" style="background: rgba(56, 189, 248, 0.15); color: var(--cyan); border-color: rgba(56, 189, 248, 0.35);">
+        RECORDED / data generated from logs
       </div>
       <span id="selfcheck-badge" class="badge-pill badge-pill-pass"></span>
     </div>
@@ -953,7 +961,7 @@
           </div>
 
           <div class="theatre-screen">
-            <img id="replay-frame-img" class="theatre-img" src="replays/min_ce_final/frame_00.png" alt="Replay Frame">
+            <img id="replay-frame-img" class="theatre-img" src="replays/min_ce_final/frame_00.png" alt="Rendered camera frame showing robot execution trajectory">
             <canvas id="replay-overlay-canvas" class="theatre-canvas" width="384" height="288"></canvas>
           </div>
 
@@ -1024,7 +1032,7 @@
             <div class="theatre-panel-box">
               <div id="lbl-before-screen" style="font-size: 12px; font-weight: 700; color: #fb7185;">Before Repair (Initial Failure)</div>
               <div class="theatre-screen-frame">
-                <img id="theatre-fail-img" class="theatre-img" src="theatre/session_00/frames/fail_frame_0.png" alt="Failure Frame">
+                <img id="theatre-fail-img" class="theatre-img" src="theatre/session_00/frames/fail_frame_0.png" alt="Rendered camera frame showing robot failure trajectory">
               </div>
               <div id="theatre-fail-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
             </div>
@@ -1032,7 +1040,7 @@
             <div class="theatre-panel-box">
               <div id="lbl-after-screen" style="font-size: 12px; font-weight: 700; color: #34d399;">After Repair (Verified Replay)</div>
               <div class="theatre-screen-frame">
-                <img id="theatre-replay-img" class="theatre-img" src="theatre/session_00/frames/replay_frame_0.png" alt="Replay Frame">
+                <img id="theatre-replay-img" class="theatre-img" src="theatre/session_00/frames/replay_frame_0.png" alt="Rendered camera frame showing verified robot replay trajectory">
               </div>
               <div id="theatre-replay-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
             </div>
@@ -1207,8 +1215,8 @@
     <div>
       ClosedLoop &bull; Meta Global AI Developer Hackathon &bull; Push the Frontier Track
     </div>
-    <div style="font-family: var(--mono-stack);">
-      Deterministic Phase 10b &bull; 100% Offline Static &bull; Rule H11 Compliant
+    <div style="font-family: var(--mono-stack); font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+      Git SHA: <span id="footer-git-sha"></span> &bull; Built: <span id="footer-build-time"></span> &bull; Deterministic &bull; 100% Offline Static &bull; Rule H11 Compliant
     </div>
   </footer>
 

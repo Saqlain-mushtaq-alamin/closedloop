@@ -1,0 +1,36 @@
+{
+  "index": 6,
+  "policy": "good_policy (on pad)",
+  "seed": 1000106,
+  "scenario": {
+    "x": 0.12262257395811069,
+    "y": -0.044307443353091294,
+    "yaw": 0.14294780073112756,
+    "mass": 0.40716953275654305,
+    "friction": 0.843185667580171,
+    "seed": 1000106
+  },
+  "sim_truth_success": true,
+  "margin": 0.0049989860993674765,
+  "verdict_pass": true,
+  "geometric_pass": true,
+  "spark_pass": true,
+  "cube_box": [
+    145,
+    137,
+    168,
+    163
+  ],
+  "pad_box": [
+    123,
+    136,
+    188,
+    184
+  ],
+  "cube_centroid": [
+    156.5,
+    150.0
+  ],
+  "confidence": 0.95,
+  "png_file": "inspect_frame_06.png"
+}

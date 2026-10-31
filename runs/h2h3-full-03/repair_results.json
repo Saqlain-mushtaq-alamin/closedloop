@@ -1,0 +1,173 @@
+{
+  "run_id": "h2h3-full-03",
+  "created_at": "2026-10-29T19:34:49Z",
+  "config_hash": "890a94b0788df688",
+  "git_sha": "206c32e1b6dbb20ccdf8f9111e280f22a3a6bdaa",
+  "trajectories": 20,
+  "episodes_planned": 2320,
+  "episodes_observed": 2320,
+  "budget_parity_ok": true,
+  "budget_parity_error": null,
+  "budgets": {
+    "B1": {
+      "episodes": 580,
+      "tokens": 38269
+    },
+    "B2": {
+      "episodes": 580,
+      "tokens": 39644
+    },
+    "B3": {
+      "episodes": 580,
+      "tokens": 38953
+    },
+    "B2_alt": {
+      "episodes": 580,
+      "tokens": 38903
+    }
+  },
+  "scores": {
+    "B1": {
+      "mean": 0.15,
+      "scores": [
+        0.75,
+        0.75,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "episodes": 580,
+      "tokens": 38269,
+      "repair_rate": 0.7,
+      "damage_rate": 0.0,
+      "acceptance_rate": 0.25,
+      "regression_set_size": 1
+    },
+    "B2": {
+      "mean": 0.05,
+      "scores": [
+        0.0,
+        0.75,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "episodes": 580,
+      "tokens": 39644,
+      "repair_rate": 0.95,
+      "damage_rate": 0.05,
+      "acceptance_rate": 0.1,
+      "regression_set_size": 1
+    },
+    "B3": {
+      "mean": 0.025,
+      "scores": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "episodes": 580,
+      "tokens": 38953,
+      "repair_rate": 1.0,
+      "damage_rate": 0.0,
+      "acceptance_rate": 0.05,
+      "regression_set_size": 1
+    },
+    "B2_alt": {
+      "mean": 0.075,
+      "scores": [
+        0.0,
+        0.75,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.25,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "episodes": 580,
+      "tokens": 38903,
+      "repair_rate": 0.85,
+      "damage_rate": 0.15,
+      "acceptance_rate": 0.15,
+      "regression_set_size": 1
+    }
+  },
+  "h2_b2_minus_b1": {
+    "mean_diff": -0.1,
+    "ci_lower": -0.2125,
+    "ci_upper": 0.0
+  },
+  "h3_b3_minus_b2": {
+    "mean_diff": -0.025,
+    "ci_lower": -0.125,
+    "ci_upper": 0.0625
+  },
+  "aa_null_v5": {
+    "mean_diff": -0.025,
+    "ci_lower": -0.075,
+    "ci_upper": 0.0,
+    "contains_zero": true,
+    "degenerate_replay": false,
+    "rerun_used": false
+  }
+}

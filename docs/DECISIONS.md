@@ -340,3 +340,24 @@
   - Before/after heatmap: Side-by-side comparison of v1 vs v2 using only logged certification run data.
   - Budget cap: $3.00.
 
+## 2026-11-01 — Phase 10e Pre-Registration and Authorisation: Public Link & Verifiable Evidence in Repo
+- **Authorisation:** Human authorisation granted for Phase 10e (public static hosting and verifiable evidence tracking).
+- **Scope Restrictions:**
+  - Allowed modifications: `dashboard/`, `.github/workflows/`, `scripts/`, `Makefile` targets, `.gitignore`, `README.md`, `tests/` (add only), and new tracked evidence files.
+  - Forbidden modifications: Never rewrite git history, never edit any frozen run (`runs/*`), never modify locked files (`closedloop/certify/stats.py`, etc.).
+- **Evidence Tracking (.gitignore):**
+  - Un-ignore and track: `phases/`, `docs/`, and whitelisted run directories: `cert-full-01`, `cert-mint-03`, `judge-g2-03`, `shift-full-01`, `h2h3-full-03`, `h1-full-02`, `demo-sessions-01`, `cert2-full-01`, `round2-mint-01`, and `runs/.certification_ledger.json`.
+  - Re-ignore: `runs/**/traces/` (raw frame captures) to stay well within GitHub repository size guidelines.
+  - Keep ignored: `planning/` (internal working notes).
+  - Cache policy: `llm_cache.json` tracked only if verified clean of secrets and < 5 MB.
+  - File constraints: No tracked file over 20 MB, total new evidence <= 60 MB.
+- **Verification & Reproducibility:**
+  - `scripts/verify_evidence.py` and `make verify-evidence`: independently recomputes all certified bounds, regional cell bounds, and calibration metrics directly from committed `episodes.jsonl` using SciPy `binomtest` exact Clopper-Pearson CI, printing `"N/N match"` with non-zero exit on any mismatch.
+- **Static Hosting (GitHub Pages):**
+  - Host under sub-path `/<repo>/dashboard/` with `dashboard/.nojekyll`.
+  - Pure relative asset paths, zero root-absolute paths (`/assets/...`), zero runtime external network requests.
+  - First-load budget <= 2 MB, total dashboard size <= 25 MB.
+  - Deterministic git SHA and commit timestamp in footer.
+  - Prominent "RECORDED / data generated from logs" badge on all views.
+- **Workflow:** `.github/workflows/pages.yml` using official GitHub Actions (`actions/checkout@v4`, `actions/configure-pages@v5`, `actions/upload-pages-artifact@v3`, `actions/deploy-pages@v4`) with minimal permissions (`contents: read`, `pages: write`, `id-token: write`).
+

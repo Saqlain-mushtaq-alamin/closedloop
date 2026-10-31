@@ -1,0 +1,4648 @@
+{
+  "00f88acec02cf524211b6be4": {
+    "confidence": 0.95,
+    "cost_usd": 0.003531,
+    "cube_box": [
+      178,
+      159,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not resting on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 364
+  },
+  "03281f9613826b9cb10d20ea": {
+    "confidence": 0.95,
+    "cost_usd": 0.003837,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube rests upright centered on green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 436
+  },
+  "04e0536eb5f049546929ad56": {
+    "confidence": 0.95,
+    "cost_usd": 0.0039,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 451
+  },
+  "05e01d3bd106ff89eee01fca": {
+    "confidence": 0.98,
+    "cost_usd": 0.003811,
+    "cube_box": [
+      38,
+      117,
+      58,
+      138
+    ],
+    "cube_centroid": [
+      48.0,
+      127.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on table, not on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 430
+  },
+  "06374193e2b765656b69d72d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003747,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 415
+  },
+  "067026d891d1a8ad39f5a563": {
+    "confidence": 0.95,
+    "cost_usd": 0.003747,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside pad, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 415
+  },
+  "06b0f554f7ffd73b6944ec56": {
+    "confidence": 0.95,
+    "cost_usd": 0.003688,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 401
+  },
+  "0888116bce8d7e8c851ae925": {
+    "confidence": 0.92,
+    "cost_usd": 0.003594,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "red cube resting stably on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 379
+  },
+  "08fd3b84099a5f0787b8f304": {
+    "confidence": 0.95,
+    "cost_usd": 0.003603,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 381
+  },
+  "0a2e8ab2fb653e2ff2b9a86c": {
+    "confidence": 0.95,
+    "cost_usd": 0.003603,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table, green pad is empty",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 381
+  },
+  "0a89845143331737240b8a49": {
+    "confidence": 0.95,
+    "cost_usd": 0.003875,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 445
+  },
+  "0a93f508405e3b1b589d2010": {
+    "confidence": 0.95,
+    "cost_usd": 0.004032,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 482
+  },
+  "0eaf52edb1da3b25b51c31d2": {
+    "confidence": 0.95,
+    "cost_usd": 0.003442,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 343
+  },
+  "0ef436a8f5e3e3ea0f704e36": {
+    "confidence": 0.95,
+    "cost_usd": 0.00396,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 465
+  },
+  "102be2a65b3b713c98ef2b09": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the pad on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "1323d3a028b6fbc60bf80d81": {
+    "confidence": 0.95,
+    "cost_usd": 0.003357,
+    "cube_box": [
+      178,
+      160,
+      204,
+      188
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube sits on table beside green pad, not on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 323
+  },
+  "16da73f82fa7426b00dc17eb": {
+    "confidence": 0.95,
+    "cost_usd": 0.003922,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 456
+  },
+  "173bc3a4ad6c1260ad32c243": {
+    "confidence": 0.95,
+    "cost_usd": 0.004105,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off pad on table, not resting stably on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 499
+  },
+  "18d4a0e7f157390bf5bdd59a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003934,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube sits on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 459
+  },
+  "193f98b8f7f18056a9e118f1": {
+    "confidence": 0.95,
+    "cost_usd": 0.003773,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 421
+  },
+  "1a3e138d4e0f3e94259e85c2": {
+    "confidence": 0.95,
+    "cost_usd": 0.003981,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 470
+  },
+  "1da14d6f50c1883e897a8510": {
+    "confidence": 0.9,
+    "cost_usd": 0.003875,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 445
+  },
+  "1f26fbb03b5443faca1d9ce2": {
+    "confidence": 0.95,
+    "cost_usd": 0.003883,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off pad on table, not stably on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 447
+  },
+  "1f3b11fb83ea07a0de75000d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003956,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the right on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 464
+  },
+  "214201371966aaa7257ab552": {
+    "confidence": 0.95,
+    "cost_usd": 0.003582,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 376
+  },
+  "236e55dfec61dba737671267": {
+    "confidence": 0.95,
+    "cost_usd": 0.003964,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 466
+  },
+  "24c90da013d4f197e5b94e77": {
+    "confidence": 0.95,
+    "cost_usd": 0.003718,
+    "cube_box": [
+      178,
+      159,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 408
+  },
+  "2634aa485f975fae6e3e0365": {
+    "confidence": 0.95,
+    "cost_usd": 0.003637,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad at image edge, green pad is empty",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 389
+  },
+  "26ee1c0dd0e4c5f3d4c0c6ab": {
+    "confidence": 0.95,
+    "cost_usd": 0.003556,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 370
+  },
+  "273eb56ddc260056bead7f78": {
+    "confidence": 0.95,
+    "cost_usd": 0.004024,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is at right edge off the pad, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 480
+  },
+  "274262d19325b9bf45ed7d86": {
+    "confidence": 0.9,
+    "cost_usd": 0.00413,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 505
+  },
+  "279a9228598a51c5b507fc19": {
+    "confidence": 0.95,
+    "cost_usd": 0.003488,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "red cube resting stably on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 354
+  },
+  "289e2841a2c2b12aa9229e23": {
+    "confidence": 0.95,
+    "cost_usd": 0.003701,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube resting stably centered on green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 404
+  },
+  "2901d90f4764fe7822304e8f": {
+    "confidence": 0.95,
+    "cost_usd": 0.003815,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 431
+  },
+  "2a6b16d01383b95dacc6b7b7": {
+    "confidence": 0.95,
+    "cost_usd": 0.003671,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 397
+  },
+  "2d7332e767e62dc79f3b7e5d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003573,
+    "cube_box": [
+      178,
+      161,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 374
+  },
+  "2d7420841125155e69889c2d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003824,
+    "cube_box": [
+      178,
+      160,
+      205,
+      188
+    ],
+    "cube_centroid": [
+      191.5,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 433
+  },
+  "30dff2b4082a99157ebd6520": {
+    "confidence": 0.95,
+    "cost_usd": 0.00382,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off the green pad on the table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 432
+  },
+  "344a818fd0e3eb3c61f09f9a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003828,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off pad on table, not stably on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 434
+  },
+  "35db8b37ab866376c6ae965a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003845,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 438
+  },
+  "37a2d8279bf63d1b0b4f6e89": {
+    "confidence": 0.95,
+    "cost_usd": 0.00373,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on top of green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 411
+  },
+  "3aef58f91340aca14e66f9a0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003798,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 427
+  },
+  "3e175b96f8e0a8377c0c7a49": {
+    "confidence": 0.95,
+    "cost_usd": 0.003531,
+    "cube_box": [
+      178,
+      160,
+      204,
+      188
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not resting on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 364
+  },
+  "3e6b20d80060f27391a6188b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003586,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 377
+  },
+  "3f73a3e73952f2a9ff821755": {
+    "confidence": 0.95,
+    "cost_usd": 0.003594,
+    "cube_box": [
+      178,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 379
+  },
+  "3ff3e2cb555d212843b45d21": {
+    "confidence": 0.95,
+    "cost_usd": 0.003875,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 445
+  },
+  "4275f6060550ab04bb688c87": {
+    "confidence": 0.95,
+    "cost_usd": 0.003845,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table at bottom-right, not on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 438
+  },
+  "4285a2c97f4ae47f95c9b031": {
+    "confidence": 0.95,
+    "cost_usd": 0.003539,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube is resting stably centered on top of green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 366
+  },
+  "46f376c1d3e539657cb61266": {
+    "confidence": 0.95,
+    "cost_usd": 0.00356,
+    "cube_box": [
+      179,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 371
+  },
+  "471b892de74cc35141025b60": {
+    "confidence": 0.95,
+    "cost_usd": 0.003688,
+    "cube_box": [
+      178,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 401
+  },
+  "48b4f1991a112c68f1734a1e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003565,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube resting upright on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 372
+  },
+  "4ce7e5e52129ee907372ee32": {
+    "confidence": 0.95,
+    "cost_usd": 0.0039,
+    "cube_box": [
+      232,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      243.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 451
+  },
+  "4f7700f74730209d37f8c8fa": {
+    "confidence": 0.95,
+    "cost_usd": 0.003467,
+    "cube_box": [
+      178,
+      159,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 349
+  },
+  "521036c0705c43f0ac15e6c4": {
+    "confidence": 0.95,
+    "cost_usd": 0.003386,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube is centered and resting stably on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 330
+  },
+  "524ec12168fb3fcf2a220e4a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003586,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 377
+  },
+  "5263ee3edbba27d1429884db": {
+    "confidence": 0.95,
+    "cost_usd": 0.003743,
+    "cube_box": [
+      178,
+      160,
+      205,
+      190
+    ],
+    "cube_centroid": [
+      191.5,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 414
+  },
+  "52826b994ec89f25290e3ebc": {
+    "confidence": 0.95,
+    "cost_usd": 0.003633,
+    "cube_box": [
+      179,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 388
+  },
+  "530fe312dd1e8ebae140eae0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003395,
+    "cube_box": [
+      159,
+      146,
+      183,
+      172
+    ],
+    "cube_centroid": [
+      171.0,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is upright and resting stably on top of green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 332
+  },
+  "5394d7d6b6a4a3f8470ac283": {
+    "confidence": 0.95,
+    "cost_usd": 0.003807,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 429
+  },
+  "53abac34a2b7b737c6d1a813": {
+    "confidence": 0.95,
+    "cost_usd": 0.003718,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube resting upright centered on green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 408
+  },
+  "54b1f539febbd60fa43042cb": {
+    "confidence": 0.95,
+    "cost_usd": 0.003586,
+    "cube_box": [
+      177,
+      162,
+      204,
+      191
+    ],
+    "cube_centroid": [
+      190.5,
+      176.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 377
+  },
+  "54ef3e745a391858af586b0d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003569,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube rests on table beside green pad, not on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 373
+  },
+  "5680123c10cb065bbcde2c44": {
+    "confidence": 0.95,
+    "cost_usd": 0.003743,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 414
+  },
+  "595a632f6d1c0ebb0a761b60": {
+    "confidence": 0.95,
+    "cost_usd": 0.003539,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 366
+  },
+  "5b3d0a0689284bbfc680171c": {
+    "confidence": 0.95,
+    "cost_usd": 0.003675,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 398
+  },
+  "5bd8be6f6852a31e47554862": {
+    "confidence": 0.95,
+    "cost_usd": 0.003475,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube rests stably on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 351
+  },
+  "5e3bec252facdc15ed624ada": {
+    "confidence": 0.95,
+    "cost_usd": 0.003505,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 358
+  },
+  "5fe40aa742453e1710500052": {
+    "confidence": 0.95,
+    "cost_usd": 0.003922,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 456
+  },
+  "605d612352fb34a5c830bb4a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003454,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 346
+  },
+  "6104ef0744fecd35d97057d8": {
+    "confidence": 0.95,
+    "cost_usd": 0.003416,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 337
+  },
+  "611a5a73c2f699e1aab1459b": {
+    "confidence": 0.9,
+    "cost_usd": 0.003764,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 419
+  },
+  "615171687bae4aa3e7c0ed44": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube resting stably centered on green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "65c9261f07c87baf57038d73": {
+    "confidence": 0.95,
+    "cost_usd": 0.003539,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off pad on table, not stably on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 366
+  },
+  "6631016425c6a2b08c3e80b7": {
+    "confidence": 0.95,
+    "cost_usd": 0.003658,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 394
+  },
+  "66ec9c148a5c6f7458f2b170": {
+    "confidence": 0.95,
+    "cost_usd": 0.003509,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not stably on top of pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 359
+  },
+  "66fc66723bde7e3f9da5e70f": {
+    "confidence": 0.95,
+    "cost_usd": 0.003633,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 388
+  },
+  "6711a93694e513cb7d93599b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003518,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 361
+  },
+  "6800ad56a41cee9d148f6265": {
+    "confidence": 0.95,
+    "cost_usd": 0.003293,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 308
+  },
+  "6b32f9997a3a45fbb1a53368": {
+    "confidence": 0.95,
+    "cost_usd": 0.003722,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 409
+  },
+  "6bc649db35284bc55c2de78f": {
+    "confidence": 0.95,
+    "cost_usd": 0.00345,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 345
+  },
+  "6def1f8734838b86b94e8b5c": {
+    "confidence": 0.95,
+    "cost_usd": 0.003952,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the right on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 463
+  },
+  "6f38632336a27c716ba89b86": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "708f8678624bce737f9e815b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003467,
+    "cube_box": [
+      179,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 349
+  },
+  "70cf175b1d441e69bfb3c4aa": {
+    "confidence": 0.95,
+    "cost_usd": 0.003769,
+    "cube_box": [
+      107,
+      114,
+      124,
+      133
+    ],
+    "cube_centroid": [
+      115.5,
+      123.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side of the green pad, not resting on top of it",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 420
+  },
+  "7425cc0d1f4bdb36760adf9d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003697,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 403
+  },
+  "7bea93811bf8f7267a545632": {
+    "confidence": 0.95,
+    "cost_usd": 0.003667,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 396
+  },
+  "7d2e145c3afc3667f24b8e96": {
+    "confidence": 0.95,
+    "cost_usd": 0.003867,
+    "cube_box": [
+      229,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      242.0,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the right of the green pad, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 443
+  },
+  "7e2f7ed171dd58c05105fa8b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003637,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 389
+  },
+  "7ec8d46b738d1452a88e7ef1": {
+    "confidence": 0.95,
+    "cost_usd": 0.003688,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 401
+  },
+  "801d346521dd6505692d003e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003854,
+    "cube_box": [
+      142,
+      104,
+      157,
+      122
+    ],
+    "cube_centroid": [
+      149.5,
+      113.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 440
+  },
+  "80e4afd69de6964bbd69a51f": {
+    "confidence": 0.95,
+    "cost_usd": 0.00359,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad, sitting on table at edge",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 378
+  },
+  "875f8cfdb09f76c776c2aede": {
+    "confidence": 0.95,
+    "cost_usd": 0.003654,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not resting on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 393
+  },
+  "880ca84c54c53329c55f5248": {
+    "confidence": 0.95,
+    "cost_usd": 0.003543,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 367
+  },
+  "88d531d84f4784a03e398028": {
+    "confidence": 0.95,
+    "cost_usd": 0.003705,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on top of green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 405
+  },
+  "8a21ac6c5220f0c44bc02ce3": {
+    "confidence": 0.95,
+    "cost_usd": 0.003539,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 366
+  },
+  "8be1c73f913a7d1afe7ca529": {
+    "confidence": 0.9,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube rests on table beside green pad, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "8c7189b5dd31a4687f28a69a": {
+    "confidence": 0.92,
+    "cost_usd": 0.003633,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 388
+  },
+  "8dfed88891bdb691fded6d85": {
+    "confidence": 0.95,
+    "cost_usd": 0.00345,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube is resting upright stably on top of green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 345
+  },
+  "91f4fb8b6b2843baa649cc80": {
+    "confidence": 0.95,
+    "cost_usd": 0.003752,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 416
+  },
+  "944d276507a7185c656caa2e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003679,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 399
+  },
+  "9a77ea79fc3a05fc47a1cd75": {
+    "confidence": 0.95,
+    "cost_usd": 0.003603,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 381
+  },
+  "9bd40d116763a00180c66b5e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003675,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 398
+  },
+  "9c2b4771ebac7b0bd3f108b1": {
+    "confidence": 0.95,
+    "cost_usd": 0.003628,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 387
+  },
+  "9e193265adf6168ee3a4c58f": {
+    "confidence": 0.95,
+    "cost_usd": 0.003514,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 360
+  },
+  "9fc0f83591420da5f39fb3e6": {
+    "confidence": 0.95,
+    "cost_usd": 0.003739,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the right of the green pad on the table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 413
+  },
+  "a016b1b083e50c6df7663c64": {
+    "confidence": 0.95,
+    "cost_usd": 0.003624,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 386
+  },
+  "a0396afb4d4fb0a9b09019e0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003628,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on top of green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 387
+  },
+  "a2254d226b3337950f76325b": {
+    "confidence": 0.95,
+    "cost_usd": 0.004134,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 506
+  },
+  "a37c4176a6be8544b3d48b68": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "a3c07f38484a8e5a32652ff7": {
+    "confidence": 0.95,
+    "cost_usd": 0.003624,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 386
+  },
+  "a4d1825590d4be408fb9251d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003879,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 446
+  },
+  "a67dfd138951c75da2c05722": {
+    "confidence": 0.95,
+    "cost_usd": 0.00365,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 392
+  },
+  "a793defb17970b9a1d9f98f1": {
+    "confidence": 0.95,
+    "cost_usd": 0.003803,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not stably on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 428
+  },
+  "a9c82e0faa9abcb4ebd8731e": {
+    "confidence": 0.9,
+    "cost_usd": 0.004134,
+    "cube_box": [
+      179,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube sits on table beside green pad, not on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 506
+  },
+  "aaeb0b7e5c853c9e1252e6af": {
+    "confidence": 0.95,
+    "cost_usd": 0.003688,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 401
+  },
+  "ac115ea43b0107da799140d9": {
+    "confidence": 0.95,
+    "cost_usd": 0.003807,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 429
+  },
+  "adeeba6e4bb108597cb4ef00": {
+    "confidence": 0.95,
+    "cost_usd": 0.003713,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the green pad on the table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 407
+  },
+  "ae0a00a42e29b86d19a3f91b": {
+    "confidence": 0.92,
+    "cost_usd": 0.003892,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 449
+  },
+  "af8b3efc796b918be4dc1bd6": {
+    "confidence": 0.95,
+    "cost_usd": 0.003514,
+    "cube_box": [
+      178,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 360
+  },
+  "b1d6d03710412bb28d44dcf0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003964,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 466
+  },
+  "b31b3fb682ea71e0ce72eb2e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003764,
+    "cube_box": [
+      178,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 419
+  },
+  "b45fab6dd7506e43b0c958f0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003658,
+    "cube_box": [
+      178,
+      159,
+      204,
+      188
+    ],
+    "cube_centroid": [
+      191.0,
+      173.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not resting on top surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 394
+  },
+  "b5c32e13797e028ce097e04b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003888,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 448
+  },
+  "b66577aeaaf809759668f0e4": {
+    "confidence": 0.95,
+    "cost_usd": 0.003573,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 374
+  },
+  "b715d199cea0080ae41359e9": {
+    "confidence": 0.95,
+    "cost_usd": 0.003654,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 393
+  },
+  "b7d8f7a564fe7e3e035df407": {
+    "confidence": 0.95,
+    "cost_usd": 0.003612,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 383
+  },
+  "b971482830b9e6d281fe4a8d": {
+    "confidence": 0.9,
+    "cost_usd": 0.003671,
+    "cube_box": [
+      181,
+      160,
+      205,
+      188
+    ],
+    "cube_centroid": [
+      193.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 397
+  },
+  "ba1d9dd643407902f8435cf1": {
+    "confidence": 0.95,
+    "cost_usd": 0.003424,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 339
+  },
+  "bdb6b2d290c7a6864890f293": {
+    "confidence": 0.95,
+    "cost_usd": 0.003633,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 388
+  },
+  "bdbc3080ae28e9c9f802470a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003603,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "red cube resting stably on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 381
+  },
+  "bef628c679178c0a1bb82ce5": {
+    "confidence": 0.95,
+    "cost_usd": 0.003539,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "red cube resting stably on top of green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 366
+  },
+  "bfc978672da3f38dfc28e445": {
+    "confidence": 0.95,
+    "cost_usd": 0.003612,
+    "cube_box": [
+      178,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 383
+  },
+  "c140940a08ba28ac7042f121": {
+    "confidence": 0.95,
+    "cost_usd": 0.003747,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 415
+  },
+  "c19446b44e2433980ad4cbc3": {
+    "confidence": 0.95,
+    "cost_usd": 0.003867,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the right of the green pad on the table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 443
+  },
+  "c7556a9b37d6bd7c57bc6c6a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003612,
+    "cube_box": [
+      179,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface.",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 383
+  },
+  "c777661ab5fe1be1e5affd79": {
+    "confidence": 0.95,
+    "cost_usd": 0.003782,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 423
+  },
+  "c7ec8a09add359ead08d264c": {
+    "confidence": 0.95,
+    "cost_usd": 0.003845,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, green pad is empty",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 438
+  },
+  "c8c74ce7ca97c15ccf7769e6": {
+    "confidence": 0.95,
+    "cost_usd": 0.003841,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the pad on the table, not stably on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 437
+  },
+  "cbfdcd29ddbb4e5792be2346": {
+    "confidence": 0.9,
+    "cost_usd": 0.003565,
+    "cube_box": [
+      178,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 372
+  },
+  "cc62436aba6e1c9964195bb4": {
+    "confidence": 0.95,
+    "cost_usd": 0.003679,
+    "cube_box": [
+      178,
+      159,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 399
+  },
+  "ccd5f6a854e4ce6b6eb7b7a9": {
+    "confidence": 0.9,
+    "cost_usd": 0.003994,
+    "cube_box": [
+      178,
+      159,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 473
+  },
+  "ccde8566a2418e8dad2a050a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003612,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 383
+  },
+  "cdf36d70b41b7696aac4bba0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003803,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 428
+  },
+  "cefa0a1f4bddecf9644a8386": {
+    "confidence": 0.95,
+    "cost_usd": 0.003769,
+    "cube_box": [
+      179,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 420
+  },
+  "d1c8f8e6f4b70884f387ebdc": {
+    "confidence": 0.95,
+    "cost_usd": 0.003675,
+    "cube_box": [
+      178,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      191.5,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 398
+  },
+  "d2e431e291f1a4df5f02137b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003518,
+    "cube_box": [
+      179,
+      159,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 361
+  },
+  "d37f65d34b0f327493fe172b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003633,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 388
+  },
+  "d4b8847f06a6039863d24be0": {
+    "confidence": 0.95,
+    "cost_usd": 0.003913,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting stably on top of green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 454
+  },
+  "d5a2422cc433a533d208ee37": {
+    "confidence": 0.95,
+    "cost_usd": 0.003764,
+    "cube_box": [
+      228,
+      190,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table at right edge, not on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 419
+  },
+  "d6d881ab9173d219586fff23": {
+    "confidence": 0.95,
+    "cost_usd": 0.003922,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table edge, not stably on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 456
+  },
+  "d7fd513035c3ad67367cf7b3": {
+    "confidence": 0.95,
+    "cost_usd": 0.003722,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 409
+  },
+  "d92a4ce8a85d717099fb363f": {
+    "confidence": 0.95,
+    "cost_usd": 0.003433,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not stably on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 341
+  },
+  "db71c044a0ee253331b45677": {
+    "confidence": 0.95,
+    "cost_usd": 0.003662,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 395
+  },
+  "dc5c5742bad58bbe66ee773d": {
+    "confidence": 0.95,
+    "cost_usd": 0.003522,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is beside green pad on table, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 362
+  },
+  "dda74b0bbf9535b4fddd0a1f": {
+    "confidence": 0.9,
+    "cost_usd": 0.00393,
+    "cube_box": [
+      178,
+      161,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not resting on pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 458
+  },
+  "e3a65f4063e06f7b68968828": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "e3cd89c924f60ee7df6d7963": {
+    "confidence": 0.95,
+    "cost_usd": 0.003798,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 427
+  },
+  "e47eb65ce892064554076063": {
+    "confidence": 0.95,
+    "cost_usd": 0.004972,
+    "cube_box": null,
+    "cube_centroid": null,
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "No red cube on green pad; only green pad visible on table",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 703
+  },
+  "e4a00f02672a3631fa4b4d27": {
+    "confidence": 0.95,
+    "cost_usd": 0.003612,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the pad on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 383
+  },
+  "eacb9da6865f7dc8fa5a790a": {
+    "confidence": 0.95,
+    "cost_usd": 0.003743,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table, not stably on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 414
+  },
+  "eda5a51fdf242f934760e07b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003773,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 421
+  },
+  "edd242a70a977cb7bbea6432": {
+    "confidence": 0.95,
+    "cost_usd": 0.003675,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 398
+  },
+  "eeabb4aea6d5cc104d812897": {
+    "confidence": 0.95,
+    "cost_usd": 0.003654,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 393
+  },
+  "f0416675bd3e1b7ad56869e0": {
+    "confidence": 0.95,
+    "cost_usd": 0.00359,
+    "cube_box": [
+      229,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      242.0,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is off to side on table, not resting on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 378
+  },
+  "f0b4ec7c63fef5dac2adabcf": {
+    "confidence": 0.95,
+    "cost_usd": 0.003208,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 288
+  },
+  "f0d9c9d44b45e73613f94923": {
+    "confidence": 0.95,
+    "cost_usd": 0.003395,
+    "cube_box": [
+      159,
+      146,
+      184,
+      172
+    ],
+    "cube_centroid": [
+      171.5,
+      159.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      183,
+      154,
+      188,
+      163
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is resting upright stably on top of green pad surface",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 332
+  },
+  "f0eeea97cf986c492565194d": {
+    "confidence": 0.95,
+    "cost_usd": 0.00379,
+    "cube_box": [
+      228,
+      189,
+      255,
+      224
+    ],
+    "cube_centroid": [
+      241.5,
+      206.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      183
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 425
+  },
+  "f18d9816a1dd250dee106eaf": {
+    "confidence": 0.97,
+    "cost_usd": 0.003637,
+    "cube_box": [
+      23,
+      108,
+      40,
+      127
+    ],
+    "cube_centroid": [
+      31.5,
+      117.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table left of pad, not resting on green pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 389
+  },
+  "f293c3e91ce630ee50512917": {
+    "confidence": 0.95,
+    "cost_usd": 0.003548,
+    "cube_box": [
+      178,
+      161,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube sits on table beside green pad, not on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 368
+  },
+  "f3bdbba987727ab6540c705b": {
+    "confidence": 0.95,
+    "cost_usd": 0.003628,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is beside green pad on table, not resting on top",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 387
+  },
+  "f3e933fecad79a5d7d61ea95": {
+    "confidence": 0.95,
+    "cost_usd": 0.003739,
+    "cube_box": [
+      228,
+      190,
+      255,
+      226
+    ],
+    "cube_centroid": [
+      241.5,
+      208.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on table, not on green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 413
+  },
+  "f5d74df43debdf55859d559e": {
+    "confidence": 0.95,
+    "cost_usd": 0.00339,
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "geometric_pass": true,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": true,
+    "reason": "Red cube is resting stably centered on top of green pad",
+    "spark_pass": true,
+    "tokens_in": 2247,
+    "tokens_out": 331
+  },
+  "f659b96a6602aa563ad01680": {
+    "confidence": 0.95,
+    "cost_usd": 0.003658,
+    "cube_box": [
+      178,
+      160,
+      204,
+      189
+    ],
+    "cube_centroid": [
+      191.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "red cube is on table beside green pad, not stably on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 394
+  },
+  "f6de5f1c6cdca36c72f68681": {
+    "confidence": 0.95,
+    "cost_usd": 0.003697,
+    "cube_box": [
+      179,
+      160,
+      205,
+      189
+    ],
+    "cube_centroid": [
+      192.0,
+      174.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 403
+  },
+  "f9e053a7288f36a05ff2758e": {
+    "confidence": 0.95,
+    "cost_usd": 0.003684,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off pad on table, green pad is empty",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 400
+  },
+  "fb3e3c47cd0f5cd898594099": {
+    "confidence": 0.98,
+    "cost_usd": 0.003849,
+    "cube_box": [
+      228,
+      189,
+      255,
+      225
+    ],
+    "cube_centroid": [
+      241.5,
+      207.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off to the side on the table, not resting on the green pad",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 439
+  },
+  "fbe56c6b2804bbe08659b96e": {
+    "confidence": 0.92,
+    "cost_usd": 0.003782,
+    "cube_box": [
+      178,
+      160,
+      204,
+      190
+    ],
+    "cube_centroid": [
+      191.0,
+      175.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 423
+  },
+  "fcaec8e01b21f5848015fded": {
+    "confidence": 0.95,
+    "cost_usd": 0.003739,
+    "cube_box": [
+      67,
+      92,
+      83,
+      108
+    ],
+    "cube_centroid": [
+      75.0,
+      100.0
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is off the pad on the table, green pad is empty",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 413
+  },
+  "fcd05e8921633ff6f3d558e8": {
+    "confidence": 0.95,
+    "cost_usd": 0.003658,
+    "cube_box": [
+      178,
+      159,
+      204,
+      188
+    ],
+    "cube_centroid": [
+      191.0,
+      173.5
+    ],
+    "geometric_pass": false,
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "pass_verdict": false,
+    "reason": "Red cube is on table beside green pad, not resting on top of pad surface",
+    "spark_pass": false,
+    "tokens_in": 2247,
+    "tokens_out": 394
+  }
+}

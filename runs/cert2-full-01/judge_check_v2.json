@@ -1,0 +1,19 @@
+{
+  "n_rollouts": 200,
+  "calib_seeds": [
+    1002000,
+    1002199
+  ],
+  "tpr": 1.0,
+  "tpr_counts": [
+    200,
+    200
+  ],
+  "fpr": 0.0,
+  "fpr_counts": [
+    0,
+    0
+  ],
+  "consistent_with_g2": true,
+  "spend_usd": 0.014123
+}

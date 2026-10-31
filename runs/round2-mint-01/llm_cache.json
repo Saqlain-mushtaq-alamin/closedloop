@@ -1,0 +1,9 @@
+{
+  "3eef7250014c34cf": {
+    "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.25)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=40)\n    env.move_to(above_cube, steps=150)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.25)\n    env.move_to(above_pad, steps=200)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.06)\n    env.move_to(place_pos, steps=150)\n    env.open_gripper()\n    env.move_to(place_pos, steps=30)\n    env.move_to(above_pad, steps=100)\n",
+    "rationale": "Failure is slip at 10.16kg with 100N grip. Weight ~100N requires ~62N per side statically (m*g/(2*mu)), so 100N has no margin for inertial loads during transport. Fix: increase close_gripper to 300N for safety factor ~3, slow down loaded moves (150-200 steps) to reduce acceleration, lift higher (0.25) and place from 0.06 to set down gently without pushing, plus dwell after close to secure grasp.",
+    "tokens_in": 878,
+    "tokens_out": 1562,
+    "cost_usd": 0.007736
+  }
+}

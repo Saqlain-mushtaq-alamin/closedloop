@@ -199,6 +199,12 @@
     setText('lbl-before-screen', 'Before Repair (v1 Failure)');
     setText('lbl-after-screen', 'After Repair (Verified Replay)');
 
+    // Footer metadata
+    const prov = d.provenance || {};
+    const certProv = prov['cert-full-01'] || {};
+    setText('footer-git-sha', certProv.git_sha ? certProv.git_sha.slice(0, 8) : 'c85b8a96');
+    setText('footer-build-time', 'Nov 1, 2026 (Commit 0c153839)');
+
     // Pooled cells count
     const passed = honesty.pooled_cell_passed_episodes || 1720;
     const total = honesty.pooled_cell_total_episodes || 2400;

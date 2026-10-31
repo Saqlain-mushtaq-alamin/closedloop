@@ -1,0 +1,62 @@
+{
+  "budget_cap_usd": 3.0,
+  "config_hash": "12d7c0083bbd2842",
+  "created_at": "2026-10-31T20:08:40Z",
+  "episodes_planned": 28,
+  "git_sha": "3cecc4c4950520e67c8f2f00d74851f35497003b",
+  "model": "muse-spark-1.3",
+  "pricing_per_mtok": {
+    "muse-spark-1.3": [
+      1.25,
+      4.25
+    ],
+    "sam-3.1": [
+      1.0,
+      1.0
+    ]
+  },
+  "repair": {
+    "accepted": true,
+    "arm": "B3",
+    "attempts": 1,
+    "v1_sha256": "bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55"
+  },
+  "run_id": "round2-mint-01",
+  "seeds": [
+    710000,
+    710001,
+    710002,
+    710003,
+    710004,
+    710005,
+    710006,
+    710007,
+    710008,
+    710009,
+    711000,
+    711001,
+    711002,
+    711003,
+    711004,
+    711005,
+    711006,
+    711006,
+    712000,
+    713000,
+    780000,
+    700002,
+    600010,
+    714000,
+    714001,
+    714002,
+    714003,
+    714004
+  ],
+  "spent_usd": 0.007736,
+  "status": "valid",
+  "tokens_spent": {
+    "tokens_in": 878,
+    "tokens_out": 1562,
+    "total": 2440
+  }
+}

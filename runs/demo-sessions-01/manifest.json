@@ -1,0 +1,139 @@
+{
+  "run_id": "demo-sessions-01",
+  "config_hash": "4a38f7ae8909fdc426afa8129b18735c00ff90b59d83fecb94c63edd484cb0bf",
+  "git_sha": "75721debeb30d3321f54b09b38021f1c6081d6db",
+  "created_at": "2026-10-31T20:37:07Z",
+  "target_sessions": 8,
+  "total_sessions_run": 8,
+  "total_spend_usd": 0.0,
+  "sessions": [
+    {
+      "session_id": "session_00",
+      "scenario": {
+        "x": 0.0952973412735815,
+        "y": -0.025694423295327284,
+        "yaw": 0.24452496693483838,
+        "mass": 11.129902162898896,
+        "friction": 0.9921589047430535,
+        "seed": 900004
+      },
+      "failing_margin": -0.12611509064111065,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_01",
+      "scenario": {
+        "x": 0.07383658638271068,
+        "y": -5.9920363321697145e-06,
+        "yaw": -0.08582617129933445,
+        "mass": 10.07119250510466,
+        "friction": 0.885256743869557,
+        "seed": 900007
+      },
+      "failing_margin": -0.1458239783042409,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_02",
+      "scenario": {
+        "x": -0.00494086862109222,
+        "y": -0.07804790282487924,
+        "yaw": 0.44728844253980093,
+        "mass": 10.535633678516675,
+        "friction": 0.2526856985876315,
+        "seed": 900008
+      },
+      "failing_margin": -0.23655637386216613,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_03",
+      "scenario": {
+        "x": -0.01802018363725766,
+        "y": -0.10208458622570521,
+        "yaw": 0.36118455646427305,
+        "mass": 9.27886400684015,
+        "friction": 0.6816918203111378,
+        "seed": 900011
+      },
+      "failing_margin": -0.2559272534421253,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_04",
+      "scenario": {
+        "x": -0.0432576044882141,
+        "y": -0.08576538166314993,
+        "yaw": -0.227167890360517,
+        "mass": 11.297406951096756,
+        "friction": 0.2658751363980422,
+        "seed": 900018
+      },
+      "failing_margin": -0.27542048336522584,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_05",
+      "scenario": {
+        "x": 0.09356547421804526,
+        "y": -0.054253999100905906,
+        "yaw": -0.022061296201880354,
+        "mass": 11.233512328397554,
+        "friction": 0.4673565917397473,
+        "seed": 900020
+      },
+      "failing_margin": -0.13491433653016502,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_06",
+      "scenario": {
+        "x": 0.14670889767961723,
+        "y": 0.10080356859031711,
+        "yaw": 0.4281255082694868,
+        "mass": 10.01846410170453,
+        "friction": 0.39616400957825293,
+        "seed": 900021
+      },
+      "failing_margin": -0.11490727731464029,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    },
+    {
+      "session_id": "session_07",
+      "scenario": {
+        "x": 0.06269092058123024,
+        "y": -0.0571925745186735,
+        "yaw": 0.019818406007608647,
+        "mass": 9.312923439466363,
+        "friction": 0.2556498891673429,
+        "seed": 900023
+      },
+      "failing_margin": -0.16575533106300705,
+      "repaired_sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+      "accepted": true,
+      "replay_verified": true,
+      "cost_usd": 0.0035
+    }
+  ]
+}

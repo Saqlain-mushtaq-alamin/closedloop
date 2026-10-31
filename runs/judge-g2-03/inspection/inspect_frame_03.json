@@ -1,0 +1,36 @@
+{
+  "index": 3,
+  "policy": "noop_policy (table surface)",
+  "seed": 1000103,
+  "scenario": {
+    "x": 0.11379285153250582,
+    "y": 0.1341333297228561,
+    "yaw": 0.3458165455959965,
+    "mass": 0.5960630306245447,
+    "friction": 0.9551032815591115,
+    "seed": 1000103
+  },
+  "sim_truth_success": false,
+  "margin": -0.16117865338922652,
+  "verdict_pass": false,
+  "geometric_pass": false,
+  "spark_pass": false,
+  "cube_box": [
+    142,
+    104,
+    157,
+    122
+  ],
+  "pad_box": [
+    123,
+    136,
+    188,
+    184
+  ],
+  "cube_centroid": [
+    149.5,
+    113.0
+  ],
+  "confidence": 0.95,
+  "png_file": "inspect_frame_03.png"
+}

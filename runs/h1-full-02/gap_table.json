@@ -1,0 +1,25 @@
+{
+  "run_id": "h1-full-02",
+  "git_sha": "f59ec40a4cc7c62ab9fcb3914284dfcdc245342f",
+  "config_hash": "905d1574d1d1e225",
+  "trajectories": 20,
+  "b0": {
+    "n_episodes": 120,
+    "success_rate": 0.7166666666666667,
+    "loop_mean": 0.65,
+    "held_out_mean": 0.7375,
+    "gap": -0.0875,
+    "ci_lower": -0.3375,
+    "ci_upper": 0.15
+  },
+  "b1": {
+    "n_episodes": 120,
+    "loop_mean": 1.0,
+    "held_out_mean": 0.8125,
+    "gap": 0.1875,
+    "ci_lower": 0.1,
+    "ci_upper": 0.2875
+  },
+  "g1_pass": true,
+  "parity": "PASS"
+}
