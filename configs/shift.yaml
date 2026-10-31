@@ -1,0 +1,59 @@
+# Frozen configuration for Phase 09 shift test H4 (Plan §12, H11, H12, V11).
+# Evaluates transfer of Phase 08 certificate to shifted distribution D'
+# and recertification on D'.
+experiment: shift
+program_run_id: cert-mint-03
+program_file: runs/cert-mint-03/program_final.py
+program_id: bec73dec45a88431
+program_sha256: bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55
+
+# Reference results from Phase 08 certified run (runs/cert-full-01)
+reference_p08:
+  run_id: cert-full-01
+  d_headline_pass_rate: 0.5932
+  d_headline_bound: 0.4778
+  d_certified_region_bound: 0.9623
+  certified_area_fraction: 0.5000
+
+# Statistical parameters (Plan §11, §12)
+delta: 0.05
+targets:
+  headline_p: 0.95
+  state_cell_p: 0.90
+
+# Reference distribution D (matching configs/cert.yaml and tasks.yaml Tier 2)
+bounds_d:
+  x: [-0.15, 0.15]
+  y: [-0.15, 0.15]
+  yaw: [-0.5, 0.5]
+  mass: [1.0, 11.5]
+  friction: [0.1, 1.0]
+
+# Shifted distribution D' (Plan §12, Phase 09 spec: wider/heavier, lower friction)
+# Mass shifted upward into slip regime (gripper slips at >8.495 kg)
+# Friction shifted significantly downward
+# Pose bounds widened
+bounds_d_prime:
+  x: [-0.20, 0.20]
+  y: [-0.20, 0.20]
+  yaw: [-0.8, 0.8]
+  mass: [6.0, 14.0]
+  friction: [0.05, 0.40]
+
+# Sample sizes
+sample_sizes:
+  pilot_runs: 30
+  full_runs: 300
+  cohort_size: 150
+
+# Seeds (strictly in certification stream [2000000, 2999999], Rule H9, V4)
+# Disjoint from Phase 08 claimed seeds [2000000, 2010014]
+seeds:
+  pilot_seed_base: 2020000
+  full_seed_base: 2030000
+
+# Execution limits (state mode default per Phase 09 spec)
+mode: state
+timeout_s: 120
+memory_mb: 1024
+budget_cap_usd: 4.0
