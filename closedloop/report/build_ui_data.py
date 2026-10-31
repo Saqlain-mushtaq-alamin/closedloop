@@ -87,6 +87,8 @@ def build_ui_data(
 
     # 1. Provenance
     source_runs = ["cert-full-01", "judge-g2-03", "shift-full-01", "cert-mint-03", "h2h3-full-03"]
+    if (rdir / "cert2-full-01").exists():
+        source_runs.append("cert2-full-01")
     provenance: dict[str, Any] = {}
     for rid in source_runs:
         m = _read_manifest(rdir, rid)
@@ -164,6 +166,31 @@ def build_ui_data(
             "certified_camera": bool(c_raw.get("camera", {}).get("certified", False)),
             "example_episodes": examples,
         })
+
+    # 2b. Cells for v2 (from cert2-full-01 if present)
+    cert2_summary_path = rdir / "cert2-full-01" / "cert_summary.json"
+    cells_v2_data: list[dict[str, Any]] = []
+    if cert2_summary_path.exists():
+        cert2_summary = json.loads(cert2_summary_path.read_text(encoding="utf-8"))
+        for c_idx in range(16):
+            c_id = f"cell_{c_idx:02d}"
+            c_raw = cert2_summary["cells"].get(c_id, {})
+            bounds = c_raw.get("bounds", {})
+            m_range = [round(bounds.get("mass", [0.0, 0.0])[0], 3), round(bounds.get("mass", [0.0, 0.0])[1], 3)]
+            f_range = [round(bounds.get("friction", [0.0, 0.0])[0], 3), round(bounds.get("friction", [0.0, 0.0])[1], 3)]
+            k_s = c_raw.get("state", {}).get("k_pass", 0)
+            n_c = c_raw.get("n_episodes", 150)
+            b_s = c_raw.get("state", {}).get("bound", 0.0)
+            cells_v2_data.append({
+                "id": c_id,
+                "idx": c_idx,
+                "mass_range": m_range,
+                "friction_range": f_range,
+                "k_state": k_s,
+                "n": n_c,
+                "bound_state": round(b_s, 4),
+                "certified_state": bool(c_raw.get("state", {}).get("certified", False)),
+            })
 
     # 3. Calibration (from judge-g2-03)
     cal_report_path = rdir / "judge-g2-03" / "calibration_report.json"
@@ -305,6 +332,7 @@ def build_ui_data(
         "generator": "closedloop.report.build_ui_data",
         "provenance": provenance,
         "cells": cells_data,
+        "cells_v2": cells_v2_data,
         "calibration": calibration_data,
         "shift": shift_data,
         "programs": programs_data,

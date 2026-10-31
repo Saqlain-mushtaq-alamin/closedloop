@@ -598,6 +598,124 @@
       margin-top: 2px;
     }
 
+    /* Repair Theatre (Feature F7) */
+    .theatre-badge-strip {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .scenario-picker-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .scenario-btn {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scenario-btn:hover, .scenario-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+    .step-timeline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+    .timeline-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #0d1527;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .timeline-step.active {
+      border-color: var(--cyan);
+      color: #fff;
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+    .timeline-step.passed {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .theatre-screen-duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .theatre-panel-box {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .theatre-screen-frame {
+      width: 100%;
+      height: 220px;
+      background: #000;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .collapsible-box {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .collapsible-box summary {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan);
+      cursor: pointer;
+      background: rgba(56, 189, 248, 0.05);
+      outline: none;
+    }
+    .collapsible-box[open] summary {
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .collapsible-content {
+      padding: 12px;
+      font-family: var(--mono-stack);
+      font-size: 11px;
+      color: #cbd5e1;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
     footer {
       max-width: 1440px;
       margin: 60px auto 0;
@@ -682,14 +800,17 @@
       <button class="nav-tab-btn" onclick="switchTab('theatre')">
         <span>2.</span> Replay Theatre &amp; Filmstrip Diff
       </button>
+      <button class="nav-tab-btn" onclick="switchTab('repair-theatre')">
+        <span>3.</span> Repair Theatre
+      </button>
       <button class="nav-tab-btn" onclick="switchTab('calibration')">
-        <span>3.</span> Camera-Judge Calibration
+        <span>4.</span> Camera-Judge Calibration
       </button>
       <button class="nav-tab-btn" onclick="switchTab('shift')">
-        <span>4.</span> Distribution Shift (H4)
+        <span>5.</span> Distribution Shift (H4)
       </button>
       <button class="nav-tab-btn" onclick="switchTab('provenance')">
-        <span>5.</span> Provenance &amp; Ledger
+        <span>6.</span> Provenance &amp; Ledger
       </button>
     </nav>
 
@@ -712,6 +833,8 @@
             <div class="view-toggles">
               <button id="btn-mode-state" class="view-toggle-btn active">State Ground Truth</button>
               <button id="btn-mode-camera" class="view-toggle-btn">Camera Judge (SAM 3.1 + Spark)</button>
+              <button id="btn-mode-v2" class="view-toggle-btn"><span id="lbl-mode-v2"></span></button>
+              <button id="btn-mode-compare" class="view-toggle-btn"><span id="lbl-mode-compare"></span></button>
             </div>
             <div style="font-size: 12px; color: var(--text-muted);">
               4x4 Regional Cell Partition
@@ -863,7 +986,92 @@
       </div>
     </section>
 
-    <!-- SECTION 3: CAMERA-JUDGE CALIBRATION (F4) -->
+    <!-- SECTION 3: REPAIR THEATRE -->
+    <section id="section-repair-theatre" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Repair Theatre: Recorded Multi-Step Synthesis Trace</h2>
+          <p class="section-desc">
+            End-to-end recorded synthesis traces under distribution D: failure discovery, coordinate minimization, verbatim LLM prompts and responses, unified diffs, multi-stage acceptance gates, and verified replay.
+          </p>
+        </div>
+        <div id="repair-theatre-badge" class="badge-pill badge-pill-pass"></div>
+      </div>
+
+      <!-- Session Picker -->
+      <div class="card-panel" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #fff;">Recorded Failure Scenarios</h3>
+          <span id="theatre-cost-tokens" class="badge-pill badge-pill-refusal"></span>
+        </div>
+        <div id="theatre-scenario-picker" class="scenario-picker-bar"></div>
+
+        <!-- Step Timeline -->
+        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; margin-bottom: 8px;">Synthesis &amp; Verification Step Timeline</div>
+        <div id="theatre-step-timeline" class="step-timeline"></div>
+      </div>
+
+      <!-- Active Step Content Area -->
+      <div id="theatre-step-view" class="grid-2">
+        <!-- Left: Before / After Replay Screen & Scrubber -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 id="theatre-screen-title" style="font-size: 15px; font-weight: 700; color: #fff;"></h3>
+            <span id="theatre-replay-status" class="badge-pill badge-pill-pass"></span>
+          </div>
+
+          <div class="theatre-screen-duo">
+            <div class="theatre-panel-box">
+              <div id="lbl-before-screen" style="font-size: 12px; font-weight: 700; color: #fb7185;">Before Repair (Initial Failure)</div>
+              <div class="theatre-screen-frame">
+                <img id="theatre-fail-img" class="theatre-img" src="theatre/session_00/frames/fail_frame_0.png" alt="Failure Frame">
+              </div>
+              <div id="theatre-fail-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+            </div>
+
+            <div class="theatre-panel-box">
+              <div id="lbl-after-screen" style="font-size: 12px; font-weight: 700; color: #34d399;">After Repair (Verified Replay)</div>
+              <div class="theatre-screen-frame">
+                <img id="theatre-replay-img" class="theatre-img" src="theatre/session_00/frames/replay_frame_0.png" alt="Replay Frame">
+              </div>
+              <div id="theatre-replay-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+            </div>
+          </div>
+
+          <div class="theatre-controls">
+            <button id="theatre-play-btn" class="btn-play">Play &blacktriangleright;</button>
+            <input type="range" id="theatre-scrubber" class="theatre-scrubber" min="0" max="4" value="0">
+            <span id="theatre-frame-counter" style="font-size: 11px; font-family: var(--mono-stack); color: var(--text-muted); min-width: 100px; text-align: right;"></span>
+          </div>
+
+          <div id="theatre-step-detail-box" class="probe-detail-box" style="margin-top: 14px;"></div>
+        </div>
+
+        <!-- Right: Code Diff, Verbatim Prompt & Raw LLM Response -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Program Unified Diff</h3>
+            <span id="theatre-diff-badge" class="badge-pill badge-pill-pass">difflib Unified Diff</span>
+          </div>
+
+          <div id="theatre-diff-content" class="diff-container" style="max-height: 240px;"></div>
+
+          <details id="theatre-prompt-details" class="collapsible-box">
+            <summary>Show Exact Repair Prompt Text</summary>
+            <div id="theatre-prompt-text" class="collapsible-content"></div>
+          </details>
+
+          <details id="theatre-response-details" class="collapsible-box">
+            <summary>Show Raw Model Response (JSON)</summary>
+            <div id="theatre-response-text" class="collapsible-content"></div>
+          </details>
+
+          <div id="theatre-acceptance-box" style="margin-top: 14px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: CAMERA-JUDGE CALIBRATION (F4) -->
     <section id="section-calibration" class="console-section">
       <div class="section-header">
         <div>
@@ -1006,6 +1214,7 @@
 
   <!-- Scripts -->
   <script src="data.js"></script>
+  <script src="repair_theatre_data.js"></script>
   <script src="console.js"></script>
   <script>
     function switchTab(tabId) {

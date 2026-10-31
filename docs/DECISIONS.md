@@ -323,3 +323,20 @@
 - **Claim Wording (Rule H14):**
   - "v2 was created after seeing v1's certificate; v2's certificate is valid because v2 was fixed before its own data was drawn. Never present only the better program."
   - Results described as "rendered camera footage" and "certified in simulation under distribution D".
+
+## 2026-11-01 — Phase 10c Pre-Registration and Authorisation: Recorded Repair Sessions & Repair Theatre
+- **Authorisation:** Human authorisation granted for Phase 10c (presentation and demo evidence).
+- **Scope Restrictions:**
+  - Allowed modifications: `dashboard/`, `closedloop/report/`, `closedloop/demo/`, `experiments/` (new files only), `configs/demo_sessions.yaml` (new), `tests/` (add only).
+  - Frozen & untouchable: All existing `runs/*` (except new output directory `runs/demo-sessions-01/`), existing `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, and earlier experimental results remain untouched.
+- **Protocol & Invariants:**
+  - Start programs: `v1` (`bec73dec45a88431`) and `v2` (`5f74f7762ee1f378`).
+  - Scenario generation: Draw scenarios from $D$ using repair seeds from `900000`, keeping the FIRST 8 scenarios where the start program fails by simulator ground truth (`sim_res.margin < 0`).
+  - Log all attempted scenarios. Exactly one session per scenario, no reruns. Failed repairs are kept and shown.
+  - These sessions constitute demo evidence and presentation material, NOT part of H2/H3 statistical tests.
+  - Verification: Replay of the new program on the same scenario must equal the logged result (V1). Replay frames verified against simulation.
+  - Held-out mini-check: 20 fresh scenarios evaluated with Clopper-Pearson bound labelled "small-sample check, not a certificate".
+  - UI Feature F7 "Repair Theatre": Scenario picker with data-derived labels, step timeline (failure -> search -> minimal counterexample -> prompt -> model response -> diff -> acceptance gates -> replay -> mini-check), verbatim prompts and responses (collapsed), scrubber replay, cost/tokens badge "RECORDED session <run_id> at git <sha>".
+  - Before/after heatmap: Side-by-side comparison of v1 vs v2 using only logged certification run data.
+  - Budget cap: $3.00.
+

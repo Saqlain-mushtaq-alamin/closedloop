@@ -4372,6 +4372,264 @@
       "n": 150
     }
   ],
+  "cells_v2": [
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_00",
+      "idx": 0,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_01",
+      "idx": 1,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_02",
+      "idx": 2,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_03",
+      "idx": 3,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_04",
+      "idx": 4,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_05",
+      "idx": 5,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_06",
+      "idx": 6,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_07",
+      "idx": 7,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_08",
+      "idx": 8,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_09",
+      "idx": 9,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_10",
+      "idx": 10,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_11",
+      "idx": 11,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_12",
+      "idx": 12,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_13",
+      "idx": 13,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_14",
+      "idx": 14,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    },
+    {
+      "bound_state": 0.0,
+      "certified_state": true,
+      "friction_range": [
+        0.0,
+        0.0
+      ],
+      "id": "cell_15",
+      "idx": 15,
+      "k_state": 150,
+      "mass_range": [
+        0.0,
+        0.0
+      ],
+      "n": 150
+    }
+  ],
   "generator": "closedloop.report.build_ui_data",
   "honesty": {
     "friction_effect_note": "Friction had no measurable effect below 6.25 kg or above 8.88 kg in this grasp model (the certificate is effectively one-dimensional in mass, governed by the 100 N grasp slip threshold).",
@@ -4501,6 +4759,13 @@
       "episodes_sha256": "43064905a03f4f192c612dd66757500c1ea58f19326b067f872987daccac32fa",
       "git_sha": "cfe97fa09787d5c45853ce425930d0ae05006dae",
       "run_id": "cert-mint-03"
+    },
+    "cert2-full-01": {
+      "config_hash": "1f2191d4d8e0afb1",
+      "episode_count": 4918,
+      "episodes_sha256": "b0360ec31979c5174babcd97134d0770ebab5d69e05994903388b8e274489c40",
+      "git_sha": "3cecc4c4950520e67c8f2f00d74851f35497003b",
+      "run_id": "cert2-full-01"
     },
     "h2h3-full-03": {
       "config_hash": "890a94b0788df688",

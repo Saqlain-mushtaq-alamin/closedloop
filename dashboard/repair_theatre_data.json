@@ -1,0 +1,2368 @@
+{
+  "run_id": "demo-sessions-01",
+  "git_sha": "75721debeb30d3321f54b09b38021f1c6081d6db",
+  "badge": "RECORDED session demo-sessions-01 at git 75721deb",
+  "total_spend_usd": 0.0,
+  "sessions": [
+    {
+      "session_id": "session_00",
+      "label": "Scenario 1: mass=11.13kg, \u03bc=0.99",
+      "scenario": {
+        "seed": 900004,
+        "x": 0.0952973412735815,
+        "y": -0.025694423295327284,
+        "yaw": 0.24452496693483838,
+        "mass": 11.129902162898896,
+        "friction": 0.9921589047430535
+      },
+      "failing_frames": [
+        "theatre/session_00/frames/fail_frame_0.png",
+        "theatre/session_00/frames/fail_frame_1.png",
+        "theatre/session_00/frames/fail_frame_2.png",
+        "theatre/session_00/frames/fail_frame_3.png",
+        "theatre/session_00/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.12611509064111065,
+        "final_pos": [
+          0.095910166,
+          -0.025064805,
+          0.019989637
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 11.129902162898896,
+            "friction": 0.9921589047430535
+          },
+          "margin": -0.12611509064111065,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 8.903921730319118,
+            "friction": 0.6945112333201374
+          },
+          "margin": -0.12601409907940977,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 8.903921730319118,
+            "friction": 0.9921589047430535
+          },
+          "margin": -0.12611509064111062,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 11.129902162898896,
+            "friction": 0.6945112333201374
+          },
+          "margin": -0.1260140990794097,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 11.129902162898896,
+            "friction": 0.9921589047430535
+          },
+          "margin": -0.12611509064111065,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 11.5,
+            "friction": 0.6945112333201374
+          },
+          "margin": -0.12601409907940983,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": 0.0952973412735815,
+            "y": -0.025694423295327284,
+            "yaw": 0.24452496693483838,
+            "mass": 11.5,
+            "friction": 0.9921589047430535
+          },
+          "margin": -0.12611509064111062,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.9,
+            "friction": 0.69
+          },
+          "margin": -0.126,
+          "retained": true
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.9,
+            "friction": 0.99
+          },
+          "margin": -0.1261,
+          "retained": true
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.13,
+            "friction": 0.69
+          },
+          "margin": -0.126,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.13,
+            "friction": 0.99
+          },
+          "margin": -0.1261,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.69
+          },
+          "margin": -0.126,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.99
+          },
+          "margin": -0.1261,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": 0.0952973412735815,
+          "y": -0.025694423295327284,
+          "yaw": 0.24452496693483838,
+          "mass": 11.129902162898896,
+          "friction": 0.9921589047430535,
+          "seed": 900004
+        },
+        "margin": -0.12611509064111065
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=0.095, y=-0.026, yaw=0.245, mass=11.130, friction=0.992)\n- Margin: -0.1261 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.1261 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=11.13kg, friction=0.99); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.1261, success=False); Frame 1 (Approach): Hand moved to (0.10, -0.03, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (0.10, -0.03, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (0.10, -0.03, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (0.10, -0.03, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_00_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999000804746423
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.0049990008044567035
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999000804543864
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004999000804746423
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004999000804764977
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000804764976
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_00/frames/replay_frame_0.png",
+        "theatre/session_00/frames/replay_frame_1.png",
+        "theatre/session_00/frames/replay_frame_2.png",
+        "theatre/session_00/frames/replay_frame_3.png",
+        "theatre/session_00/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004999000804746423,
+        "replayed_margin": 0.004999000804746423,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_01",
+      "label": "Scenario 2: mass=10.07kg, \u03bc=0.89",
+      "scenario": {
+        "seed": 900007,
+        "x": 0.07383658638271068,
+        "y": -5.9920363321697145e-06,
+        "yaw": -0.08582617129933445,
+        "mass": 10.07119250510466,
+        "friction": 0.885256743869557
+      },
+      "failing_frames": [
+        "theatre/session_01/frames/fail_frame_0.png",
+        "theatre/session_01/frames/fail_frame_1.png",
+        "theatre/session_01/frames/fail_frame_2.png",
+        "theatre/session_01/frames/fail_frame_3.png",
+        "theatre/session_01/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.1458239783042409,
+        "final_pos": [
+          0.074176322,
+          0.000325143,
+          0.019989559
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 10.07119250510466,
+            "friction": 0.885256743869557
+          },
+          "margin": -0.1458239783042409,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 8.056954004083728,
+            "friction": 0.6196797207086898
+          },
+          "margin": 0.004999000805235852,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 8.056954004083728,
+            "friction": 0.885256743869557
+          },
+          "margin": 0.004999000805505959,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 10.07119250510466,
+            "friction": 0.6196797207086898
+          },
+          "margin": -0.14557188037065955,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 10.07119250510466,
+            "friction": 0.885256743869557
+          },
+          "margin": -0.1458239783042409,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 11.078311755615127,
+            "friction": 0.6196797207086898
+          },
+          "margin": -0.14557188037065966,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": 0.07383658638271068,
+            "y": -5.9920363321697145e-06,
+            "yaw": -0.08582617129933445,
+            "mass": 11.078311755615127,
+            "friction": 0.885256743869557
+          },
+          "margin": -0.1458239783042409,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.06,
+            "friction": 0.62
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.06,
+            "friction": 0.89
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.07,
+            "friction": 0.62
+          },
+          "margin": -0.1456,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.07,
+            "friction": 0.89
+          },
+          "margin": -0.1458,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.08,
+            "friction": 0.62
+          },
+          "margin": -0.1456,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.08,
+            "friction": 0.89
+          },
+          "margin": -0.1458,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": 0.07383658638271068,
+          "y": -5.9920363321697145e-06,
+          "yaw": -0.08582617129933445,
+          "mass": 10.07119250510466,
+          "friction": 0.885256743869557,
+          "seed": 900007
+        },
+        "margin": -0.1458239783042409
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=0.074, y=-0.000, yaw=-0.086, mass=10.071, friction=0.885)\n- Margin: -0.1458 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.1458 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=10.07kg, friction=0.89); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.1458, success=False); Frame 1 (Approach): Hand moved to (0.07, -0.00, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (0.07, -0.00, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (0.07, 0.00, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (0.07, 0.00, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_01_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999000805505957
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.0049990008053861145
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999000805438339
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004999000805505957
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004999000804512
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000804607188
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_01/frames/replay_frame_0.png",
+        "theatre/session_01/frames/replay_frame_1.png",
+        "theatre/session_01/frames/replay_frame_2.png",
+        "theatre/session_01/frames/replay_frame_3.png",
+        "theatre/session_01/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004999000805505957,
+        "replayed_margin": 0.004999000805505957,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_02",
+      "label": "Scenario 3: mass=10.54kg, \u03bc=0.25",
+      "scenario": {
+        "seed": 900008,
+        "x": -0.00494086862109222,
+        "y": -0.07804790282487924,
+        "yaw": 0.44728844253980093,
+        "mass": 10.535633678516675,
+        "friction": 0.2526856985876315
+      },
+      "failing_frames": [
+        "theatre/session_02/frames/fail_frame_0.png",
+        "theatre/session_02/frames/fail_frame_1.png",
+        "theatre/session_02/frames/fail_frame_2.png",
+        "theatre/session_02/frames/fail_frame_3.png",
+        "theatre/session_02/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.23655637386216613,
+        "final_pos": [
+          -0.004892998,
+          -0.07798628,
+          0.019989669
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 10.535633678516675,
+            "friction": 0.2526856985876315
+          },
+          "margin": -0.23655637386216613,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 8.42850694281334,
+            "friction": 0.17687998901134205
+          },
+          "margin": 0.0049990154246154815,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 8.42850694281334,
+            "friction": 0.2526856985876315
+          },
+          "margin": 0.004998994003158135,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 10.535633678516675,
+            "friction": 0.17687998901134205
+          },
+          "margin": -0.2366164439610998,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 10.535633678516675,
+            "friction": 0.2526856985876315
+          },
+          "margin": -0.23655637386216613,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 11.5,
+            "friction": 0.17687998901134205
+          },
+          "margin": -0.2366164439610998,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": -0.00494086862109222,
+            "y": -0.07804790282487924,
+            "yaw": 0.44728844253980093,
+            "mass": 11.5,
+            "friction": 0.2526856985876315
+          },
+          "margin": -0.23655637386216613,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.43,
+            "friction": 0.18
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.43,
+            "friction": 0.25
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.54,
+            "friction": 0.18
+          },
+          "margin": -0.2366,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.54,
+            "friction": 0.25
+          },
+          "margin": -0.2366,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.18
+          },
+          "margin": -0.2366,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.25
+          },
+          "margin": -0.2366,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": -0.00494086862109222,
+          "y": -0.07804790282487924,
+          "yaw": 0.44728844253980093,
+          "mass": 10.535633678516675,
+          "friction": 0.17687998901134205,
+          "seed": 900008
+        },
+        "margin": -0.2366164439610998
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=-0.005, y=-0.078, yaw=0.447, mass=10.536, friction=0.177)\n- Margin: -0.2366 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.2366 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=10.54kg, friction=0.25); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.2366, success=False); Frame 1 (Approach): Hand moved to (-0.00, -0.08, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (-0.00, -0.08, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (-0.00, -0.08, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (-0.00, -0.08, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_02_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999015424615483
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.004999021886297147
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999008345279769
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.00499899400315812
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004998997268057363
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000803057684
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_02/frames/replay_frame_0.png",
+        "theatre/session_02/frames/replay_frame_1.png",
+        "theatre/session_02/frames/replay_frame_2.png",
+        "theatre/session_02/frames/replay_frame_3.png",
+        "theatre/session_02/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.00499899400315812,
+        "replayed_margin": 0.00499899400315812,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_03",
+      "label": "Scenario 4: mass=9.28kg, \u03bc=0.68",
+      "scenario": {
+        "seed": 900011,
+        "x": -0.01802018363725766,
+        "y": -0.10208458622570521,
+        "yaw": 0.36118455646427305,
+        "mass": 9.27886400684015,
+        "friction": 0.6816918203111378
+      },
+      "failing_frames": [
+        "theatre/session_03/frames/fail_frame_0.png",
+        "theatre/session_03/frames/fail_frame_1.png",
+        "theatre/session_03/frames/fail_frame_2.png",
+        "theatre/session_03/frames/fail_frame_3.png",
+        "theatre/session_03/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.2559272534421253,
+        "final_pos": [
+          -0.017349706,
+          -0.101383081,
+          0.019989637
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 9.27886400684015,
+            "friction": 0.6816918203111378
+          },
+          "margin": -0.2559272534421253,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 7.4230912054721205,
+            "friction": 0.47718427421779647
+          },
+          "margin": 0.004999000803583419,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 7.4230912054721205,
+            "friction": 0.6816918203111378
+          },
+          "margin": 0.004999000804949147,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 9.27886400684015,
+            "friction": 0.47718427421779647
+          },
+          "margin": -0.25614946052208976,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 9.27886400684015,
+            "friction": 0.6816918203111378
+          },
+          "margin": -0.2559272534421253,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 10.206750407524167,
+            "friction": 0.47718427421779647
+          },
+          "margin": -0.25614946052208964,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": -0.01802018363725766,
+            "y": -0.10208458622570521,
+            "yaw": 0.36118455646427305,
+            "mass": 10.206750407524167,
+            "friction": 0.6816918203111378
+          },
+          "margin": -0.2559272534421253,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 7.42,
+            "friction": 0.48
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 7.42,
+            "friction": 0.68
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.28,
+            "friction": 0.48
+          },
+          "margin": -0.2561,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.28,
+            "friction": 0.68
+          },
+          "margin": -0.2559,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.21,
+            "friction": 0.48
+          },
+          "margin": -0.2561,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.21,
+            "friction": 0.68
+          },
+          "margin": -0.2559,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": -0.01802018363725766,
+          "y": -0.10208458622570521,
+          "yaw": 0.36118455646427305,
+          "mass": 9.27886400684015,
+          "friction": 0.47718427421779647,
+          "seed": 900011
+        },
+        "margin": -0.25614946052208976
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=-0.018, y=-0.102, yaw=0.361, mass=9.279, friction=0.477)\n- Margin: -0.2561 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.2559 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=9.28kg, friction=0.68); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.2559, success=False); Frame 1 (Approach): Hand moved to (-0.02, -0.10, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (-0.02, -0.10, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (-0.02, -0.10, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (-0.02, -0.10, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_03_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999000803583422
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.00499900080500929
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999000804691147
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004999000804949142
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004999000805305742
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000805508159
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_03/frames/replay_frame_0.png",
+        "theatre/session_03/frames/replay_frame_1.png",
+        "theatre/session_03/frames/replay_frame_2.png",
+        "theatre/session_03/frames/replay_frame_3.png",
+        "theatre/session_03/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004999000804949142,
+        "replayed_margin": 0.004999000804949142,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_04",
+      "label": "Scenario 5: mass=11.30kg, \u03bc=0.27",
+      "scenario": {
+        "seed": 900018,
+        "x": -0.0432576044882141,
+        "y": -0.08576538166314993,
+        "yaw": -0.227167890360517,
+        "mass": 11.297406951096756,
+        "friction": 0.2658751363980422
+      },
+      "failing_frames": [
+        "theatre/session_04/frames/fail_frame_0.png",
+        "theatre/session_04/frames/fail_frame_1.png",
+        "theatre/session_04/frames/fail_frame_2.png",
+        "theatre/session_04/frames/fail_frame_3.png",
+        "theatre/session_04/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.27542048336522584,
+        "final_pos": [
+          -0.043153667,
+          -0.085688968,
+          0.019989564
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 11.297406951096756,
+            "friction": 0.2658751363980422
+          },
+          "margin": -0.27542048336522584,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 9.037925560877405,
+            "friction": 0.18611259547862954
+          },
+          "margin": -0.2755399031068754,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 9.037925560877405,
+            "friction": 0.2658751363980422
+          },
+          "margin": -0.27542048336522584,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 11.297406951096756,
+            "friction": 0.18611259547862954
+          },
+          "margin": -0.2755399031068754,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 11.297406951096756,
+            "friction": 0.2658751363980422
+          },
+          "margin": -0.27542048336522584,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 11.5,
+            "friction": 0.18611259547862954
+          },
+          "margin": -0.2755399031068754,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": -0.0432576044882141,
+            "y": -0.08576538166314993,
+            "yaw": -0.227167890360517,
+            "mass": 11.5,
+            "friction": 0.2658751363980422
+          },
+          "margin": -0.27542048336522595,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.04,
+            "friction": 0.19
+          },
+          "margin": -0.2755,
+          "retained": true
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.04,
+            "friction": 0.27
+          },
+          "margin": -0.2754,
+          "retained": true
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.3,
+            "friction": 0.19
+          },
+          "margin": -0.2755,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.3,
+            "friction": 0.27
+          },
+          "margin": -0.2754,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.19
+          },
+          "margin": -0.2755,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.27
+          },
+          "margin": -0.2754,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": -0.0432576044882141,
+          "y": -0.08576538166314993,
+          "yaw": -0.227167890360517,
+          "mass": 9.037925560877405,
+          "friction": 0.18611259547862954,
+          "seed": 900018
+        },
+        "margin": -0.2755399031068754
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=-0.043, y=-0.086, yaw=-0.227, mass=9.038, friction=0.186)\n- Margin: -0.2755 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.2754 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=11.30kg, friction=0.27); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.2754, success=False); Frame 1 (Approach): Hand moved to (-0.04, -0.09, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (-0.04, -0.09, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (-0.04, -0.09, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (-0.04, -0.09, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_04_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999012914174385
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.004999018380129198
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999004650959948
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004998992286314969
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004998998972868162
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000803624281
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_04/frames/replay_frame_0.png",
+        "theatre/session_04/frames/replay_frame_1.png",
+        "theatre/session_04/frames/replay_frame_2.png",
+        "theatre/session_04/frames/replay_frame_3.png",
+        "theatre/session_04/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004998992286314969,
+        "replayed_margin": 0.004998992286314969,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_05",
+      "label": "Scenario 6: mass=11.23kg, \u03bc=0.47",
+      "scenario": {
+        "seed": 900020,
+        "x": 0.09356547421804526,
+        "y": -0.054253999100905906,
+        "yaw": -0.022061296201880354,
+        "mass": 11.233512328397554,
+        "friction": 0.4673565917397473
+      },
+      "failing_frames": [
+        "theatre/session_05/frames/fail_frame_0.png",
+        "theatre/session_05/frames/fail_frame_1.png",
+        "theatre/session_05/frames/fail_frame_2.png",
+        "theatre/session_05/frames/fail_frame_3.png",
+        "theatre/session_05/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.13491433653016502,
+        "final_pos": [
+          0.094086124,
+          -0.053736409,
+          0.019989562
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 11.233512328397554,
+            "friction": 0.4673565917397473
+          },
+          "margin": -0.13491433653016502,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 8.986809862718044,
+            "friction": 0.32714961421782307
+          },
+          "margin": -0.13538900868962175,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 8.986809862718044,
+            "friction": 0.4673565917397473
+          },
+          "margin": -0.13491433653016546,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 11.233512328397554,
+            "friction": 0.32714961421782307
+          },
+          "margin": -0.13538900868962175,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 11.233512328397554,
+            "friction": 0.4673565917397473
+          },
+          "margin": -0.13491433653016502,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 11.5,
+            "friction": 0.32714961421782307
+          },
+          "margin": -0.13538900868962184,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": 0.09356547421804526,
+            "y": -0.054253999100905906,
+            "yaw": -0.022061296201880354,
+            "mass": 11.5,
+            "friction": 0.4673565917397473
+          },
+          "margin": -0.13491433653016488,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.99,
+            "friction": 0.33
+          },
+          "margin": -0.1354,
+          "retained": true
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.99,
+            "friction": 0.47
+          },
+          "margin": -0.1349,
+          "retained": true
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.23,
+            "friction": 0.33
+          },
+          "margin": -0.1354,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.23,
+            "friction": 0.47
+          },
+          "margin": -0.1349,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.33
+          },
+          "margin": -0.1354,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.5,
+            "friction": 0.47
+          },
+          "margin": -0.1349,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": 0.09356547421804526,
+          "y": -0.054253999100905906,
+          "yaw": -0.022061296201880354,
+          "mass": 11.5,
+          "friction": 0.32714961421782307,
+          "seed": 900020
+        },
+        "margin": -0.13538900868962184
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=0.094, y=-0.054, yaw=-0.022, mass=11.500, friction=0.327)\n- Margin: -0.1354 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.1349 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=11.23kg, friction=0.47); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.1349, success=False); Frame 1 (Approach): Hand moved to (0.09, -0.05, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (0.09, -0.05, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (0.09, -0.05, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (0.09, -0.05, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_05_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999000386663471
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.004999000806243984
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999000806312539
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004999000806294119
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004999000806551034
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000806414743
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_05/frames/replay_frame_0.png",
+        "theatre/session_05/frames/replay_frame_1.png",
+        "theatre/session_05/frames/replay_frame_2.png",
+        "theatre/session_05/frames/replay_frame_3.png",
+        "theatre/session_05/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004999000806294119,
+        "replayed_margin": 0.004999000806294119,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_06",
+      "label": "Scenario 7: mass=10.02kg, \u03bc=0.40",
+      "scenario": {
+        "seed": 900021,
+        "x": 0.14670889767961723,
+        "y": 0.10080356859031711,
+        "yaw": 0.4281255082694868,
+        "mass": 10.01846410170453,
+        "friction": 0.39616400957825293
+      },
+      "failing_frames": [
+        "theatre/session_06/frames/fail_frame_0.png",
+        "theatre/session_06/frames/fail_frame_1.png",
+        "theatre/session_06/frames/fail_frame_2.png",
+        "theatre/session_06/frames/fail_frame_3.png",
+        "theatre/session_06/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.11490727731464029,
+        "final_pos": [
+          0.146349978,
+          0.101265946,
+          0.01998976
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 10.01846410170453,
+            "friction": 0.39616400957825293
+          },
+          "margin": -0.11490727731464029,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 8.014771281363625,
+            "friction": 0.27731480670477704
+          },
+          "margin": 0.004998993867658598,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 8.014771281363625,
+            "friction": 0.39616400957825293
+          },
+          "margin": 0.00499900080294656,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 10.01846410170453,
+            "friction": 0.27731480670477704
+          },
+          "margin": -0.11429325013986683,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 10.01846410170453,
+            "friction": 0.39616400957825293
+          },
+          "margin": -0.11490727731464029,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 11.020310511874985,
+            "friction": 0.27731480670477704
+          },
+          "margin": -0.11429325013986683,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": 0.14670889767961723,
+            "y": 0.10080356859031711,
+            "yaw": 0.4281255082694868,
+            "mass": 11.020310511874985,
+            "friction": 0.39616400957825293
+          },
+          "margin": -0.11490727731464034,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.01,
+            "friction": 0.28
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 8.01,
+            "friction": 0.4
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.02,
+            "friction": 0.28
+          },
+          "margin": -0.1143,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.02,
+            "friction": 0.4
+          },
+          "margin": -0.1149,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.02,
+            "friction": 0.28
+          },
+          "margin": -0.1143,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 11.02,
+            "friction": 0.4
+          },
+          "margin": -0.1149,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": 0.14670889767961723,
+          "y": 0.10080356859031711,
+          "yaw": 0.4281255082694868,
+          "mass": 11.020310511874985,
+          "friction": 0.39616400957825293,
+          "seed": 900021
+        },
+        "margin": -0.11490727731464034
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=0.147, y=0.101, yaw=0.428, mass=11.020, friction=0.396)\n- Margin: -0.1149 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.1149 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=10.02kg, friction=0.40); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.1149, success=False); Frame 1 (Approach): Hand moved to (0.15, 0.10, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (0.15, 0.10, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (0.15, 0.10, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (0.15, 0.10, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_06_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.004999000802946567
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.004998996410338735
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999000802701238
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004999000802946565
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004999000804133117
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000803918549
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_06/frames/replay_frame_0.png",
+        "theatre/session_06/frames/replay_frame_1.png",
+        "theatre/session_06/frames/replay_frame_2.png",
+        "theatre/session_06/frames/replay_frame_3.png",
+        "theatre/session_06/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004999000802946565,
+        "replayed_margin": 0.004999000802946565,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    },
+    {
+      "session_id": "session_07",
+      "label": "Scenario 8: mass=9.31kg, \u03bc=0.26",
+      "scenario": {
+        "seed": 900023,
+        "x": 0.06269092058123024,
+        "y": -0.0571925745186735,
+        "yaw": 0.019818406007608647,
+        "mass": 9.312923439466363,
+        "friction": 0.2556498891673429
+      },
+      "failing_frames": [
+        "theatre/session_07/frames/fail_frame_0.png",
+        "theatre/session_07/frames/fail_frame_1.png",
+        "theatre/session_07/frames/fail_frame_2.png",
+        "theatre/session_07/frames/fail_frame_3.png",
+        "theatre/session_07/frames/fail_frame_4.png"
+      ],
+      "failing_sim": {
+        "truth_success": false,
+        "margin": -0.16575533106300705,
+        "final_pos": [
+          0.062762988,
+          -0.05711787,
+          0.01998948
+        ],
+        "steps": 660,
+        "agreed": true
+      },
+      "falsifier_trace": [
+        {
+          "eval_idx": 0,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 9.312923439466363,
+            "friction": 0.2556498891673429
+          },
+          "margin": -0.16575533106300705,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 1,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 7.450338751573091,
+            "friction": 0.17895492241714
+          },
+          "margin": 0.0049990148693482995,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 2,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 7.450338751573091,
+            "friction": 0.2556498891673429
+          },
+          "margin": 0.004998993129972521,
+          "truth_success": true
+        },
+        {
+          "eval_idx": 3,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 9.312923439466363,
+            "friction": 0.17895492241714
+          },
+          "margin": -0.16586316788063335,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 4,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 9.312923439466363,
+            "friction": 0.2556498891673429
+          },
+          "margin": -0.16575533106300705,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 5,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 10.244215783413,
+            "friction": 0.17895492241714
+          },
+          "margin": -0.1658631678806335,
+          "truth_success": false
+        },
+        {
+          "eval_idx": 6,
+          "params": {
+            "x": 0.06269092058123024,
+            "y": -0.0571925745186735,
+            "yaw": 0.019818406007608647,
+            "mass": 10.244215783413,
+            "friction": 0.2556498891673429
+          },
+          "margin": -0.16575533106300697,
+          "truth_success": false
+        }
+      ],
+      "minimizer_steps": [
+        {
+          "step": 1,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 7.45,
+            "friction": 0.18
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 2,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 7.45,
+            "friction": 0.26
+          },
+          "margin": 0.005,
+          "retained": false
+        },
+        {
+          "step": 3,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.31,
+            "friction": 0.18
+          },
+          "margin": -0.1659,
+          "retained": true
+        },
+        {
+          "step": 4,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 9.31,
+            "friction": 0.26
+          },
+          "margin": -0.1658,
+          "retained": true
+        },
+        {
+          "step": 5,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.24,
+            "friction": 0.18
+          },
+          "margin": -0.1659,
+          "retained": true
+        },
+        {
+          "step": 6,
+          "tested_param": "mass_friction",
+          "candidate": {
+            "mass": 10.24,
+            "friction": 0.26
+          },
+          "margin": -0.1658,
+          "retained": true
+        }
+      ],
+      "minimal_ce": {
+        "params": {
+          "x": 0.06269092058123024,
+          "y": -0.0571925745186735,
+          "yaw": 0.019818406007608647,
+          "mass": 10.244215783413,
+          "friction": 0.17895492241714,
+          "seed": 900023
+        },
+        "margin": -0.1658631678806335
+      },
+      "repair_prompt": {
+        "text": "You are repairing a Python robot program that failed in simulation.\n\nAvailable Primitives API:\n\nAvailable Primitives:\n- move_to(pos: tuple[float, float, float], steps: int = 60): Move hand toward pos.\n- open_gripper(): Open the gripper fingers.\n- close_gripper(force: float): Close gripper with force in Newtons (up to 300N).\n- get_object_pos(name: str) -> tuple[float, float, float]: Get Cartesian position of 'cube' or 'pad'.\n- get_object_pose(name: str): Get (pos, orientation) of 'cube' or 'pad'.\n\n\nCurrent Robot Program:\n```python\ndef policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(100)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)\n```\n\nFailure Diagnostics:\n- Failing minimal scenario: (x=0.063, y=-0.057, yaw=0.020, mass=10.244, friction=0.179)\n- Margin: -0.1659 (negative indicates distance to success region)\n- Execution trace: Failed with margin -0.1658 after 660 steps\n- Visual filmstrip frames: Initial Workspace Layout (mass=9.31kg, friction=0.26); Approach Cube (Hand descended above cube); Settlement (Grasp Slip / Miss) (margin=-0.1658, success=False); Frame 1 (Approach): Hand moved to (0.06, -0.06, 0.12), dist_to_cube=0.10m (Frame 1 (Approach): Hand moved to (0.06, -0.06, 0.12), dist_to_cube=0.10m); Frame 2 (Release): Gripper opened above pad, cube at (0.06, -0.06, 0.02) (Frame 2 (Release): Gripper opened above pad, cube at (0.06, -0.06, 0.02))\n\nInstructions:\n1. Analyze why the policy failed on the given scenario parameters.\n2. Revise policy(env, rng) to successfully handle this scenario while maintaining correct behavior.\n3. Ensure gripper force, lift trajectory, and placement stability are physically adequate.\n\nReply strictly with JSON object: {\"code\": \"<revised python code>\", \"rationale\": \"<explanation of fix>\"}.",
+        "thumbnails": [
+          "fail_frame_0.png",
+          "fail_frame_1.png",
+          "fail_frame_2.png",
+          "fail_frame_3.png",
+          "fail_frame_4.png"
+        ]
+      },
+      "model_response": {
+        "model_id": "muse-spark-1.3",
+        "raw_text": "{\"code\": \"def policy(env, rng):\\n    cube_pos = env.get_object_pos(\\\"cube\\\")\\n    pad_pos = env.get_object_pos(\\\"pad\\\")\\n    env.open_gripper()\\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\\n    env.move_to(above_cube, steps=80)\\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\\n    env.move_to(grasp_pos, steps=80)\\n    env.close_gripper(300)\\n    env.move_to(grasp_pos, steps=20)\\n    env.move_to(above_cube, steps=100)\\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\\n    env.move_to(above_pad, steps=100)\\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\\n    env.move_to(place_pos, steps=100)\\n    env.open_gripper()\\n    env.move_to(place_pos, steps=20)\\n    env.move_to(above_pad, steps=80)\", \"rationale\": \"Increased gripper force from 100N to 300N to prevent slip under heavy object mass.\"}",
+        "rationale": "Increased gripper force from 100N to 300N to prevent slip under heavy object mass.",
+        "tokens_in": 1120,
+        "tokens_out": 410,
+        "cost_usd": 0.0035,
+        "latency_s": 0.85
+      },
+      "repaired_program": {
+        "code": "def policy(env, rng):\n    cube_pos = env.get_object_pos(\"cube\")\n    pad_pos = env.get_object_pos(\"pad\")\n    env.open_gripper()\n    above_cube = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.20)\n    env.move_to(above_cube, steps=80)\n    grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n    env.move_to(grasp_pos, steps=80)\n    env.close_gripper(300)\n    env.move_to(grasp_pos, steps=20)\n    env.move_to(above_cube, steps=100)\n    above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n    env.move_to(above_pad, steps=100)\n    place_pos = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.02)\n    env.move_to(place_pos, steps=100)\n    env.open_gripper()\n    env.move_to(place_pos, steps=20)\n    env.move_to(above_pad, steps=80)",
+        "sha256": "1b34f30505515164e7df9434d4b3dbbc99555987fafe6b51ffc206002277b22a",
+        "diff": "--- a/v1.py\n+++ b/session_07_repaired.py\n@@ -6,7 +6,7 @@\n     env.move_to(above_cube, steps=80)\n     grasp_pos = (cube_pos[0], cube_pos[1], cube_pos[2] + 0.005)\n     env.move_to(grasp_pos, steps=80)\n-    env.close_gripper(100)\n+    env.close_gripper(300)\n     env.move_to(grasp_pos, steps=20)\n     env.move_to(above_cube, steps=100)\n     above_pad = (pad_pos[0], pad_pos[1], pad_pos[2] + 0.20)\n"
+      },
+      "acceptance_stages": {
+        "stage1": {
+          "name": "minimal_counterexample",
+          "passed": true,
+          "margin": 0.0049990148693482995
+        },
+        "stage2": {
+          "name": "regression_set",
+          "passed": true,
+          "details": [
+            {
+              "id": "nominal",
+              "passed": true,
+              "margin": 0.004999000808306372
+            },
+            {
+              "id": "ce_mint03",
+              "passed": true,
+              "margin": 0.004999000808306372
+            }
+          ]
+        },
+        "stage3": {
+          "name": "short_falsifier_rerun",
+          "passed": true,
+          "details": [
+            {
+              "step": 1,
+              "passed": true,
+              "margin": 0.004999021106390838
+            },
+            {
+              "step": 2,
+              "passed": true,
+              "margin": 0.004999007527869813
+            },
+            {
+              "step": 3,
+              "passed": true,
+              "margin": 0.004998993129972527
+            },
+            {
+              "step": 4,
+              "passed": true,
+              "margin": 0.004998997655044621
+            },
+            {
+              "step": 5,
+              "passed": true,
+              "margin": 0.004999000806179822
+            }
+          ]
+        },
+        "accepted": true
+      },
+      "replay_frames": [
+        "theatre/session_07/frames/replay_frame_0.png",
+        "theatre/session_07/frames/replay_frame_1.png",
+        "theatre/session_07/frames/replay_frame_2.png",
+        "theatre/session_07/frames/replay_frame_3.png",
+        "theatre/session_07/frames/replay_frame_4.png"
+      ],
+      "replay": {
+        "verified": true,
+        "logged_margin": 0.004998993129972527,
+        "replayed_margin": 0.004998993129972527,
+        "logged_success": true,
+        "replayed_success": true,
+        "frames": [
+          "replay_frame_0.png",
+          "replay_frame_1.png",
+          "replay_frame_2.png",
+          "replay_frame_3.png",
+          "replay_frame_4.png"
+        ]
+      },
+      "held_out_mini_check": {
+        "n_scenarios": 20,
+        "k_pass": 20,
+        "lower_bound": 0.8609,
+        "label": "small-sample check, not a certificate"
+      }
+    }
+  ]
+}
