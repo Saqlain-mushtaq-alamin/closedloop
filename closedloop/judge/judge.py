@@ -26,11 +26,11 @@ except ImportError:
 
 
 
-from closedloop.llm.client import LLMClient
-from closedloop.llm.cost import CostMeter
 from closedloop.repair.filmstrip import encode_png_b64
 from closedloop.sim.env import T1Env
 
+
+import threading
 
 DEFAULT_CAMERA_CFG = {
     "cameraTargetPosition": [0.15, 0.0, 0.05],
@@ -242,11 +242,13 @@ class VisionJudge:
         )
         self.camera_cfg = camera_cfg or DEFAULT_CAMERA_CFG
         self.cache = cache if cache is not None else {}
+        self._lock = threading.Lock()
 
     def judge_episode(
         self,
-        env: T1Env,
+        env: T1Env | None = None,
         client_override: LLMClient | None = None,
+        frame_b64: str | None = None,
     ) -> JudgeVerdict:
         """Evaluate an episode rollout at completion. Client is strictly required (no silent fake)."""
         client = client_override or self.client
@@ -256,7 +258,13 @@ class VisionJudge:
                 "(Rule H4/H8: no silent mocks or fake fallbacks in evaluation paths)"
             )
 
-        rgba, b64 = render_judge_frame(env, self.camera_cfg)
+        if frame_b64 is not None:
+            b64 = frame_b64
+        elif env is not None:
+            rgba, b64 = render_judge_frame(env, self.camera_cfg)
+        else:
+            raise ValueError("Either env or frame_b64 must be provided to judge_episode")
+
         img_sha = hashlib.sha256(b64.encode()).hexdigest()
 
         # Check Cache
@@ -264,21 +272,23 @@ class VisionJudge:
             f"{self.model}:{self.segmentation_model}:{img_sha}:{self.prompt}".encode()
         ).hexdigest()[:24]
 
-        if cache_key in self.cache:
-            c = self.cache[cache_key]
-            return JudgeVerdict(
-                pass_verdict=bool(c["pass_verdict"]),
-                confidence=float(c.get("confidence", 0.9)),
-                reason=str(c.get("reason", "cached")),
-                geometric_pass=bool(c.get("geometric_pass", False)),
-                spark_pass=bool(c.get("spark_pass", False)),
-                cube_box=tuple(c["cube_box"]) if c.get("cube_box") else None,
-                pad_box=tuple(c["pad_box"]) if c.get("pad_box") else None,
-                cube_centroid=tuple(c["cube_centroid"]) if c.get("cube_centroid") else None,
-                tokens_in=int(c.get("tokens_in", 0)),
-                tokens_out=int(c.get("tokens_out", 0)),
-                cost_usd=float(c.get("cost_usd", 0.0)),
-            )
+        with self._lock:
+            if cache_key in self.cache:
+                c = self.cache[cache_key]
+                return JudgeVerdict(
+                    pass_verdict=bool(c["pass_verdict"]),
+                    confidence=float(c.get("confidence", 0.9)),
+                    reason=str(c.get("reason", "cached")),
+                    geometric_pass=bool(c.get("geometric_pass", False)),
+                    spark_pass=bool(c.get("spark_pass", False)),
+                    cube_box=tuple(c["cube_box"]) if c.get("cube_box") else None,
+                    pad_box=tuple(c["pad_box"]) if c.get("pad_box") else None,
+                    cube_centroid=tuple(c["cube_centroid"]) if c.get("cube_centroid") else None,
+                    tokens_in=int(c.get("tokens_in", 0)),
+                    tokens_out=int(c.get("tokens_out", 0)),
+                    cost_usd=float(c.get("cost_usd", 0.0)),
+                )
+
 
         # 1. SAM 3.1 Segmentation (Plan §8, Task 1)
         res_cube = client.segment(b64, "red cube")
@@ -369,18 +379,20 @@ class VisionJudge:
             cost_usd=round(total_cost, 6),
         )
 
-        self.cache[cache_key] = {
-            "pass_verdict": verdict.pass_verdict,
-            "confidence": verdict.confidence,
-            "reason": verdict.reason,
-            "geometric_pass": verdict.geometric_pass,
-            "spark_pass": verdict.spark_pass,
-            "cube_box": verdict.cube_box,
-            "pad_box": verdict.pad_box,
-            "cube_centroid": verdict.cube_centroid,
-            "tokens_in": verdict.tokens_in,
-            "tokens_out": verdict.tokens_out,
-            "cost_usd": verdict.cost_usd,
-        }
+        with self._lock:
+            self.cache[cache_key] = {
+                "pass_verdict": verdict.pass_verdict,
+                "confidence": verdict.confidence,
+                "reason": verdict.reason,
+                "geometric_pass": verdict.geometric_pass,
+                "spark_pass": verdict.spark_pass,
+                "cube_box": verdict.cube_box,
+                "pad_box": verdict.pad_box,
+                "cube_centroid": verdict.cube_centroid,
+                "tokens_in": verdict.tokens_in,
+                "tokens_out": verdict.tokens_out,
+                "cost_usd": verdict.cost_usd,
+            }
 
         return verdict
+

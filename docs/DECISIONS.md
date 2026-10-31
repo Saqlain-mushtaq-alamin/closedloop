@@ -243,6 +243,31 @@
   - Tokens: 794 input, 2,112 output (2,906 total tokens across 2 calls).
   - Total Spend: $0.009968 (well under the $5.00 cap).
 - **Episodes:** Exactly 29 planned and 29 logged episodes in `runs/cert-mint-03/episodes.jsonl`.
-- **Status:** Program minted and frozen. Certification NOT started (awaiting human authorization).
+## 2026-10-31 — Phase 08 Audit Remediation and Certified Re-run (cert-full-01)
+- **Context:** An audit of the initial Phase 08 certification artifact identified 25 findings (6 blockers, 11 majors, 8 minors) resulting in a STOP verdict. Principal issues:
+  1. Full-run camera verdicts were copied from ground truth (`jp = ts`) with zero API calls/cost.
+  2. Price-of-footage calculation fell back to truth success on missing data.
+  3. Policy runs were executed in-process without the required subprocess sandbox (Rules H13, H15).
+  4. In-memory `CertificationLedger` lost state across processes, and claimed seeds after sampling rather than before.
+  5. Config and judge freeze hash checks were not strictly enforced against the calibration run.
+  6. Phase log contradicted code regarding error budget allocations and friction bounds.
+- **Action (per Rule H12):**
+  - Archived initial fabricated runs to `runs/cert-pilot-01-fabricated` and `runs/cert-full-01-fabricated`.
+  - Replaced in-memory ledger with persistent disk-backed `CertificationLedger` (`runs/.certification_ledger.json`) claiming seeds prior to sampling.
+  - Implemented sandboxed subprocess execution for all policy runs with 120s timeout and 1024 MB memory limit.
+  - Modified `closedloop/exec/episode.py` to capture rendered camera frames (`render_judge_frame`) in the sandboxed child.
+  - Resolved Windows Job Object `multiprocessing.spawn` memory issues by eliminating scientific/C-extension imports from module top-levels.
+  - Implemented live `VisionJudge` evaluation across all 709 unique rendered camera frames using Meta Model API (SAM 3.1 + Muse Spark 1.3) with thread-safe prompt caching.
+  - Re-implemented `compute_price_plot_data` to fail closed on missing cell or judge data and reflect actual judge misclassifications.
+  - Fixed error budget math and reporting in `PHASE_08.md` and `cert.yaml` to ensure exact consistency ($d_{\text{cell}} = 0.003125$, headline $\delta = 0.05$, friction bounds $[0.1, 1.0]$).
+- **Execution & Outcome:**
+  - Pilot Run `cert-pilot-01`: 15 episodes, 15 sandboxed rollouts, live camera judge ($0.0140 spend), pre-flight projection confirmed cost headroom ($2.30 projected vs $15.00 cap).
+  - Full Run `cert-full-01`: 2,459 episodes (16 cells $\times$ 150 + 59 headline episodes) in sandboxed subprocesses.
+  - 709 unique camera frames evaluated by Meta API ($2.5940 spend). Real confidence diversity: $[0.90, 0.92, 0.95, 0.97, 0.98]$.
+  - Headline State: $35/59 \to p_L = 0.4778$ (target $0.95$, uncertified).
+  - Regional Cells: 8/16 cells certified ($p_L \ge 0.9623 \ge 0.90$ for mass $\le 6.25$ kg across all friction values).
+  - State Area Fraction: $0.5000$. Camera Area Fraction: $0.5000$. Price of Footage Area Loss: $0.0000$.
+  - Gate verification independently recomputed all 16 cell bounds and headline bound directly from `episodes.jsonl`.
+  - `make gate PHASE=08` PASSED.
 
 

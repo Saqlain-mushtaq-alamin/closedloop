@@ -19,9 +19,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
-from scipy.stats import beta
 
-from closedloop.certify import stats
 from closedloop.data.sampler import CertificationLedger, sample, LeakageError, sample_certification
 
 
@@ -49,39 +47,60 @@ def compute_error_budgets(
     K: int = 16,
     B: int = 4,
     M: int = 1,
+    joint: bool = False,
 ) -> dict[str, Any]:
     """Compute exact error budget splits for state and camera certification.
 
-    State mode:
-        d_cell = delta / (K * M)
-
-    Camera mode (Plan §11):
+    By default (Plan §11 / Phase 08 spec):
+    - State mode family: d_cell = delta / (K * M). Sum over K*M cells = delta.
+    - Camera mode family:
         d_a = 0.1 * delta
         d_b = (0.1 * delta) / B  (per bucket)
         d_cell = (0.8 * delta) / (K * M)
         Check: d_a + B * d_b + (K * M) * d_cell == delta.
+    - Headline single certificate: evaluated on full distribution D with undivided delta.
+
+    If joint=True (simultaneous confidence across headline + state + camera certificates):
+        Allocates delta across all claimed certificate families such that their sum <= delta.
     """
-    state_d_cell = delta / (K * M)
-    cam_d_a = 0.1 * delta
-    cam_d_b = (0.1 * delta) / B
-    cam_d_cell = (0.8 * delta) / (K * M)
+    if joint:
+        # 3 families: headline, state heatmap, camera heatmap
+        family_delta = delta / 3.0
+        state_d_cell = family_delta / (K * M)
+        cam_d_a = 0.1 * family_delta
+        cam_d_b = (0.1 * family_delta) / B
+        cam_d_cell = (0.8 * family_delta) / (K * M)
+        d_head = family_delta
+    else:
+        state_d_cell = delta / (K * M)
+        cam_d_a = 0.1 * delta
+        cam_d_b = (0.1 * delta) / B
+        cam_d_cell = (0.8 * delta) / (K * M)
+        d_head = delta
 
     return {
         "delta": float(delta),
         "K": int(K),
         "B": int(B),
         "M": int(M),
+        "joint": bool(joint),
         "state": {
             "d_cell": float(state_d_cell),
-            "d_headline": float(delta),
+            "d_headline": float(d_head),
+            "family_sum": float(state_d_cell * K * M),
         },
         "camera": {
             "d_a": float(cam_d_a),
             "d_b": float(cam_d_b),
             "d_cell": float(cam_d_cell),
-            "d_headline": float(0.8 * delta),
+            "d_headline": float(0.8 * d_head),
+            "family_sum": float(cam_d_a + B * cam_d_b + (K * M) * cam_d_cell),
         },
+        "total_claimed_delta": float(
+            d_head + (state_d_cell * K * M) + (cam_d_a + B * cam_d_b + (K * M) * cam_d_cell)
+        ),
     }
+
 
 
 def certify_state_cell(
@@ -91,6 +110,7 @@ def certify_state_cell(
     target_p: float = 0.90,
 ) -> dict[str, Any]:
     """Compute one-sided Clopper-Pearson lower bound for a single state cell."""
+    from closedloop.certify import stats
     bound = stats.cp_lower(k_pass, n_cell, d_cell)
     return {
         "mode": "state",
@@ -116,6 +136,7 @@ def certify_camera_cell(
     target_p: float = 0.85,
 ) -> dict[str, Any]:
     """Compute corrected lower bound for a noisy vision judge on a single camera cell."""
+    from closedloop.certify import stats
     bound = stats.corrected_lower(
         k_pass=k_pass,
         n_cell=n_cell,
@@ -153,6 +174,7 @@ def certify_headline(
     **kwargs: Any,
 ) -> dict[str, Any]:
     """Compute headline single certificate over the full distribution D."""
+    from closedloop.certify import stats
     if mode == "state":
         bound = stats.cp_lower(k_pass, n_total, delta)
     elif mode == "camera":
@@ -203,9 +225,14 @@ def recompute_cell_bound(
     if mode == "state":
         if k_pass == 0:
             return 0.0
-        return float(beta.ppf(d_cell, k_pass, n_cell - k_pass + 1))
+        from scipy.stats import binomtest
+        ci = binomtest(k_pass, n_cell, alternative="greater").proportion_ci(
+            confidence_level=1.0 - d_cell, method="exact"
+        )
+        return float(ci.low)
 
     if mode == "camera":
+        from scipy.stats import beta
         k_a = int(kwargs.get("k_a", result_dict.get("k_a", 300)))
         n_a = int(kwargs.get("n_a", result_dict.get("n_a", 300)))
         k_b = int(kwargs.get("k_b", result_dict.get("k_b", 0)))
@@ -267,6 +294,7 @@ def compute_price_plot_data(
     if not p_path.exists():
         raise FileNotFoundError(f"Episodes file not found: {p_path}")
 
+    from closedloop.certify import stats
     budgets = compute_error_budgets(delta=delta, K=K, B=4, M=1)
     d_cell_state = budgets["state"]["d_cell"]
     d_a = budgets["camera"]["d_a"]
@@ -283,8 +311,12 @@ def compute_price_plot_data(
                 continue
             rec = json.loads(line)
             cell_id = rec.get("cell_id") or rec.get("trace_path")
-            if not cell_id or not str(cell_id).startswith("cell_"):
+            if not cell_id:
+                raise ValueError(f"Episode record missing cell identifier (Rule H13): {rec}")
+            if str(cell_id) == "headline" or str(cell_id).startswith("headline"):
                 continue
+            if not str(cell_id).startswith("cell_"):
+                raise ValueError(f"Unrecognized cell_id {cell_id!r} in episode log (Rule H13)")
             episodes_count += 1
             if cell_id not in cell_data:
                 cell_data[cell_id] = {
@@ -292,9 +324,10 @@ def compute_price_plot_data(
                     "camera_successes": 0,
                     "total": 0,
                 }
-            ts = bool(rec.get("truth_success", False)) and bool(rec.get("truth_success_alt", False)) and float(rec.get("margin", -1.0)) > 0
-            # Judge pass: if judge_pass is recorded, use it; otherwise fallback to state
-            jp = bool(rec.get("judge_pass", ts))
+            ts = bool(rec.get("truth_success", False))
+            if "judge_pass" not in rec or rec["judge_pass"] is None:
+                raise ValueError(f"Episode record {rec.get('episode_id')} missing judge_pass (Rule H8/H13)")
+            jp = bool(rec["judge_pass"])
             if ts:
                 cell_data[cell_id]["state_successes"] += 1
             if jp:
@@ -355,8 +388,21 @@ def get_cell_bounds(
     x_range: tuple[float, float] = (-0.15, 0.15),
     y_range: tuple[float, float] = (-0.15, 0.15),
     yaw_range: tuple[float, float] = (-0.5, 0.5),
+    bounds: dict[str, Any] | None = None,
 ) -> dict[str, tuple[float, float]]:
     """Compute parameter bounds for a given cell index in the 4x4 (mass x friction) grid."""
+    if bounds:
+        if "mass" in bounds:
+            mass_range = tuple(bounds["mass"])
+        if "friction" in bounds:
+            fric_range = tuple(bounds["friction"])
+        if "x" in bounds:
+            x_range = tuple(bounds["x"])
+        if "y" in bounds:
+            y_range = tuple(bounds["y"])
+        if "yaw" in bounds:
+            yaw_range = tuple(bounds["yaw"])
+
     i_mass = cell_idx // 4
     j_fric = cell_idx % 4
 
@@ -386,6 +432,7 @@ def generate_cell_scenarios(
     bounds: dict[str, tuple[float, float]] | None = None,
 ) -> list[dict[str, float | int]]:
     """Draw n certification scenarios within bounds, enforcing single-use per program (Rule H9)."""
-    scenarios = sample("certification", n, seed, bounds=bounds)
-    ledger.claim(program_id, [int(s["seed"]) for s in scenarios])
-    return scenarios
+    planned_seeds = [seed + i for i in range(n)]
+    ledger.claim(program_id, planned_seeds)
+    return sample("certification", n, seed, bounds=bounds)
+

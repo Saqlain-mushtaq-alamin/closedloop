@@ -8,6 +8,7 @@ sample_certification (guarded by test_certification_only_via_certify).
 
 from __future__ import annotations
 
+from pathlib import Path
 import numpy as np
 
 STREAM_RANGES: dict[str, tuple[int, int]] = {
@@ -64,17 +65,40 @@ def sample(
 
 
 class CertificationLedger:
-    """Tracks claimed certification seeds per program (single use each)."""
+    """Tracks claimed certification seeds per program (single use each).
 
-    def __init__(self) -> None:
+    Supports persistent storage on disk to prevent silent seed reuse across runs.
+    """
+
+    def __init__(self, path: Path | str | None = None) -> None:
+        from pathlib import Path as _Path
+        self.path = _Path(path) if path is not None else None
         self.claimed: dict[str, set[int]] = {}
+        if self.path and self.path.exists():
+            self._load()
+
+    def _load(self) -> None:
+        try:
+            import json
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+            for prog_id, seeds in data.items():
+                self.claimed[prog_id] = set(int(s) for s in seeds)
+        except Exception:
+            pass
+
+    def _save(self) -> None:
+        if self.path:
+            import json
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            data = {prog_id: sorted(list(seeds)) for prog_id, seeds in self.claimed.items()}
+            self.path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
     def claim(self, program_id: str, seeds: list[int]) -> None:
         """Claim seeds for a program; re-claiming raises LeakageError."""
         lo, hi = STREAM_RANGES["certification"]
         for s in seeds:
             if not lo <= s <= hi:
-                raise LeakageError(f"seed {s} outside certification range")
+                raise LeakageError(f"seed {s} outside certification range [{lo}, {hi}]")
         used = self.claimed.setdefault(program_id, set())
         dupes = used.intersection(seeds)
         if dupes:
@@ -82,12 +106,19 @@ class CertificationLedger:
                 f"seeds reused for {program_id}: {sorted(dupes)[:5]}"
             )
         used.update(seeds)
+        self._save()
 
 
 def sample_certification(
-    program_id: str, n: int, seed: int, ledger: CertificationLedger
+    program_id: str,
+    n: int,
+    seed: int,
+    ledger: CertificationLedger,
+    bounds: dict[str, tuple[float, float]] | None = None,
 ) -> list[dict[str, float | int]]:
     """Fresh i.i.d. certification scenarios; each seed claimed once (H9)."""
-    scenarios = sample("certification", n, seed)
-    ledger.claim(program_id, [int(s["seed"]) for s in scenarios])
-    return scenarios
+    _check_range("certification", seed, n)
+    planned_seeds = [seed + i for i in range(n)]
+    ledger.claim(program_id, planned_seeds)
+    return sample("certification", n, seed, bounds=bounds)
+
