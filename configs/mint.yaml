@@ -1,0 +1,43 @@
+# Configuration for the single replacement repair trajectory cert-mint-03
+# (Phase 08 certification input; pre-registered in docs/DECISIONS.md).
+# Frozen via manifest config_hash (H11, H12). B2-guided (falsifier + minimizer), text-only.
+experiment: mint_cert_program
+arm: B2
+task: task_T1
+model: muse-spark-1.3
+max_output_tokens: 2048
+timeout_s: 120
+memory_mb: 1024
+budget_cap_usd: 5.0
+
+# Difficulty tuning: identical to configs/exp_h2h3.yaml (P06 repair stream, tier 2).
+difficulty:
+  tier: 2
+  bounds:
+    x: [-0.15, 0.15]
+    y: [-0.15, 0.15]
+    yaw: [-0.5, 0.5]
+    mass: [1.0, 11.5]
+    friction: [0.1, 1.0]
+
+# Repair protocol settings (Plan Sec 10; numbers replicate P06 B2 exactly).
+repair:
+  max_rounds: 1
+  falsifier_budget: 10
+  acceptance:
+    falsifier_rerun_budget: 5
+    bisection_steps: 0
+    nominal:
+      x: 0.0
+      y: 0.0
+      yaw: 0.0
+      mass: 1.0
+      friction: 0.8
+    param_order: ["x", "y", "yaw", "friction", "mass"]
+
+trajectories: 1
+held_out_per_traj: 4
+seed_base: 750000
+nominal_seed: 780001
+seed_stream: repair
+

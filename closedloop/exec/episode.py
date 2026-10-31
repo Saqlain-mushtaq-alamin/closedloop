@@ -15,7 +15,16 @@ import json
 import math
 
 ALLOW_MODULES = frozenset(
-    {"closedloop.sim", "numpy", "pybullet", "dataclasses", "math", "random"}
+    {
+        "closedloop.sim",
+        "numpy",
+        "pybullet",
+        "dataclasses",
+        "math",
+        "random",
+        "closedloop.judge",
+        "closedloop.repair",
+    }
 )
 
 POLICY_API_DOC = (
@@ -40,9 +49,15 @@ try:
         raise NameError("program defines no policy(env, rng)")
     import dataclasses as _dc
     __result__ = _dc.asdict(_env.run_policy(_prog_ns["policy"], _rng))
+    try:
+        from closedloop.judge.judge import render_judge_frame
+        _, __result__["frame_b64"] = render_judge_frame(_env)
+    except Exception:
+        __result__["frame_b64"] = None
 finally:
     _env.close()
 """
+
 
 
 
