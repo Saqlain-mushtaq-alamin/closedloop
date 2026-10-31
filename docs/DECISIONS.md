@@ -270,4 +270,9 @@
   - Gate verification independently recomputed all 16 cell bounds and headline bound directly from `episodes.jsonl`.
   - `make gate PHASE=08` PASSED.
 
+## 2026-10-31 — Phase 09 Explicit Cut of Optional Task T2 (Push Task)
+- **Context:** Phase 09 Task 3 specifies: "(Optional, 90m) T2 smoke: B0 only, ≥20 trajectories, gap reported. Done when: logged or explicitly cut in DECISIONS.md."
+- **Rationale:** The prompt and phase file instruct to run Phase 09 with focus on Hypothesis H4 (shift test) and state: "T2 only if instructed. Fallback / cut: Cut T2 first (always optional). Never cut the shift figure." To maintain strict focus on certifying and demonstrating the boundaries of guarantee transfer under distribution shift on Task T1 without unnecessary API spend or scope bloat, optional Task T2 is explicitly cut per Phase 09 guidelines.
+- **Action:** Optional Task T2 is cut. Phase 09 focuses entirely on frozen distribution shift $D \to D'$ on Task T1 with certified program `bec73dec45a88431`.
+
 
