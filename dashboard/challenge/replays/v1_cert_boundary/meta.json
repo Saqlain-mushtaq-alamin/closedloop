@@ -1,0 +1,22 @@
+{
+  "clip_id": "v1_cert_boundary",
+  "program_id": "bec73dec45a88431",
+  "seed": 800131,
+  "scenario": {
+    "mass": 6.0,
+    "friction": 1.0,
+    "x": -0.15,
+    "y": -0.15,
+    "yaw": -0.5
+  },
+  "truth_success": true,
+  "margin": 0.004999001060497095,
+  "verified": true,
+  "frames": [
+    "frame_00.png",
+    "frame_01.png",
+    "frame_02.png",
+    "frame_03.png",
+    "frame_04.png"
+  ]
+}

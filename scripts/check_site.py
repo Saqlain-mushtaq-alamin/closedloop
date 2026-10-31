@@ -147,6 +147,21 @@ def check_site(
                 for f in sess.get("replay_frames", []):
                     paths_to_check.add(f)
 
+        # Asset paths from challenge_data.json
+        challenge_json_path = dash_dir / "challenge" / "challenge_data.json"
+        if challenge_json_path.exists():
+            cdata = json.loads(challenge_json_path.read_text(encoding="utf-8"))
+            for plabel, pgrid in cdata.get("grid", {}).items():
+                for pt in pgrid.values():
+                    if pt.get("frame_path"):
+                        paths_to_check.add(pt["frame_path"])
+        challenge_replays_path = dash_dir / "challenge" / "replays" / "manifest.json"
+        if challenge_replays_path.exists():
+            crdata = json.loads(challenge_replays_path.read_text(encoding="utf-8"))
+            for clip in crdata.get("clips", []):
+                for f in clip.get("frames", []):
+                    paths_to_check.add(f"challenge/replays/{clip['clip_id']}/{f}")
+
         # Test fetching every relative asset through the sub-path server
         for rel_path in sorted(paths_to_check):
             clean_rel = rel_path.split("?")[0].split("#")[0]

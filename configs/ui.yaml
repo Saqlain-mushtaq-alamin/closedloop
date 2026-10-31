@@ -1,0 +1,30 @@
+# UI Configuration for ClosedLoop Dashboard & Teach-and-Trust Console
+title: "ClosedLoop — Teach and Trust"
+feedback_url: "https://github.com/meta-developer/closedloop/discussions"
+community_form_url: "https://forms.gle/meta-closedloop-feedback-pilot"
+default_view: "teach-trust"
+views:
+  - id: "teach-trust"
+    label: "Teach & Trust (Judge Hands-On)"
+    active: true
+  - id: "console"
+    label: "Judge Console (G3 Frozen)"
+    active: true
+  - id: "theatre"
+    label: "Repair Theatre (Feature F7)"
+    active: true
+  - id: "heatmap"
+    label: "Certified Heatmap"
+    active: true
+  - id: "replay"
+    label: "Replay Viewer"
+    active: true
+  - id: "calibration"
+    label: "Judge Calibration"
+    active: true
+  - id: "shift"
+    label: "Distribution Shift"
+    active: true
+  - id: "provenance"
+    label: "Provenance Ledger"
+    active: true

@@ -1,0 +1,22 @@
+{
+  "clip_id": "v2_v1_fail_mass7",
+  "program_id": "5f74f7762ee1f378",
+  "seed": 800483,
+  "scenario": {
+    "mass": 7.5,
+    "friction": 0.4,
+    "x": 0.0,
+    "y": 0.0,
+    "yaw": 0.0
+  },
+  "truth_success": true,
+  "margin": 0.004999018992767726,
+  "verified": true,
+  "frames": [
+    "frame_00.png",
+    "frame_01.png",
+    "frame_02.png",
+    "frame_03.png",
+    "frame_04.png"
+  ]
+}

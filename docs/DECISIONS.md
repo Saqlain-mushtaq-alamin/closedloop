@@ -361,3 +361,34 @@
   - Prominent "RECORDED / data generated from logs" badge on all views.
 - **Workflow:** `.github/workflows/pages.yml` using official GitHub Actions (`actions/checkout@v4`, `actions/configure-pages@v5`, `actions/upload-pages-artifact@v3`, `actions/deploy-pages@v4`) with minimal permissions (`contents: read`, `pages: write`, `id-token: write`).
 
+## 2026-11-01 — Phase 10f Pre-Registration and Authorisation: "Teach and Trust" Hands-On Experience
+- **Authorisation:** Human authorisation granted for Phase 10f (interactive hands-on experience, deterministic challenge sweep, and zero-runtime-API static integration).
+- **Scope Restrictions:**
+  - Allowed modifications: `dashboard/`, `closedloop/report/`, `closedloop/demo/`, `experiments/` (new files only), `configs/challenge_grid.yaml` (new), `configs/ui.yaml` (new/updated), `docs/`, `tests/` (add only), and evidence tracking.
+  - Forbidden modifications: Never touch frozen runs, never edit existing frozen configs (`cert.yaml`, `judge.yaml`, `mint.yaml`, `round2.yaml`), never modify locked files (`closedloop/certify/stats.py`, etc.).
+- **Protocol & Invariants:**
+  - Programs tested: Start program `v1` (`bec73dec45a88431`, from `runs/cert-mint-03/program_final.py`), and candidate `v2` (`5f74f7762ee1f378`, from `runs/round2-mint-01/program_final.py`).
+  - Fixed Challenge Grid:
+    - Mass: 1.0 to 14.0 kg in steps of 0.5 kg (27 values).
+    - Friction: {0.1, 0.4, 0.7, 1.0} (4 values).
+    - Pose variants: {centre: (0.0, 0.0, 0.0), +corner: (0.15, 0.15, 0.5), -corner: (-0.15, -0.15, -0.5)} (3 values).
+    - Total grid points: 324 scenarios per program.
+  - Seeds: Disjoint repair stream starting at 800,000 (800,000–800,999), strictly disjoint from all prior runs.
+  - Logging: `runs/challenge-grid-01/episodes.jsonl` (append-only, Rule H10). Simulator errors or crashes logged as failures (Rule H13).
+  - Precomputed assets:
+    - 1 final-frame PNG per grid point (compressed, <= 10 KB each).
+    - 8 full replay clips for key scenarios verified against simulation logs (Rule V1).
+    - Total new assets <= 10 MB.
+  - Experience Features:
+    1. Teach: Task statement, policy code with plain-language caption, and nominal replay.
+    2. Would you ship it?: 5 test slots with sliders snapping to nearest grid point, showing real final frame and live Clopper-Pearson bound ($p_L$ at 95% confidence). Never hand-typed.
+    3. Run the loop: Falsifier search progression, minimal counterexample replay, link to Repair Theatre & certified before/after heatmap.
+    4. Where is it safe?: Operating envelope limit probe with data-derived statement.
+    5. Time to trust panel: Recomputed wall-clock times, tokens, API calls, cost, and human spot-check equivalence arithmetic.
+    6. Your verdict: 3 feedback questions with external link-out. Zero cookies, zero local storage, zero client data transmission.
+  - Honesty Principles:
+    - "teach in words, trust with proof".
+    - No claim of robot "learning" or ungrounded speedup claims.
+    - Simulation-only disclosure, nearest-grid snapping notice, and grasp slip model physics explanation.
+  - Budget: $0.00 API (Deterministic local simulation only; zero LLM calls).
+

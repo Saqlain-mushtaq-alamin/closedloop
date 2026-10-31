@@ -1,0 +1,356 @@
+{
+  "clips": [
+    {
+      "clip_id": "v1_nominal_centre",
+      "program_id": "bec73dec45a88431",
+      "seed": 800042,
+      "scenario": {
+        "mass": 2.5,
+        "friction": 0.7,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.004999001076570988,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_nominal_centre",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800366,
+      "scenario": {
+        "mass": 2.5,
+        "friction": 0.7,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.0049990189929062364,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_light_slip",
+      "program_id": "bec73dec45a88431",
+      "seed": 800000,
+      "scenario": {
+        "mass": 1.0,
+        "friction": 0.1,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.004996640417750132,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_light_slip",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800324,
+      "scenario": {
+        "mass": 1.0,
+        "friction": 0.1,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.004996616425023392,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_mid_safe",
+      "program_id": "bec73dec45a88431",
+      "seed": 800100,
+      "scenario": {
+        "mass": 5.0,
+        "friction": 0.4,
+        "x": 0.15,
+        "y": 0.15,
+        "yaw": 0.5
+      },
+      "truth_success": true,
+      "margin": 0.004999001061920932,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_mid_safe",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800424,
+      "scenario": {
+        "mass": 5.0,
+        "friction": 0.4,
+        "x": 0.15,
+        "y": 0.15,
+        "yaw": 0.5
+      },
+      "truth_success": true,
+      "margin": 0.004999018991695539,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_cert_boundary",
+      "program_id": "bec73dec45a88431",
+      "seed": 800131,
+      "scenario": {
+        "mass": 6.0,
+        "friction": 1.0,
+        "x": -0.15,
+        "y": -0.15,
+        "yaw": -0.5
+      },
+      "truth_success": true,
+      "margin": 0.004999001060497095,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_cert_boundary",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800455,
+      "scenario": {
+        "mass": 6.0,
+        "friction": 1.0,
+        "x": -0.15,
+        "y": -0.15,
+        "yaw": -0.5
+      },
+      "truth_success": true,
+      "margin": 0.004999018991575451,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_v1_fail_mass7",
+      "program_id": "bec73dec45a88431",
+      "seed": 800159,
+      "scenario": {
+        "mass": 7.5,
+        "friction": 0.4,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.0049990010748992755,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_v1_fail_mass7",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800483,
+      "scenario": {
+        "mass": 7.5,
+        "friction": 0.4,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.004999018992767726,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_heavy_v1_fail",
+      "program_id": "bec73dec45a88431",
+      "seed": 800223,
+      "scenario": {
+        "mass": 10.0,
+        "friction": 0.7,
+        "x": 0.15,
+        "y": 0.15,
+        "yaw": 0.5
+      },
+      "truth_success": false,
+      "margin": -0.15005891930482992,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_heavy_v1_fail",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800547,
+      "scenario": {
+        "mass": 10.0,
+        "friction": 0.7,
+        "x": 0.15,
+        "y": 0.15,
+        "yaw": 0.5
+      },
+      "truth_success": true,
+      "margin": 0.004999018991902958,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_tier2_max",
+      "program_id": "bec73dec45a88431",
+      "seed": 800254,
+      "scenario": {
+        "mass": 11.5,
+        "friction": 0.1,
+        "x": -0.15,
+        "y": -0.15,
+        "yaw": -0.5
+      },
+      "truth_success": false,
+      "margin": -0.39707929092486194,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_tier2_max",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800578,
+      "scenario": {
+        "mass": 11.5,
+        "friction": 0.1,
+        "x": -0.15,
+        "y": -0.15,
+        "yaw": -0.5
+      },
+      "truth_success": true,
+      "margin": 0.004996616433715555,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v1_stress_max14",
+      "program_id": "bec73dec45a88431",
+      "seed": 800315,
+      "scenario": {
+        "mass": 14.0,
+        "friction": 0.4,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": false,
+      "margin": -0.22048015657811657,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    },
+    {
+      "clip_id": "v2_stress_max14",
+      "program_id": "5f74f7762ee1f378",
+      "seed": 800639,
+      "scenario": {
+        "mass": 14.0,
+        "friction": 0.4,
+        "x": 0.0,
+        "y": 0.0,
+        "yaw": 0.0
+      },
+      "truth_success": true,
+      "margin": 0.0049990189927677274,
+      "verified": true,
+      "frames": [
+        "frame_00.png",
+        "frame_01.png",
+        "frame_02.png",
+        "frame_03.png",
+        "frame_04.png"
+      ]
+    }
+  ]
+}

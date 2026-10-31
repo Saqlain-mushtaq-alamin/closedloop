@@ -1,0 +1,22 @@
+{
+  "clip_id": "v2_stress_max14",
+  "program_id": "5f74f7762ee1f378",
+  "seed": 800639,
+  "scenario": {
+    "mass": 14.0,
+    "friction": 0.4,
+    "x": 0.0,
+    "y": 0.0,
+    "yaw": 0.0
+  },
+  "truth_success": true,
+  "margin": 0.0049990189927677274,
+  "verified": true,
+  "frames": [
+    "frame_00.png",
+    "frame_01.png",
+    "frame_02.png",
+    "frame_03.png",
+    "frame_04.png"
+  ]
+}

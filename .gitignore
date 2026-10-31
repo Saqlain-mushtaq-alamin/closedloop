@@ -25,6 +25,7 @@ runs/*
 !runs/demo-sessions-01/
 !runs/cert2-full-01/
 !runs/round2-mint-01/
+!runs/challenge-grid-01/
 !runs/.certification_ledger.json
 !runs/llm_cache.json
 runs/**/traces/

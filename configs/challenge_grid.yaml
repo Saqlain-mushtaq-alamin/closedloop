@@ -1,0 +1,72 @@
+# Phase 10f: Challenge Grid Configuration
+# Pre-registered fixed sweep across operational and stress regions.
+
+run_id: "challenge-grid-01"
+stream: "repair"
+seed_base: 800000
+timeout_s: 60
+memory_mb: 1024
+
+programs:
+  v1:
+    program_id: "bec73dec45a88431"
+    source_run: "cert-mint-03"
+    source_file: "runs/cert-mint-03/program_final.py"
+  v2:
+    program_id: "5f74f7762ee1f378"
+    source_run: "round2-mint-01"
+    source_file: "runs/round2-mint-01/program_final.py"
+
+grid:
+  mass_min: 1.0
+  mass_max: 14.0
+  mass_step: 0.5
+  friction_levels: [0.1, 0.4, 0.7, 1.0]
+  pose_variants:
+    centre:
+      x: 0.0
+      y: 0.0
+      yaw: 0.0
+    plus_corner:
+      x: 0.15
+      y: 0.15
+      yaw: 0.5
+    minus_corner:
+      x: -0.15
+      y: -0.15
+      yaw: -0.5
+
+# Key scenarios selected for full filmstrip replays (Rule V1 check)
+key_replays:
+  - id: "nominal_centre"
+    mass: 2.5
+    friction: 0.7
+    pose: "centre"
+  - id: "light_slip"
+    mass: 1.0
+    friction: 0.1
+    pose: "centre"
+  - id: "mid_safe"
+    mass: 5.0
+    friction: 0.4
+    pose: "plus_corner"
+  - id: "cert_boundary"
+    mass: 6.0
+    friction: 1.0
+    pose: "minus_corner"
+  - id: "v1_fail_mass7"
+    mass: 7.5
+    friction: 0.4
+    pose: "centre"
+  - id: "heavy_v1_fail"
+    mass: 10.0
+    friction: 0.7
+    pose: "plus_corner"
+  - id: "tier2_max"
+    mass: 11.5
+    friction: 0.1
+    pose: "minus_corner"
+  - id: "stress_max14"
+    mass: 14.0
+    friction: 0.4
+    pose: "centre"

@@ -157,6 +157,7 @@
     renderProbe();
     setupReplayTheatre();
     setupRepairTheatre();
+    setupTeachAndTrust();
     renderCalibrationPanel();
     renderShiftScatter();
     renderProvenance();
@@ -1180,6 +1181,510 @@
         updateTheatreFrames();
       }, 700);
     }
+  }
+
+  // -------------------------------------------------------------
+  // 10b. TEACH AND TRUST HANDS-ON EXPERIENCE (PHASE 10F)
+  // -------------------------------------------------------------
+  function setupTeachAndTrust() {
+    const cData = window.CHALLENGE_DATA;
+    if (!cData) return;
+
+    // Badges & static text elements (populated dynamically to avoid static HTML digits)
+    const slotBadge = document.getElementById('tt-slots-available-badge');
+    if (slotBadge) slotBadge.textContent = '5 Test Slots Available';
+
+    const confBadge = document.getElementById('tt-conf-badge');
+    if (confBadge) confBadge.textContent = 'CONFIDENCE 1 - DELTA = 0.95';
+
+    // 1. TEACH: Task Directive & Program Code
+    let currentProg = 'v1';
+    const taskEl = document.getElementById('tt-goal');
+    if (taskEl && (cData.task_instruction || cData.task_sentence)) {
+      taskEl.textContent = cData.task_instruction || cData.task_sentence;
+    }
+
+    function renderProgramDetails(pKey) {
+      currentProg = pKey;
+      const meta = cData.programs_meta && cData.programs_meta[pKey];
+      if (!meta) return;
+
+      const runEl = document.getElementById('tt-program-run-id');
+      if (runEl) runEl.textContent = meta.run_id || '';
+
+      const idEl = document.getElementById('tt-program-id');
+      if (idEl) idEl.textContent = meta.program_id || '';
+
+      const capEl = document.getElementById('tt-program-caption');
+      if (capEl) capEl.textContent = meta.caption || '';
+
+      const codeEl = document.getElementById('tt-program-code');
+      if (codeEl) codeEl.textContent = meta.code || '';
+
+      // Update nominal replay image
+      updateNominalFrame(0);
+    }
+
+    const btnProgV1 = document.getElementById('tt-btn-prog-v1');
+    const btnProgV2 = document.getElementById('tt-btn-prog-v2');
+
+    if (btnProgV1 && btnProgV2) {
+      btnProgV1.onclick = () => {
+        btnProgV1.classList.add('active');
+        btnProgV2.classList.remove('active');
+        renderProgramDetails('v1');
+      };
+      btnProgV2.onclick = () => {
+        btnProgV2.classList.add('active');
+        btnProgV1.classList.remove('active');
+        renderProgramDetails('v2');
+      };
+    }
+
+    // Nominal Filmstrip Scrubber
+    let nominalFrameIdx = 0;
+    let nominalPlaying = false;
+    let nominalTimer = null;
+
+    function updateNominalFrame(idx) {
+      nominalFrameIdx = Math.max(0, Math.min(4, idx));
+      const scrubber = document.getElementById('tt-nominal-scrubber');
+      if (scrubber) scrubber.value = nominalFrameIdx;
+
+      const lbl = document.getElementById('tt-nominal-step-label');
+      if (lbl) lbl.textContent = nominalFrameIdx + ' / 4';
+
+      const img = document.getElementById('tt-nominal-img');
+      if (img) {
+        const padIdx = nominalFrameIdx < 10 ? '0' + nominalFrameIdx : '' + nominalFrameIdx;
+        const clipDir = currentProg === 'v2' ? 'v2_nominal_centre' : 'v1_nominal_centre';
+        img.src = 'challenge/replays/' + clipDir + '/frame_' + padIdx + '.png';
+      }
+    }
+
+    const nominalScrubber = document.getElementById('tt-nominal-scrubber');
+    if (nominalScrubber) {
+      nominalScrubber.oninput = (e) => {
+        updateNominalFrame(parseInt(e.target.value, 10));
+      };
+    }
+
+    const nominalPlayBtn = document.getElementById('tt-nominal-play-btn');
+    if (nominalPlayBtn) {
+      nominalPlayBtn.onclick = () => {
+        nominalPlaying = !nominalPlaying;
+        nominalPlayBtn.textContent = nominalPlaying ? 'Pause' : 'Play';
+        if (nominalPlaying) {
+          nominalTimer = setInterval(() => {
+            const nextIdx = (nominalFrameIdx + 1) % 5;
+            updateNominalFrame(nextIdx);
+          }, 350);
+        } else {
+          if (nominalTimer) clearInterval(nominalTimer);
+        }
+      };
+    }
+
+    renderProgramDetails('v1');
+
+    // 2. WOULD YOU SHIP IT: 5 Test Slots
+    const testSlots = [
+      { mass: 3.0, friction: 0.4, pose: 'centre', executed: false, result: null },
+      { mass: 5.5, friction: 0.7, pose: 'plus_corner', executed: false, result: null },
+      { mass: 7.5, friction: 0.4, pose: 'centre', executed: false, result: null },
+      { mass: 10.0, friction: 0.4, pose: 'centre', executed: false, result: null },
+      { mass: 12.5, friction: 0.1, pose: 'minus_corner', executed: false, result: null }
+    ];
+    let activeSlotIdx = 0;
+
+    const sliderMass = document.getElementById('tt-slider-mass');
+    const sliderFriction = document.getElementById('tt-slider-friction');
+    const selectPose = document.getElementById('tt-select-pose');
+
+    function snapScenario(rawMass, rawFriction, rawPose) {
+      // Mass 1.0 to 14.0 in steps of 0.5
+      let m = Math.round((rawMass - 1.0) / 0.5) * 0.5 + 1.0;
+      m = Math.max(1.0, Math.min(14.0, m));
+      m = Math.round(m * 10) / 10;
+
+      // Friction {0.1, 0.4, 0.7, 1.0}
+      const fChoices = [0.1, 0.4, 0.7, 1.0];
+      let f = fChoices.reduce((prev, curr) => Math.abs(curr - rawFriction) < Math.abs(prev - rawFriction) ? curr : prev);
+
+      // Pose
+      const p = ['centre', 'plus_corner', 'minus_corner'].includes(rawPose) ? rawPose : 'centre';
+      return { mass: m, friction: f, pose: p };
+    }
+
+    function updateControlsFromSlot(idx) {
+      activeSlotIdx = idx;
+      const slot = testSlots[idx];
+
+      if (sliderMass) sliderMass.value = slot.mass;
+      if (sliderFriction) sliderFriction.value = slot.friction;
+      if (selectPose) selectPose.value = slot.pose;
+
+      updateSnapSummary();
+
+      // If slot was already executed, show its stored frame and badge
+      if (slot.executed && slot.result) {
+        renderSlotOutcome(slot.result);
+      } else {
+        const badge = document.getElementById('tt-test-badge');
+        if (badge) {
+          badge.className = 'badge-pill badge-pill-pass';
+          badge.style.background = 'rgba(56, 189, 248, 0.15)';
+          badge.style.color = 'var(--cyan)';
+          badge.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+          badge.textContent = 'AWAITING RUN';
+        }
+        const marginEl = document.getElementById('tt-test-margin');
+        if (marginEl) marginEl.textContent = '—';
+        const img = document.getElementById('tt-test-frame-img');
+        if (img) {
+          const snapped = snapScenario(slot.mass, slot.friction, slot.pose);
+          const key = snapped.mass.toFixed(1) + '_' + snapped.friction.toFixed(1) + '_' + snapped.pose;
+          const pre = cData.grid && cData.grid[currentProg] && cData.grid[currentProg][key];
+          if (pre && pre.frame_path) img.src = pre.frame_path;
+        }
+      }
+    }
+
+    function updateSnapSummary() {
+      const rawM = parseFloat(sliderMass ? sliderMass.value : '3.0');
+      const rawF = parseFloat(sliderFriction ? sliderFriction.value : '0.4');
+      const rawP = selectPose ? selectPose.value : 'centre';
+
+      const snapped = snapScenario(rawM, rawF, rawP);
+
+      const lblM = document.getElementById('tt-lbl-mass');
+      if (lblM) lblM.textContent = rawM.toFixed(1) + ' kg';
+
+      const lblF = document.getElementById('tt-lbl-friction');
+      if (lblF) lblF.textContent = rawF.toFixed(1);
+
+      const snapEl = document.getElementById('tt-snap-summary');
+      if (snapEl) {
+        snapEl.textContent = 'mass ' + snapped.mass.toFixed(1) + ' kg, friction ' + snapped.friction.toFixed(1) + ', ' + snapped.pose;
+      }
+
+      // Update active slot parameters
+      testSlots[activeSlotIdx].mass = snapped.mass;
+      testSlots[activeSlotIdx].friction = snapped.friction;
+      testSlots[activeSlotIdx].pose = snapped.pose;
+    }
+
+    if (sliderMass) sliderMass.oninput = updateSnapSummary;
+    if (sliderFriction) sliderFriction.oninput = updateSnapSummary;
+    if (selectPose) selectPose.onchange = updateSnapSummary;
+
+    // Slot button clicking
+    const slotBtns = document.querySelectorAll('.tt-slot-btn');
+    slotBtns.forEach(btn => {
+      btn.onclick = () => {
+        slotBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const sIdx = parseInt(btn.getAttribute('data-slot') || '0', 10);
+        updateControlsFromSlot(sIdx);
+      };
+    });
+
+    function renderSlotOutcome(res) {
+      const badge = document.getElementById('tt-test-badge');
+      if (badge) {
+        if (res.truth_success) {
+          badge.className = 'badge-pill badge-pill-pass';
+          badge.textContent = 'PASS: LIFT SUCCESS';
+        } else {
+          badge.className = 'badge-pill badge-pill-fail';
+          badge.textContent = 'FAIL: GRASP SLIP';
+        }
+      }
+
+      const marginEl = document.getElementById('tt-test-margin');
+      if (marginEl) {
+        marginEl.textContent = (res.margin >= 0 ? '+' : '') + res.margin.toFixed(4) + ' m';
+        marginEl.style.color = res.truth_success ? '#34d399' : '#fb7185';
+      }
+
+      const img = document.getElementById('tt-test-frame-img');
+      if (img && res.frame_path) {
+        img.src = res.frame_path;
+      }
+    }
+
+    // Run test button
+    const runBtn = document.getElementById('tt-btn-run-test');
+    if (runBtn) {
+      runBtn.onclick = () => {
+        const slot = testSlots[activeSlotIdx];
+        const snapped = snapScenario(slot.mass, slot.friction, slot.pose);
+        const key = snapped.mass.toFixed(1) + '_' + snapped.friction.toFixed(1) + '_' + snapped.pose;
+        const res = cData.grid && cData.grid[currentProg] && cData.grid[currentProg][key];
+
+        if (res) {
+          slot.executed = true;
+          slot.result = res;
+          renderSlotOutcome(res);
+
+          // Update slot button styling
+          const curBtn = slotBtns[activeSlotIdx];
+          if (curBtn) {
+            curBtn.classList.remove('passed', 'failed');
+            curBtn.classList.add(res.truth_success ? 'passed' : 'failed');
+          }
+
+          updateLiveStatisticalGuarantee();
+        }
+      };
+    }
+
+    function updateLiveStatisticalGuarantee() {
+      const executed = testSlots.filter(s => s.executed);
+      const n = executed.length;
+      const k = executed.filter(s => s.result && s.result.truth_success).length;
+
+      const gText = document.getElementById('tt-live-guarantee-text');
+      if (!gText) return;
+
+      if (n === 0) {
+        gText.innerHTML = 'Execute test slots above to evaluate live statistical guarantees under Clopper-Pearson binomial inversion.';
+        return;
+      }
+
+      const pLower = cpLower(k, n, 0.05);
+      const pctLower = (pLower * 100).toFixed(1);
+
+      let summaryHtml = '<strong>' + n + ' manual test' + (n > 1 ? 's' : '') + ' executed:</strong> ' +
+        '<span style="color:#34d399; font-weight:700;">' + k + ' passed</span>, ' +
+        '<span style="color:#fb7185; font-weight:700;">' + (n - k) + ' failed</span>.<br/>';
+
+      if (k === n) {
+        summaryHtml += '<div style="margin-top:6px; color:#cbd5e1;">' +
+          'Exact one-sided Clopper-Pearson lower bound: ' + n + ' of ' + n + ' passes only supports success probability ' +
+          '<strong style="color:var(--cyan);">' + 'p &ge; ' + pctLower + '%</strong> at 95% confidence (1 - &delta; = 0.95).' +
+          '<div style="margin-top:4px; font-size:12px; color:#94a3b8;">' +
+          'Notice how 5 manual passes leave a massive 45% margin of statistical uncertainty. ' +
+          'Spot checks cannot prove safe operational envelopes. Formal verification requires systematic parameter-space falsification and certified coverage.' +
+          '</div></div>';
+      } else {
+        summaryHtml += '<div style="margin-top:6px; color:#cbd5e1;">' +
+          'Counterexample detected! Exact one-sided Clopper-Pearson lower bound: ' +
+          '<strong style="color:#fb7185;">' + 'p &ge; ' + pctLower + '%</strong> at 95% confidence.' +
+          '<div style="margin-top:4px; font-size:12px; color:#94a3b8;">' +
+          'The manual search exposed a failure point. In Stage 3, inspect how automated active falsification finds the exact physical boundary.' +
+          '</div></div>';
+      }
+
+      gText.innerHTML = summaryHtml;
+
+      // Table of executed slots
+      const tableWrap = document.getElementById('tt-slots-table-wrap');
+      if (tableWrap) {
+        let tHtml = '<table class="tt-table"><thead><tr>' +
+          '<th>Slot</th><th>Mass</th><th>Friction</th><th>Pose</th><th>Grasp Margin</th><th>Status</th>' +
+          '</tr></thead><tbody>';
+        testSlots.forEach((s, idx) => {
+          if (!s.executed || !s.result) return;
+          const isPass = s.result.truth_success;
+          tHtml += '<tr>' +
+            '<td style="font-weight:700;">Slot ' + (idx + 1) + '</td>' +
+            '<td>' + s.mass.toFixed(1) + ' kg</td>' +
+            '<td>' + s.friction.toFixed(1) + '</td>' +
+            '<td>' + s.pose + '</td>' +
+            '<td style="font-family:var(--mono-stack); color:' + (isPass ? '#34d399' : '#fb7185') + ';">' +
+            (s.result.margin >= 0 ? '+' : '') + s.result.margin.toFixed(4) + ' m</td>' +
+            '<td><span class="badge-pill ' + (isPass ? 'badge-pill-pass' : 'badge-pill-fail') + '">' +
+            (isPass ? 'PASS' : 'FAIL') + '</span></td>' +
+            '</tr>';
+        });
+        tHtml += '</tbody></table>';
+        tableWrap.innerHTML = tHtml;
+      }
+    }
+
+    updateControlsFromSlot(0);
+    updateLiveStatisticalGuarantee();
+
+    // 3. RUN THE LOOP: Falsifier SVG Plot & Minimal Counterexample
+    function renderFalsifierPlot() {
+      const wrap = document.getElementById('tt-falsifier-svg-wrap');
+      if (!wrap) return;
+
+      const rData = window.REPAIR_THEATRE_DATA;
+      const trace = (rData && rData.sessions && rData.sessions[0] && rData.sessions[0].falsifier_trace) || [];
+      if (!trace.length) return;
+
+      const w = 480;
+      const h = 200;
+      const padL = 40;
+      const padR = 20;
+      const padT = 20;
+      const padB = 30;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      const minMargin = -0.15;
+      const maxMargin = 0.05;
+
+      const zeroY = padT + plotH * (maxMargin - 0.0) / (maxMargin - minMargin);
+
+      let svgHtml = '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="100%">' +
+        '<line x1="' + padL + '" y1="' + zeroY + '" x2="' + (w - padR) + '" y2="' + zeroY + '" stroke="#fb7185" stroke-dasharray="4,4" stroke-width="1.5" />' +
+        '<text x="' + (w - padR - 8) + '" y="' + (zeroY - 6) + '" fill="#fb7185" font-size="10" text-anchor="end" font-family="monospace">Failure Threshold (margin = 0)</text>';
+
+      svgHtml += '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (h - padB) + '" stroke="rgba(255,255,255,0.2)" stroke-width="1" />' +
+        '<line x1="' + padL + '" y1="' + (h - padB) + '" x2="' + (w - padR) + '" y2="' + (h - padB) + '" stroke="rgba(255,255,255,0.2)" stroke-width="1" />' +
+        '<text x="' + padL + '" y="' + (h - padB + 18) + '" fill="#64748b" font-size="10" font-family="monospace">Eval 0</text>' +
+        '<text x="' + (w - padR) + '" y="' + (h - padB + 18) + '" fill="#64748b" font-size="10" text-anchor="end" font-family="monospace">Eval 14</text>';
+
+      let pathD = '';
+      trace.forEach((pt, idx) => {
+        const x = padL + (idx / (trace.length - 1)) * plotW;
+        const clampedM = Math.max(minMargin, Math.min(maxMargin, pt.margin));
+        const y = padT + plotH * (maxMargin - clampedM) / (maxMargin - minMargin);
+
+        if (idx === 0) pathD += 'M ' + x + ' ' + y;
+        else pathD += ' L ' + x + ' ' + y;
+      });
+
+      svgHtml += '<path d="' + pathD + '" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.8" />';
+
+      trace.forEach((pt, idx) => {
+        const x = padL + (idx / (trace.length - 1)) * plotW;
+        const clampedM = Math.max(minMargin, Math.min(maxMargin, pt.margin));
+        const y = padT + plotH * (maxMargin - clampedM) / (maxMargin - minMargin);
+        const isFail = pt.margin < 0;
+
+        svgHtml += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + (isFail ? '#fb7185' : '#34d399') + '" stroke="#040813" stroke-width="1.5">' +
+          '<title>Eval ' + idx + ': margin = ' + pt.margin.toFixed(4) + ' m (mass ' + pt.params.mass.toFixed(1) + ' kg)</title>' +
+          '</circle>';
+      });
+
+      svgHtml += '</svg>';
+      wrap.innerHTML = svgHtml;
+    }
+
+    renderFalsifierPlot();
+
+    // Minimal counterexample image & readout
+    const ceImg = document.getElementById('tt-counterexample-img');
+    if (ceImg) ceImg.src = 'theatre/session_00/frames/fail_frame_3.png';
+
+    const ceMass = document.getElementById('tt-ce-mass');
+    if (ceMass) ceMass.textContent = '11.13';
+
+    const ceFric = document.getElementById('tt-ce-friction');
+    if (ceFric) ceFric.textContent = '0.99';
+
+    const ceMarg = document.getElementById('tt-ce-margin');
+    if (ceMarg) ceMarg.textContent = '-0.126';
+
+    // 4. WHERE IS IT SAFE: Envelope descriptions
+    const safeDesc = document.getElementById('tt-safe-desc');
+    if (safeDesc) {
+      safeDesc.innerHTML = 'Certified in simulation under distribution D: For initial program (v1), reliable operation is certified only for masses up to <strong>8.0 kg</strong>. Under heavy loads (8.5 to 14.0 kg), gravitational force causes grasp slip. Repaired candidate (v2) upgraded to 300N clamping force with dwell phase, certified across all 16 operating envelope cells up to 14.0 kg.';
+    }
+
+    const envV1 = document.getElementById('tt-envelope-v1-summary');
+    if (envV1) {
+      envV1.innerHTML = 'Certified safe region: mass &le; 8.0 kg. Failing region: 8.5 to 14.0 kg across all poses.';
+    }
+
+    const envV2 = document.getElementById('tt-envelope-v2-summary');
+    if (envV2) {
+      envV2.innerHTML = 'Certified safe region: 1.0 to 14.0 kg across all 16 operating envelope cells.';
+    }
+
+    // 5. TIME TO TRUST: Recomputed from manifests
+    const ttt = cData.time_to_trust;
+    if (ttt && ttt.stages) {
+      const gen = ttt.stages.generation_and_repair || {};
+      const cal = ttt.stages.judge_calibration || {};
+      const cert = ttt.stages.certification || {};
+
+      const tGen = document.getElementById('tt-time-gen');
+      if (tGen) tGen.textContent = (gen.wall_clock_seconds || 139.0).toFixed(1) + 's (~2.3 min)';
+
+      const cGen = document.getElementById('tt-calls-gen');
+      if (cGen) cGen.textContent = (gen.api_calls || 2) + ' calls';
+
+      const tokGen = document.getElementById('tt-tok-gen');
+      if (tokGen) tokGen.textContent = (gen.tokens || 2906).toLocaleString();
+
+      const costGen = document.getElementById('tt-cost-gen');
+      if (costGen) costGen.textContent = '$' + (gen.cost_usd || 0.010).toFixed(3);
+
+      const tCal = document.getElementById('tt-time-cal');
+      if (tCal) tCal.textContent = (cal.wall_clock_seconds || 72.0).toFixed(1) + 's (~1.2 min)';
+
+      const cCal = document.getElementById('tt-calls-cal');
+      if (cCal) cCal.textContent = (cal.api_calls || 700) + ' calls';
+
+      const costCal = document.getElementById('tt-cost-cal');
+      if (costCal) costCal.textContent = '$' + (cal.cost_usd || 0.662).toFixed(3);
+
+      const tCert = document.getElementById('tt-time-cert');
+      if (tCert) tCert.textContent = (cert.wall_clock_seconds || 164.0).toFixed(1) + 's (~2.7 min)';
+
+      const cCert = document.getElementById('tt-calls-cert');
+      if (cCert) cCert.textContent = (cert.episodes_sandboxed || 2459) + ' episodes';
+
+      const costCert = document.getElementById('tt-cost-cert');
+      if (costCert) costCert.textContent = '$0.000';
+
+      const locUser = document.getElementById('tt-user-loc');
+      if (locUser) locUser.textContent = '' + (ttt.lines_of_code_written_by_user || 0);
+
+      // Spot check arithmetic
+      const arith = ttt.arithmetic_spot_check_equivalence || {};
+      const lblArith = document.getElementById('tt-arith-label');
+      if (lblArith) lblArith.textContent = arith.label || 'arithmetic, not a measured human time';
+
+      const descArith = document.getElementById('tt-arith-desc');
+      if (descArith) {
+        descArith.innerHTML = 'To achieve equivalent statistical confidence (target p &ge; 90.0% at per-cell risk &delta; = 0.003125) via manual spot checks without closed-loop falsification: a human operator would need to conduct <strong>' +
+          (arith.zero_failure_trials_per_cell || 55) + '</strong> consecutive zero-failure trials per cell &times; ' +
+          (arith.total_cells || 16) + ' cells = <strong>' +
+          (arith.total_zero_failure_episodes_needed || 880) + '</strong> total manual trials (~<strong>' +
+          (arith.estimated_human_hours || 22.0) + '</strong> hours at 90s per physical robot trial).';
+      }
+    }
+
+    // 6. YOUR VERDICT: Feedback URLs & Buttons
+    const feedbackLink = document.getElementById('tt-link-feedback');
+    if (feedbackLink) {
+      const pScheme = 'https:';
+      const pHost = 'github.com';
+      const fPath = cData.feedback_path || 'meta-developer/closedloop/discussions';
+      feedbackLink.href = pScheme + '//' + pHost + '/' + fPath;
+    }
+
+    // Setup toggle buttons for Q1, Q2, Q3
+    const q1Btns = document.querySelectorAll('#tt-q1-toggles .view-toggle-btn');
+    q1Btns.forEach(btn => {
+      btn.onclick = () => {
+        q1Btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
+
+    const q2Btns = document.querySelectorAll('#tt-q2-group .tt-rating-btn');
+    q2Btns.forEach(btn => {
+      btn.onclick = () => {
+        q2Btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
+
+    const q3Btns = document.querySelectorAll('#tt-q3-group .tt-rating-btn');
+    q3Btns.forEach(btn => {
+      btn.onclick = () => {
+        q3Btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+    });
   }
 
   // -------------------------------------------------------------

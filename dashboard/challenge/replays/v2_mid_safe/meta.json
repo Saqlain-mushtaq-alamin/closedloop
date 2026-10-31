@@ -1,0 +1,22 @@
+{
+  "clip_id": "v2_mid_safe",
+  "program_id": "5f74f7762ee1f378",
+  "seed": 800424,
+  "scenario": {
+    "mass": 5.0,
+    "friction": 0.4,
+    "x": 0.15,
+    "y": 0.15,
+    "yaw": 0.5
+  },
+  "truth_success": true,
+  "margin": 0.004999018991695539,
+  "verified": true,
+  "frames": [
+    "frame_00.png",
+    "frame_01.png",
+    "frame_02.png",
+    "frame_03.png",
+    "frame_04.png"
+  ]
+}

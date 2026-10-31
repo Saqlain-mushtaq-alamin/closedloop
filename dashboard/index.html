@@ -727,6 +727,103 @@
       font-size: 12px;
       color: var(--text-dim);
     }
+
+    /* Teach and Trust Experience Styles */
+    .tt-stage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    .tt-stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+    .tt-stage-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tt-slots-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .tt-slot-btn {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tt-slot-btn.active {
+      background: var(--cyan);
+      color: #040914;
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+    .tt-slot-btn.passed {
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #34d399;
+    }
+    .tt-slot-btn.failed {
+      border-color: rgba(244, 63, 94, 0.6);
+      color: #fb7185;
+    }
+    .tt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 14px;
+    }
+    .tt-table th, .tt-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+    .tt-table th {
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .tt-rating-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .tt-rating-btn {
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tt-rating-btn:hover, .tt-rating-btn.active {
+      background: var(--cyan);
+      color: #040914;
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
   </style>
 </head>
 <body>
@@ -802,7 +899,10 @@
 
     <!-- Navigation Tabs -->
     <nav class="nav-bar">
-      <button class="nav-tab-btn active" onclick="switchTab('probe')">
+      <button class="nav-tab-btn active" onclick="switchTab('teach-trust')">
+        <span>&starf;</span> Teach &amp; Trust (Judge Hands-On)
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('probe')">
         <span>1.</span> Hero Operating-Limit Probe
       </button>
       <button class="nav-tab-btn" onclick="switchTab('theatre')">
@@ -822,8 +922,389 @@
       </button>
     </nav>
 
+    <!-- SECTION 0: TEACH AND TRUST (PHASE 10F JUDGE HANDS-ON EXPERIENCE) -->
+    <section id="section-teach-trust" class="console-section active">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Teach and Trust: Hands-On Experience</h2>
+          <p class="section-desc">
+            Teach in words, trust with proof. Test robot policies on custom scenarios, inspect automated falsification, and explore verified statistical certificates without any server or API dependency.
+          </p>
+        </div>
+        <div class="badge-pill badge-pill-pass" style="background: rgba(56, 189, 248, 0.15); color: var(--cyan); border-color: rgba(56, 189, 248, 0.35);">
+          ZERO RUNTIME API CALLS &bull; PRECOMPUTED REAL SIMULATOR
+        </div>
+      </div>
+
+      <!-- STAGE 1: TEACH -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>1.</span> Teach (The Model Synthesizes Controller)
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="badge-pill badge-pill-pass">Run: <span id="tt-program-run-id"></span></span>
+            <span class="badge-pill badge-pill-pass" style="color:var(--cyan); border-color:rgba(56,189,248,0.4);">ID: <span id="tt-program-id"></span></span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Task Directive</div>
+          <div id="tt-goal" style="font-size:15px; font-weight:600; color:var(--text-main); margin-top:4px;"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="view-toggles">
+            <button id="tt-btn-prog-v1" class="view-toggle-btn active">Initial Controller</button>
+            <button id="tt-btn-prog-v2" class="view-toggle-btn">Repaired Controller</button>
+          </div>
+          <div style="font-size:12px; color:var(--text-dim);">
+            Nominal Scenario Replay (centre pose)
+          </div>
+        </div>
+
+        <p id="tt-program-caption" style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:16px;"></p>
+
+        <div class="grid-2">
+          <!-- Left: Code Box -->
+          <div>
+            <details class="collapsible-box" open>
+              <summary>Controller Python Code (Synthesized by Meta LLM)</summary>
+              <pre id="tt-program-code" class="collapsible-content"></pre>
+            </details>
+          </div>
+
+          <!-- Right: Nominal Scenario Player -->
+          <div>
+            <div style="background:#040813; border:1px solid var(--border-subtle); border-radius:8px; padding:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:11px; color:var(--text-dim);">
+                <span>Nominal Rollout Filmstrip</span>
+                <span>RECORDED</span>
+              </div>
+              <div style="width:100%; height:220px; background:#000; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img id="tt-nominal-img" src="" alt="Nominal Replay Frame" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; margin-top:10px;">
+                <button id="tt-nominal-play-btn" class="btn-action" style="padding:4px 12px;">Play</button>
+                <input type="range" id="tt-nominal-scrubber" min="0" max="4" value="0" style="flex:1; accent-color:var(--cyan);" />
+                <span id="tt-nominal-step-label" style="font-family:var(--mono-stack); font-size:11px; color:var(--cyan); min-width:40px;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 2: WOULD YOU SHIP IT? -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>2.</span> Would You Ship It? (Manual Test Challenge)
+          </div>
+          <div class="badge-pill badge-pill-pass" id="tt-slots-available-badge"></div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Try testing the controller on custom physical scenarios. Notice how a few successful manual trials can give false confidence without statistical guarantees.
+        </p>
+
+        <!-- Slot Selector Bar -->
+        <div class="tt-slots-bar" id="tt-slots-bar">
+          <button class="tt-slot-btn active" data-slot="0">Slot 1</button>
+          <button class="tt-slot-btn" data-slot="1">Slot 2</button>
+          <button class="tt-slot-btn" data-slot="2">Slot 3</button>
+          <button class="tt-slot-btn" data-slot="3">Slot 4</button>
+          <button class="tt-slot-btn" data-slot="4">Slot 5</button>
+        </div>
+
+        <div class="grid-2">
+          <!-- Left: Sliders & Controls -->
+          <div style="background:#070d1a; border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
+            <div class="control-row">
+              <div class="control-label-row">
+                <span>Object Mass (kg)</span>
+                <span id="tt-lbl-mass" style="font-family:var(--mono-stack); color:var(--cyan);"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="tt-slider-mass" min="1.0" max="14.0" step="0.5" value="3.0" />
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-label-row">
+                <span>Surface Friction Coefficient (&mu;)</span>
+                <span id="tt-lbl-friction" style="font-family:var(--mono-stack); color:var(--cyan);"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="tt-slider-friction" min="0.1" max="1.0" step="0.1" value="0.4" />
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-label-row">
+                <span>Placement Pose Variant</span>
+              </div>
+              <select id="tt-select-pose" style="width:100%; background:#060913; border:1px solid var(--border-subtle); border-radius:6px; color:#fff; padding:8px; font-size:13px;">
+                <option value="centre">Centre (nominal alignment)</option>
+                <option value="plus_corner">+Corner (+x, +y extreme bound)</option>
+                <option value="minus_corner">-Corner (-x, -y extreme bound)</option>
+              </select>
+            </div>
+
+            <div style="margin-top:14px; padding:10px; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.25); border-radius:6px; font-size:12px; color:var(--text-muted);">
+              Nearest tested scenario: <strong id="tt-snap-summary" style="color:var(--cyan);"></strong>
+            </div>
+
+            <div style="margin-top:16px;">
+              <button id="tt-btn-run-test" class="btn-action" style="width:100%; justify-content:center; padding:10px 16px;">Run Scenario Simulation</button>
+            </div>
+          </div>
+
+          <!-- Right: Real Simulation Outcome & Final Frame -->
+          <div style="background:#070d1a; border:1px solid var(--border-subtle); border-radius:10px; padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Simulation Outcome</span>
+                <span id="tt-test-badge" class="badge-pill"></span>
+              </div>
+              <div style="width:100%; height:180px; background:#000; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img id="tt-test-frame-img" src="" alt="Test Final Frame" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:12px; font-family:var(--mono-stack);">
+                <span style="color:var(--text-dim);">Grasp Margin:</span>
+                <span id="tt-test-margin" style="color:#fff;"></span>
+              </div>
+            </div>
+            <div style="font-size:11px; color:var(--text-dim); margin-top:10px;">
+              Rendered camera footage &bull; Deterministic state ground truth verified &bull; Seed from repair stream
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Clopper-Pearson Guarantee Card -->
+        <div style="margin-top:20px; background:rgba(56,189,248,0.05); border:1px solid var(--border-accent); border-radius:10px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:14px; font-weight:700; color:var(--cyan);">Live Statistical Guarantee (Clopper-Pearson Inversion)</span>
+            <span class="badge-pill badge-pill-pass" id="tt-conf-badge"></span>
+          </div>
+          <div id="tt-live-guarantee-text" style="font-size:13px; color:var(--text-main); line-height:1.6;"></div>
+          <div id="tt-slots-table-wrap" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- STAGE 3: RUN THE LOOP -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>3.</span> Run the Loop (Automated Falsification)
+          </div>
+          <div class="badge-pill badge-pill-refusal">
+            MINIMAL COUNTEREXAMPLE DISCOVERED
+          </div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Instead of relying on manual spot checks, ClosedLoop executes an automated counterexample-guided repair loop. An active falsifier searches the parameter space to locate the minimum-margin boundary.
+        </p>
+
+        <div class="grid-2">
+          <!-- Left: Recorded Falsifier Search Plot -->
+          <div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
+              Recorded Falsifier Margin Trajectory (Evaluations vs Margin)
+            </div>
+            <div id="tt-falsifier-svg-wrap" style="background:#040813; border:1px solid var(--border-subtle); border-radius:8px; padding:12px; height:220px;"></div>
+            <div style="font-size:11px; color:var(--text-dim); margin-top:6px;">
+              Red dashed threshold indicates margin less than 0 (object drop failure).
+            </div>
+          </div>
+
+          <!-- Right: Minimal Counterexample Card -->
+          <div style="background:#040813; border:1px solid var(--border-subtle); border-radius:8px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:12px; font-weight:700; color:#fb7185; text-transform:uppercase;">Minimal Failing Counterexample</span>
+                <span class="badge-pill badge-pill-fail">FAIL: SLIP</span>
+              </div>
+              <div style="width:100%; height:140px; background:#000; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img id="tt-counterexample-img" src="" alt="Minimal Counterexample Replay" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+              <div style="margin-top:10px; font-size:12px; font-family:var(--mono-stack); color:var(--text-muted); line-height:1.6;">
+                <div>Adversarial mass: <strong id="tt-ce-mass" style="color:#fb7185;"></strong> kg</div>
+                <div>Friction: <strong id="tt-ce-friction" style="color:#fb7185;"></strong> &bull; Grasp margin: <strong id="tt-ce-margin" style="color:#fb7185;"></strong> m</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <button class="btn-action" onclick="switchTab('repair-theatre')" style="flex:1; justify-content:center;">Open Repair Theatre &rarr;</button>
+              <button class="btn-action btn-download" onclick="switchTab('probe')" style="flex:1; justify-content:center;">View Certified Heatmap &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 4: WHERE IS IT SAFE? -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>4.</span> Where Is It Safe? (Operating Envelopes)
+          </div>
+          <span class="badge-pill badge-pill-pass">OPERATING DOMAIN CERTIFICATE</span>
+        </div>
+
+        <p id="tt-safe-desc" style="font-size:14px; color:var(--text-main); line-height:1.6; margin-bottom:16px;"></p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div style="background:#070d1a; border:1px solid rgba(244,63,94,0.3); border-radius:8px; padding:16px;">
+            <div style="font-size:13px; font-weight:700; color:#fb7185; margin-bottom:6px;">Initial Policy (V1)</div>
+            <div id="tt-envelope-v1-summary" style="font-size:12px; color:var(--text-muted); line-height:1.5;"></div>
+          </div>
+          <div style="background:#070d1a; border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:16px;">
+            <div style="font-size:13px; font-weight:700; color:#34d399; margin-bottom:6px;">Repaired Policy</div>
+            <div id="tt-envelope-v2-summary" style="font-size:12px; color:var(--text-muted); line-height:1.5;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#040813; border:1px solid var(--border-subtle); border-radius:8px; padding:12px 16px;">
+          <span style="font-size:12px; color:var(--text-dim);">Inspect regional Clopper-Pearson bounds across certified cells in Section 1.</span>
+          <button class="btn-action" onclick="switchTab('probe')">Explore Regional Probe &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STAGE 5: TIME TO TRUST -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>5.</span> Time to Trust (Panel)
+          </div>
+          <div class="badge-pill badge-pill-pass">RECOMPUTED FROM MANIFESTS</div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Wall-clock runtime, token footprint, and dollar spend across the full closed-loop pipeline, computed directly from run manifests.
+        </p>
+
+        <table class="tt-table">
+          <thead>
+            <tr>
+              <th>Pipeline Stage</th>
+              <th>Wall-Clock Time</th>
+              <th>API Calls</th>
+              <th>Tokens</th>
+              <th>Dollar Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600; color:#fff;">Controller Synthesis &amp; Repair</td>
+              <td id="tt-time-gen"></td>
+              <td id="tt-calls-gen"></td>
+              <td id="tt-tok-gen"></td>
+              <td id="tt-cost-gen"></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600; color:#fff;">Camera Judge Calibration (G2)</td>
+              <td id="tt-time-cal"></td>
+              <td id="tt-calls-cal"></td>
+              <td>0 (Vision API)</td>
+              <td id="tt-cost-cal"></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600; color:#fff;">Formal Regional Certification</td>
+              <td id="tt-time-cert"></td>
+              <td id="tt-calls-cert"></td>
+              <td>0 (Simulation only)</td>
+              <td id="tt-cost-cert"></td>
+            </tr>
+            <tr style="background:rgba(56,189,248,0.04);">
+              <td style="font-weight:700; color:var(--cyan);">Human User Engineering</td>
+              <td colspan="4" style="font-weight:700; color:var(--cyan);">
+                Lines of code written by the user: <span id="tt-user-loc"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Arithmetic Equivalence Box -->
+        <div style="margin-top:20px; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.3); border-radius:10px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:13px; font-weight:700; color:#a5b4fc;">Manual Spot-Check Equivalence</span>
+            <span class="badge-pill badge-pill-pass" style="background:rgba(99,102,241,0.2); color:#c7d2fe; border-color:rgba(99,102,241,0.4);" id="tt-arith-label"></span>
+          </div>
+          <p id="tt-arith-desc" style="font-size:13px; color:var(--text-main); line-height:1.6;"></p>
+        </div>
+      </div>
+
+      <!-- STAGE 6: YOUR VERDICT -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title">
+            <span>6.</span> Your Verdict (Feedback)
+          </div>
+          <div class="badge-pill badge-pill-pass">ZERO LOCAL TRACKING</div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:18px;">
+          We value your perspective on automated synthesis and statistical certification. The page itself stores NOTHING, sets no cookies, and sends no telemetry.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div>
+            <div style="font-size:13px; font-weight:600; color:#fff; margin-bottom:8px;">
+              Question 1: Before this, would you have shipped the initial controller?
+            </div>
+            <div class="view-toggles" id="tt-q1-toggles">
+              <button class="view-toggle-btn" data-val="yes">Yes</button>
+              <button class="view-toggle-btn" data-val="no">No</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:13px; font-weight:600; color:#fff; margin-bottom:8px;">
+              Question 2: How confident are you now in the repaired controller's safety? (Rating scale)
+            </div>
+            <div class="tt-rating-btn-group" id="tt-q2-group">
+              <button class="tt-rating-btn" data-val="1">1</button>
+              <button class="tt-rating-btn" data-val="2">2</button>
+              <button class="tt-rating-btn" data-val="3">3</button>
+              <button class="tt-rating-btn" data-val="4">4</button>
+              <button class="tt-rating-btn" data-val="5">5</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:13px; font-weight:600; color:#fff; margin-bottom:8px;">
+              Question 3: Was this easier than how you would normally check a robot program? (Rating scale)
+            </div>
+            <div class="tt-rating-btn-group" id="tt-q3-group">
+              <button class="tt-rating-btn" data-val="1">1</button>
+              <button class="tt-rating-btn" data-val="2">2</button>
+              <button class="tt-rating-btn" data-val="3">3</button>
+              <button class="tt-rating-btn" data-val="4">4</button>
+              <button class="tt-rating-btn" data-val="5">5</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+          <a id="tt-link-feedback" href="#" target="_blank" rel="noopener noreferrer" class="btn-action btn-download" style="text-decoration:none; padding:10px 20px;">
+            Submit Feedback via GitHub Discussion &rarr;
+          </a>
+          <span style="font-size:11px; color:var(--text-dim);">
+            Opens public discussion thread defined in configs/ui.yaml
+          </span>
+        </div>
+      </div>
+
+      <!-- Honesty Disclaimers Footer -->
+      <div style="background:#070d1a; border:1px solid var(--border-subtle); border-radius:10px; padding:16px; font-size:12px; color:var(--text-dim); line-height:1.6;">
+        <strong style="color:var(--text-muted);">Honesty &amp; Reporting Standards (Rule H14):</strong>
+        Simulation-only evaluation. No claim of real-world physics transfer or hardware deployment.
+        In this parallel-jaw gripper contact model, variations in friction coefficient yielded no measurable difference in grasp margin; failure is dominated by gravitational slip exceeding normal grip force.
+        Manual scenario sliders snap to the nearest precomputed point on the precomputed challenge grid.
+      </div>
+    </section>
+
     <!-- SECTION 1: HERO OPERATING-LIMIT PROBE (F1 & F2) -->
-    <section id="section-probe" class="console-section active">
+    <section id="section-probe" class="console-section">
       <div class="section-header">
         <div>
           <h2 class="section-title">Operational Envelope Probe &amp; Certificate Controls</h2>
@@ -1223,6 +1704,7 @@
   <!-- Scripts -->
   <script src="data.js"></script>
   <script src="repair_theatre_data.js"></script>
+  <script src="challenge/challenge_data.js"></script>
   <script src="console.js"></script>
   <script>
     function switchTab(tabId) {
