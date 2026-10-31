@@ -302,5 +302,24 @@
   2. Forbidden modifications: `runs/*`, `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, or any experiment code.
 - **Objective:** Replace static dashboard with interactive Judge Console (`build_ui_data.py`, `render_replays.py`, `dashboard/data.js`, pure client-side Clopper-Pearson calculator, live replay viewer, interactive probe), ensuring 100% of numbers, bounds, diffs, and replay frames are computed strictly from logs.
 
-
-
+## 2026-11-01 — Phase 08b Pre-Registration and Authorisation: Certificate-Guided Repair Round 2 (Candidate v2)
+- **Authorisation:** The human authorises ONE extra candidate program `v2`, created by repairing `v1` (`bec73dec45a88431`, from `runs/cert-mint-03/program_final.py`).
+- **Context:** Run `cert-full-01` left cells 08–15 uncertified for program `v1` (`bec73dec45a88431`). The goal is to run certificate-guided repair on `v1` using Arm B3 (text + filmstrip) to produce candidate `v2`.
+- **Frozen & Untouchable:** All existing `runs/*` (including `runs/cert-full-01/`, `runs/cert-mint-03/`, etc.), `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, and every earlier result remain frozen and untouched.
+- **Repair Protocol & Bounds:**
+  - Arm: B3 (text + filmstrip, using standard repair prompt builder and event filmstrip wrapper).
+  - Model: `muse-spark-1.3`, effort medium, max output tokens 2048.
+  - Spend Cap: $3.00 for repair.
+  - Search & Acceptance: Active falsifier + coordinate minimizer on the REPAIR stream. Same 3-stage acceptance rule (counterexample pass + regression pass + 5-episode short falsifier re-run).
+  - Regression set: nominal scenario + every earlier counterexample (pre-registered in `configs/round2.yaml`).
+  - At most 2 repair attempts, all logged. If both attempts are rejected, STOP and report; do not try again.
+  - Counterexamples must come exclusively from the repair-stream falsifier, never from certification episodes.
+  - Accepted program frozen (`freeze.json` with SHA-256) BEFORE any certification episode.
+- **Disjoint Seed Ranges (Rule H9):**
+  - Repair stream (falsifier, minimizer, acceptance, held-out): `710000`–`749999` (strictly disjoint from `cert-mint-02` [700000–700004], `cert-mint-03` [750000–790004], and all earlier runs in `0`–`999,999`).
+  - Certification stream for v2 (`cert2-full-01`): `2100000`–`2110000` (strictly disjoint from `cert-full-01` [2000000–2002458], `cert-pilot-01` [2010000–2010014], and `shift-full-01` [2020000–2030299]).
+  - Calibration stream (for frozen judge check on v2 rollouts): `1002000`–`1002199` (strictly disjoint from `1000000`–`1001699`).
+  - Optional shift re-run for v2: `2040000`–`2040299`.
+- **Claim Wording (Rule H14):**
+  - "v2 was created after seeing v1's certificate; v2's certificate is valid because v2 was fixed before its own data was drawn. Never present only the better program."
+  - Results described as "rendered camera footage" and "certified in simulation under distribution D".
