@@ -294,4 +294,13 @@
   4. Subsequent changes in Phase 11 and Phase 12 are strictly limited to documentation, README, technical report, and video voiceover assets.
 - **Action:** Gate G3 feature freeze declared and logged. Tagged `eod-1102`.
 
+## 2026-10-31 — Phase 10b Authorisation: Judge Console Presentation Layer Rebuild
+- **Context:** Gate G3 froze physical experiments, simulation environments, arms, tasks, configs, and run directories. The existing dashboard was a static presentation layer with several schematic figures and hard-coded values that violated Rule H11.
+- **Authorisation:** Human authorization granted to rebuild the presentation layer only.
+- **Scope Restrictions:**
+  1. Allowed modifications: `dashboard/`, `closedloop/report/`, `assets/`, `tests/test_dashboard.py` (adding new tests without loosening existing ones), and `docs/`.
+  2. Forbidden modifications: `runs/*`, `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, or any experiment code.
+- **Objective:** Replace static dashboard with interactive Judge Console (`build_ui_data.py`, `render_replays.py`, `dashboard/data.js`, pure client-side Clopper-Pearson calculator, live replay viewer, interactive probe), ensuring 100% of numbers, bounds, diffs, and replay frames are computed strictly from logs.
+
+
 
