@@ -30,7 +30,10 @@ endif
 	@bash scripts/check_no_secrets.sh
 	@bash scripts/check_locked.sh
 	@$(PY) -m pytest tests/ -q
-ifeq ($(PHASE),09)
+ifeq ($(PHASE),10)
+	@$(PY) -m pytest tests/test_dashboard.py -q
+	@$(PY) -c "from closedloop.report.generate_assets import verify_phase_10_gate; verify_phase_10_gate()"
+else ifeq ($(PHASE),09)
 	@$(PY) -m pytest tests/test_shift.py -q
 	@$(PY) -c "from experiments.run_shift import verify_phase_09_gate; verify_phase_09_gate()"
 else ifeq ($(PHASE),08)
@@ -55,4 +58,4 @@ else
 endif
 
 report:
-	@echo "no runs yet (Phase 00)"
+	@$(PY) -m closedloop.report.generate_assets

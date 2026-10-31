@@ -285,4 +285,58 @@
   4. `test_shift_seeds_in_ledger_after_run`: Verified that all shift seeds executed in `shift-full-01` are recorded in the real on-disk ledger.
 - **Action:** Human-authorized test restructuring applied to `tests/test_shift.py`.
 
+## 2026-10-31 — Phase 10 Gate G3 Feature Freeze Declaration
+- **Context:** Phase 10 Task 3 requires declaring Gate G3 Feature Freeze: "Done when: docs/DECISIONS.md freeze entry + tag; further changes only via P11 text. G3: after this gate, features frozen — bugs only, no new arms/tasks."
+- **Scope & Deliverables Frozen:**
+  1. All physical experiments, simulation environments, arms (B0, B1, B2, B3), and tasks (hero task T1) are frozen. No new arms or tasks.
+  2. All precomputed assets (`assets/`) and provenance manifest (`assets/manifest.json`) are generated strictly from logs and frozen.
+  3. The offline precomputed dashboard (`dashboard/index.html`) is frozen, verified with zero external network / API dependencies.
+  4. Subsequent changes in Phase 11 and Phase 12 are strictly limited to documentation, README, technical report, and video voiceover assets.
+- **Action:** Gate G3 feature freeze declared and logged. Tagged `eod-1102`.
+
+## 2026-10-31 — Phase 10b Authorisation: Judge Console Presentation Layer Rebuild
+- **Context:** Gate G3 froze physical experiments, simulation environments, arms, tasks, configs, and run directories. The existing dashboard was a static presentation layer with several schematic figures and hard-coded values that violated Rule H11.
+- **Authorisation:** Human authorization granted to rebuild the presentation layer only.
+- **Scope Restrictions:**
+  1. Allowed modifications: `dashboard/`, `closedloop/report/`, `assets/`, `tests/test_dashboard.py` (adding new tests without loosening existing ones), and `docs/`.
+  2. Forbidden modifications: `runs/*`, `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, or any experiment code.
+- **Objective:** Replace static dashboard with interactive Judge Console (`build_ui_data.py`, `render_replays.py`, `dashboard/data.js`, pure client-side Clopper-Pearson calculator, live replay viewer, interactive probe), ensuring 100% of numbers, bounds, diffs, and replay frames are computed strictly from logs.
+
+## 2026-11-01 — Phase 08b Pre-Registration and Authorisation: Certificate-Guided Repair Round 2 (Candidate v2)
+- **Authorisation:** The human authorises ONE extra candidate program `v2`, created by repairing `v1` (`bec73dec45a88431`, from `runs/cert-mint-03/program_final.py`).
+- **Context:** Run `cert-full-01` left cells 08–15 uncertified for program `v1` (`bec73dec45a88431`). The goal is to run certificate-guided repair on `v1` using Arm B3 (text + filmstrip) to produce candidate `v2`.
+- **Frozen & Untouchable:** All existing `runs/*` (including `runs/cert-full-01/`, `runs/cert-mint-03/`, etc.), `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, and every earlier result remain frozen and untouched.
+- **Repair Protocol & Bounds:**
+  - Arm: B3 (text + filmstrip, using standard repair prompt builder and event filmstrip wrapper).
+  - Model: `muse-spark-1.3`, effort medium, max output tokens 2048.
+  - Spend Cap: $3.00 for repair.
+  - Search & Acceptance: Active falsifier + coordinate minimizer on the REPAIR stream. Same 3-stage acceptance rule (counterexample pass + regression pass + 5-episode short falsifier re-run).
+  - Regression set: nominal scenario + every earlier counterexample (pre-registered in `configs/round2.yaml`).
+  - At most 2 repair attempts, all logged. If both attempts are rejected, STOP and report; do not try again.
+  - Counterexamples must come exclusively from the repair-stream falsifier, never from certification episodes.
+  - Accepted program frozen (`freeze.json` with SHA-256) BEFORE any certification episode.
+- **Disjoint Seed Ranges (Rule H9):**
+  - Repair stream (falsifier, minimizer, acceptance, held-out): `710000`–`749999` (strictly disjoint from `cert-mint-02` [700000–700004], `cert-mint-03` [750000–790004], and all earlier runs in `0`–`999,999`).
+  - Certification stream for v2 (`cert2-full-01`): `2100000`–`2110000` (strictly disjoint from `cert-full-01` [2000000–2002458], `cert-pilot-01` [2010000–2010014], and `shift-full-01` [2020000–2030299]).
+  - Calibration stream (for frozen judge check on v2 rollouts): `1002000`–`1002199` (strictly disjoint from `1000000`–`1001699`).
+  - Optional shift re-run for v2: `2040000`–`2040299`.
+- **Claim Wording (Rule H14):**
+  - "v2 was created after seeing v1's certificate; v2's certificate is valid because v2 was fixed before its own data was drawn. Never present only the better program."
+  - Results described as "rendered camera footage" and "certified in simulation under distribution D".
+
+## 2026-11-01 — Phase 10c Pre-Registration and Authorisation: Recorded Repair Sessions & Repair Theatre
+- **Authorisation:** Human authorisation granted for Phase 10c (presentation and demo evidence).
+- **Scope Restrictions:**
+  - Allowed modifications: `dashboard/`, `closedloop/report/`, `closedloop/demo/`, `experiments/` (new files only), `configs/demo_sessions.yaml` (new), `tests/` (add only).
+  - Frozen & untouchable: All existing `runs/*` (except new output directory `runs/demo-sessions-01/`), existing `configs/*`, `closedloop/certify/*`, `closedloop/sim/*`, locked files, and earlier experimental results remain untouched.
+- **Protocol & Invariants:**
+  - Start programs: `v1` (`bec73dec45a88431`) and `v2` (`5f74f7762ee1f378`).
+  - Scenario generation: Draw scenarios from $D$ using repair seeds from `900000`, keeping the FIRST 8 scenarios where the start program fails by simulator ground truth (`sim_res.margin < 0`).
+  - Log all attempted scenarios. Exactly one session per scenario, no reruns. Failed repairs are kept and shown.
+  - These sessions constitute demo evidence and presentation material, NOT part of H2/H3 statistical tests.
+  - Verification: Replay of the new program on the same scenario must equal the logged result (V1). Replay frames verified against simulation.
+  - Held-out mini-check: 20 fresh scenarios evaluated with Clopper-Pearson bound labelled "small-sample check, not a certificate".
+  - UI Feature F7 "Repair Theatre": Scenario picker with data-derived labels, step timeline (failure -> search -> minimal counterexample -> prompt -> model response -> diff -> acceptance gates -> replay -> mini-check), verbatim prompts and responses (collapsed), scrubber replay, cost/tokens badge "RECORDED session <run_id> at git <sha>".
+  - Before/after heatmap: Side-by-side comparison of v1 vs v2 using only logged certification run data.
+  - Budget cap: $3.00.
 

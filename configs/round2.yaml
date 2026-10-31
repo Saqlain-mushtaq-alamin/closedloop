@@ -1,0 +1,87 @@
+# Configuration for Round 2 Certificate-Guided Repair (Phase 08b extension)
+# Pre-registered in docs/DECISIONS.md and frozen via SHA-256 hash (V11).
+# Arm B3 (text + multimodal filmstrip, same prompt builder as exp_h2h3).
+# Source program: v1 (bec73dec45a88431) from runs/cert-mint-03/program_final.py.
+# Target: Repair v1 to produce candidate v2 on the REPAIR stream.
+
+experiment: round2_repair
+source_program:
+  path: runs/cert-mint-03/program_final.py
+  sha256: bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55
+  program_id: bec73dec45a88431
+arm: B3
+task: task_T1
+model: muse-spark-1.3
+reasoning_effort: medium
+max_output_tokens: 2048
+timeout_s: 120
+memory_mb: 1024
+budget_cap_usd: 3.0
+max_attempts: 2
+
+difficulty:
+  tier: 2
+  bounds:
+    x: [-0.15, 0.15]
+    y: [-0.15, 0.15]
+    yaw: [-0.5, 0.5]
+    mass: [1.0, 11.5]
+    friction: [0.1, 1.0]
+
+repair:
+  falsifier_budget: 10
+  acceptance:
+    falsifier_rerun_budget: 5
+    bisection_steps: 0
+    nominal:
+      x: 0.0
+      y: 0.0
+      yaw: 0.0
+      mass: 1.0
+      friction: 0.8
+    param_order: ["x", "y", "yaw", "friction", "mass"]
+
+regression_set:
+  - id: nominal
+    x: 0.0
+    y: 0.0
+    yaw: 0.0
+    mass: 1.0
+    friction: 0.8
+    seed: 713000
+  - id: ce_mint03
+    x: 0.0
+    y: 0.0
+    yaw: 0.0
+    mass: 1.0
+    friction: 0.8
+    seed: 780000
+  - id: ce_mint02_s3
+    x: -0.018986957865397974
+    y: -0.06795597772013573
+    yaw: -0.004429115436771047
+    mass: 9.17653350234753
+    friction: 0.42591469937087256
+    seed: 700002
+  - id: ce_mint02_rand
+    x: -0.06660698864228387
+    y: -0.10017097307669232
+    yaw: 0.04090283838310427
+    mass: 5.833734725064973
+    friction: 0.8792881201534352
+    seed: 600010
+
+seeds:
+  stream: repair
+  attempt_1:
+    falsifier_base: 710000
+    minimizer_base: 711000
+    minimizer_recheck: 711006
+    stage1_ce: 712000
+    stage3_base: 714000
+  attempt_2:
+    falsifier_base: 720000
+    minimizer_base: 721000
+    minimizer_recheck: 721006
+    stage1_ce: 722000
+    stage3_base: 724000

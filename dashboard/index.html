@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClosedLoop — Interactive Judge Console (Phase 10b, Gate G3)</title>
+  <style>
+    :root {
+      --bg-darkest: #070a13;
+      --bg-card: #0d1527;
+      --bg-card-elevated: #15223e;
+      --bg-hover: #1e3056;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.25);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.25);
+      --rose: #f43f5e;
+      --rose-glow: rgba(244, 63, 94, 0.25);
+      --indigo: #6366f1;
+      --indigo-glow: rgba(99, 102, 241, 0.25);
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --mono-stack: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-darkest);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      line-height: 1.5;
+      padding-bottom: 80px;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(99, 102, 241, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 50% 70%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    header {
+      background: rgba(10, 15, 28, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 16px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-arrow {
+      color: var(--cyan);
+      -webkit-text-fill-color: var(--cyan);
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      font-family: var(--mono-stack);
+    }
+
+    .badge-pill-pass { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-pill-fail { background: rgba(244, 63, 94, 0.18); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-pill-refusal { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--cyan);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover {
+      background: var(--cyan);
+      color: #040914;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .btn-download {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .btn-download:hover {
+      background: var(--emerald);
+      color: #040914;
+      box-shadow: 0 0 16px var(--emerald-glow);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 36px;
+    }
+
+    /* Top Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-accent);
+    }
+
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .card-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+      font-family: var(--mono-stack);
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .sub-pill {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Navigation Bar */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-hover);
+    }
+
+    .nav-tab-btn.active {
+      background: var(--cyan);
+      color: #040914;
+      font-weight: 700;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    /* Console Section Structure */
+    .console-section {
+      display: none;
+      animation: fadeIn 0.25s ease forwards;
+      margin-bottom: 36px;
+    }
+
+    .console-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      max-width: 900px;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-hero {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Interactive Sliders & Controls */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .slider-input-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-input-group input[type="range"] {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #1e293b;
+      outline: none;
+      accent-color: var(--cyan);
+    }
+
+    .slider-input-group input[type="number"] {
+      width: 75px;
+      background: #060913;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: var(--cyan);
+      font-family: var(--mono-stack);
+      font-size: 13px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .view-toggles {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-toggle-btn.active {
+      background: var(--cyan);
+      color: #040914;
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    /* Heatmap Grid */
+    .hm-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .hm-cell {
+      background: #070d1a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .hm-cell:hover, .hm-cell.selected {
+      transform: scale(1.03);
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px var(--cyan-glow);
+      z-index: 10;
+    }
+
+    .hm-cell.certified {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .hm-cell.uncertified {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .hm-cell.failed {
+      background: rgba(244, 63, 94, 0.08);
+      border-color: rgba(244, 63, 94, 0.35);
+    }
+
+    .hm-cell-hdr {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .hm-cell-bound {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: var(--mono-stack);
+      color: var(--text-main);
+    }
+
+    .hm-cell.certified .hm-cell-bound { color: #34d399; }
+    .hm-cell.uncertified .hm-cell-bound { color: #fbbf24; }
+    .hm-cell.failed .hm-cell-bound { color: #fb7185; }
+
+    .hm-cell-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .hm-cell-trials {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Probe Diagnostics */
+    .probe-detail-box {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .probe-ep-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 12px;
+      font-family: var(--mono-stack);
+    }
+
+    .probe-ep-item:last-child {
+      border-bottom: none;
+    }
+
+    .btn-sm {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--cyan);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-sm:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* Replay Theatre */
+    .theatre-screen {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #02050c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .theatre-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .theatre-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .theatre-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+    }
+
+    .btn-play {
+      background: var(--cyan);
+      color: #040914;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .theatre-scrubber {
+      flex: 1;
+      accent-color: var(--cyan);
+    }
+
+    /* Diff View */
+    .diff-container {
+      background: #03060f;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: var(--mono-stack);
+      font-size: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+
+    .diff-add { color: #34d399; background: rgba(16, 185, 129, 0.08); display: block; }
+    .diff-del { color: #fb7185; background: rgba(244, 63, 94, 0.08); display: block; }
+    .diff-hdr { color: #818cf8; font-weight: 700; display: block; }
+    .diff-ctx { color: #94a3b8; display: block; }
+
+    /* SVG Plots */
+    .svg-plot-container {
+      width: 100%;
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .prov-card {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .prov-run-id {
+      font-family: var(--mono-stack);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .prov-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .prov-sha {
+      font-family: var(--mono-stack);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Repair Theatre (Feature F7) */
+    .theatre-badge-strip {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .scenario-picker-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .scenario-btn {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scenario-btn:hover, .scenario-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+    .step-timeline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+    .timeline-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #0d1527;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .timeline-step.active {
+      border-color: var(--cyan);
+      color: #fff;
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+    .timeline-step.passed {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+    .theatre-screen-duo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .theatre-panel-box {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      overflow: hidden;
+    }
+    .theatre-screen-frame {
+      width: 100%;
+      height: 220px;
+      background: #000;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .collapsible-box {
+      background: #040813;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .collapsible-box summary {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan);
+      cursor: pointer;
+      background: rgba(56, 189, 248, 0.05);
+      outline: none;
+    }
+    .collapsible-box[open] summary {
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .collapsible-content {
+      padding: 12px;
+      font-family: var(--mono-stack);
+      font-size: 11px;
+      color: #cbd5e1;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      max-width: 1440px;
+      margin: 60px auto 0;
+      padding: 24px 36px 0;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <div class="brand-group">
+      <div class="brand-title">
+        ClosedLoop
+        <span class="brand-arrow">&rarr;</span>
+        Judge Console
+      </div>
+      <div class="badge-pill badge-pill-pass">
+        Gate G3 Frozen
+      </div>
+      <span id="selfcheck-badge" class="badge-pill badge-pill-pass"></span>
+    </div>
+
+    <div class="header-actions">
+      <button id="btn-recompute" class="btn-action">Recompute Live</button>
+      <button id="btn-download-cert" class="btn-action btn-download">Download ODD Certificate (JSON)</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Top Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="card-label">
+          <span>Certified Policy</span>
+          <span id="hero-model-tag" class="badge-pill badge-pill-pass"></span>
+        </div>
+        <div id="hero-program-id" class="card-val" style="font-size: 16px;"></div>
+        <div class="card-sub">Synthesized controller repaired via counterexample feedback</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-label">
+          <span>Certified Area Fraction</span>
+          <span class="badge-pill badge-pill-pass">CLOPPER-PEARSON</span>
+        </div>
+        <div id="hero-certified-area" class="card-val" style="color: #34d399;"></div>
+        <div class="card-sub">Regional cells certified under distribution D</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-label">
+          <span>Price of Footage</span>
+          <span class="badge-pill badge-pill-pass">GATE G2 CALIBRATED</span>
+        </div>
+        <div id="hero-price-loss" class="card-val" style="color: #818cf8;"></div>
+        <div class="card-sub">Area loss between ground truth state and camera judge</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="card-label">
+          <span>Pooled Verification</span>
+          <span class="badge-pill badge-pill-pass">RULE H11</span>
+        </div>
+        <div id="hero-pooled-pass" class="card-val" style="color: #38bdf8;"></div>
+        <div class="card-sub">True pooled trials passed across regional cells</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-tab-btn active" onclick="switchTab('probe')">
+        <span>1.</span> Hero Operating-Limit Probe
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('theatre')">
+        <span>2.</span> Replay Theatre &amp; Filmstrip Diff
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('repair-theatre')">
+        <span>3.</span> Repair Theatre
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('calibration')">
+        <span>4.</span> Camera-Judge Calibration
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('shift')">
+        <span>5.</span> Distribution Shift (H4)
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('provenance')">
+        <span>6.</span> Provenance &amp; Ledger
+      </button>
+    </nav>
+
+    <!-- SECTION 1: HERO OPERATING-LIMIT PROBE (F1 & F2) -->
+    <section id="section-probe" class="console-section active">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Operational Envelope Probe &amp; Certificate Controls</h2>
+          <p class="section-desc">
+            Explore physical parameter boundaries over mass and friction. Lower bounds are recomputed live in the browser using exact Clopper-Pearson binomial inversion.
+          </p>
+        </div>
+        <div id="honesty-statement" class="badge-pill badge-pill-pass"></div>
+      </div>
+
+      <div class="grid-hero">
+        <!-- Left: Heatmap & Certificate Sliders -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div class="view-toggles">
+              <button id="btn-mode-state" class="view-toggle-btn active">State Ground Truth</button>
+              <button id="btn-mode-camera" class="view-toggle-btn">Camera Judge (SAM 3.1 + Spark)</button>
+              <button id="btn-mode-v2" class="view-toggle-btn"><span id="lbl-mode-v2"></span></button>
+              <button id="btn-mode-compare" class="view-toggle-btn"><span id="lbl-mode-compare"></span></button>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">
+              4x4 Regional Cell Partition
+            </div>
+          </div>
+
+          <!-- Controls: Target P & Delta -->
+          <div class="grid-2" style="margin-bottom: 16px;">
+            <div class="control-row">
+              <div class="control-label-row">
+                <span>Target Success Rate (p):</span>
+                <span id="target-p-label" style="color: var(--cyan); font-family: var(--mono-stack);"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="target-p-slider" min="0.50" max="0.99" step="0.01" value="0.90">
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-label-row">
+                <span>Confidence Level (1 &minus; &delta;):</span>
+                <span id="delta-label" style="color: var(--emerald); font-family: var(--mono-stack);"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="delta-slider" min="0.001" max="0.10" step="0.001" value="0.05">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4x4 Heatmap Container -->
+          <div id="heatmap-grid" class="hm-container"></div>
+
+          <div style="margin-top: 14px; font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between;">
+            <span>Click any cell to target probe sliders</span>
+            <span id="friction-note-text" style="color: var(--amber);"></span>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Probe Tool -->
+        <div class="card-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--cyan);">
+            Operating-Limit Inspector
+          </h3>
+
+          <div class="control-row">
+            <div class="control-label-row">
+              <span>Object Mass (kg)</span>
+            </div>
+            <div class="slider-input-group">
+              <input type="range" id="probe-mass-slider" min="1.0" max="11.5" step="0.05" value="2.5">
+              <input type="number" id="probe-mass-input" min="1.0" max="11.5" step="0.05" value="2.50">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-row">
+              <span>Lateral Friction</span>
+            </div>
+            <div class="slider-input-group">
+              <input type="range" id="probe-fric-slider" min="0.10" max="1.00" step="0.01" value="0.55">
+              <input type="number" id="probe-fric-input" min="0.10" max="1.00" step="0.01" value="0.55">
+            </div>
+          </div>
+
+          <div class="probe-detail-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span id="probe-cell-id" style="font-size: 15px; font-weight: 800; color: #fff;"></span>
+              <span id="probe-verdict-badge" class="badge-pill"></span>
+            </div>
+            <div id="probe-cell-range" style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;"></div>
+
+            <div style="display: flex; gap: 24px; align-items: baseline; margin-bottom: 12px;">
+              <div>
+                <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Recomputed Lower Bound</div>
+                <div id="probe-bound-val" style="font-size: 26px; font-weight: 900; color: var(--cyan); font-family: var(--mono-stack);"></div>
+              </div>
+              <div>
+                <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Trials Observed</div>
+                <div id="probe-trials-val" style="font-size: 13px; color: var(--text-muted); font-family: var(--mono-stack); margin-top: 6px;"></div>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+              <strong>Nearest Logged Episodes:</strong>
+            </div>
+            <div id="probe-episodes-list"></div>
+          </div>
+
+          <div style="margin-top: 16px; padding: 12px; background: rgba(56, 189, 248, 0.08); border: 1px solid var(--border-accent); border-radius: 8px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase;">Data-Derived Guarantee Envelope:</div>
+            <div style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">
+              Largest mass certified at every friction: <strong id="largest-mass-certified-text" style="color: #34d399;"></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: REPLAY THEATRE & DIFF (F3) -->
+    <section id="section-theatre" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Deterministic Replay Theatre &amp; Filmstrip Diff</h2>
+          <p class="section-desc">
+            Visual inspection of deterministic simulator rollouts with filmstrip frame traces.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Replay Player -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <select id="replay-clip-select" style="background: #040813; border: 1px solid var(--border-subtle); color: var(--cyan); padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; outline: none; width: 100%;">
+            </select>
+          </div>
+
+          <div class="theatre-screen">
+            <img id="replay-frame-img" class="theatre-img" src="replays/min_ce_final/frame_00.png" alt="Replay Frame">
+            <canvas id="replay-overlay-canvas" class="theatre-canvas" width="384" height="288"></canvas>
+          </div>
+
+          <div class="theatre-controls">
+            <button id="replay-play-btn" class="btn-play">Play &blacktriangleright;</button>
+            <input type="range" id="replay-scrubber" class="theatre-scrubber" min="0" max="38" value="0">
+            <span id="replay-step-counter" style="font-size: 11px; font-family: var(--mono-stack); color: var(--text-muted); min-width: 140px; text-align: right;"></span>
+          </div>
+
+          <div style="margin-top: 14px;">
+            <h4 id="replay-clip-title" style="font-size: 15px; font-weight: 700; color: #fff;"></h4>
+            <p id="replay-clip-desc" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;"></p>
+            <div id="replay-clip-meta" style="font-size: 12px; color: var(--text-dim); margin-top: 6px; font-family: var(--mono-stack);"></div>
+          </div>
+        </div>
+
+        <!-- Program Diff Panel -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff;">
+              Synthesized Program Repair Diff (Arm B2)
+            </h3>
+            <span class="badge-pill badge-pill-pass">difflib Unified Diff</span>
+          </div>
+
+          <div id="program-diff-content" class="diff-container"></div>
+
+          <div id="adaptation-desc" style="margin-top: 14px; font-size: 12px; color: var(--text-muted); line-height: 1.6;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: REPAIR THEATRE -->
+    <section id="section-repair-theatre" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Repair Theatre: Recorded Multi-Step Synthesis Trace</h2>
+          <p class="section-desc">
+            End-to-end recorded synthesis traces under distribution D: failure discovery, coordinate minimization, verbatim LLM prompts and responses, unified diffs, multi-stage acceptance gates, and verified replay.
+          </p>
+        </div>
+        <div id="repair-theatre-badge" class="badge-pill badge-pill-pass"></div>
+      </div>
+
+      <!-- Session Picker -->
+      <div class="card-panel" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 14px; font-weight: 700; color: #fff;">Recorded Failure Scenarios</h3>
+          <span id="theatre-cost-tokens" class="badge-pill badge-pill-refusal"></span>
+        </div>
+        <div id="theatre-scenario-picker" class="scenario-picker-bar"></div>
+
+        <!-- Step Timeline -->
+        <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; margin-bottom: 8px;">Synthesis &amp; Verification Step Timeline</div>
+        <div id="theatre-step-timeline" class="step-timeline"></div>
+      </div>
+
+      <!-- Active Step Content Area -->
+      <div id="theatre-step-view" class="grid-2">
+        <!-- Left: Before / After Replay Screen & Scrubber -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 id="theatre-screen-title" style="font-size: 15px; font-weight: 700; color: #fff;"></h3>
+            <span id="theatre-replay-status" class="badge-pill badge-pill-pass"></span>
+          </div>
+
+          <div class="theatre-screen-duo">
+            <div class="theatre-panel-box">
+              <div id="lbl-before-screen" style="font-size: 12px; font-weight: 700; color: #fb7185;">Before Repair (Initial Failure)</div>
+              <div class="theatre-screen-frame">
+                <img id="theatre-fail-img" class="theatre-img" src="theatre/session_00/frames/fail_frame_0.png" alt="Failure Frame">
+              </div>
+              <div id="theatre-fail-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+            </div>
+
+            <div class="theatre-panel-box">
+              <div id="lbl-after-screen" style="font-size: 12px; font-weight: 700; color: #34d399;">After Repair (Verified Replay)</div>
+              <div class="theatre-screen-frame">
+                <img id="theatre-replay-img" class="theatre-img" src="theatre/session_00/frames/replay_frame_0.png" alt="Replay Frame">
+              </div>
+              <div id="theatre-replay-label" style="font-size: 11px; color: var(--text-muted); margin-top: 6px;"></div>
+            </div>
+          </div>
+
+          <div class="theatre-controls">
+            <button id="theatre-play-btn" class="btn-play">Play &blacktriangleright;</button>
+            <input type="range" id="theatre-scrubber" class="theatre-scrubber" min="0" max="4" value="0">
+            <span id="theatre-frame-counter" style="font-size: 11px; font-family: var(--mono-stack); color: var(--text-muted); min-width: 100px; text-align: right;"></span>
+          </div>
+
+          <div id="theatre-step-detail-box" class="probe-detail-box" style="margin-top: 14px;"></div>
+        </div>
+
+        <!-- Right: Code Diff, Verbatim Prompt & Raw LLM Response -->
+        <div class="card-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff;">Program Unified Diff</h3>
+            <span id="theatre-diff-badge" class="badge-pill badge-pill-pass">difflib Unified Diff</span>
+          </div>
+
+          <div id="theatre-diff-content" class="diff-container" style="max-height: 240px;"></div>
+
+          <details id="theatre-prompt-details" class="collapsible-box">
+            <summary>Show Exact Repair Prompt Text</summary>
+            <div id="theatre-prompt-text" class="collapsible-content"></div>
+          </details>
+
+          <details id="theatre-response-details" class="collapsible-box">
+            <summary>Show Raw Model Response (JSON)</summary>
+            <div id="theatre-response-text" class="collapsible-content"></div>
+          </details>
+
+          <div id="theatre-acceptance-box" style="margin-top: 14px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: CAMERA-JUDGE CALIBRATION (F4) -->
+    <section id="section-calibration" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Vision Judge Calibration &amp; Price of Footage</h2>
+          <p class="section-desc">
+            Calibration of SAM 3.1 visual grounding and Muse Spark 1.3 reasoning on simulation calibration rollouts. Certified area curve is computed live via seeded random subsampling.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #fff;">
+            Gate G2 Calibration Sample Ledger
+          </h3>
+          <div class="probe-detail-box" style="margin-top: 0;">
+            <div class="probe-ep-item">
+              <div>
+                <strong style="color: #34d399;">Success Cohort (TPR Data):</strong>
+                <div id="cal-succ-count" style="color: var(--text-muted); font-size: 11px;"></div>
+              </div>
+              <div id="cal-tpr-bound" class="badge-pill badge-pill-pass"></div>
+            </div>
+            <div class="probe-ep-item">
+              <div>
+                <strong style="color: #fb7185;">Failure Cohort (FPR Buckets):</strong>
+                <div id="cal-fail-count" style="color: var(--text-muted); font-size: 11px;"></div>
+              </div>
+              <div id="cal-fpr-bound" class="badge-pill badge-pill-refusal"></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; font-size: 13px; color: var(--text-muted);">
+            <strong>Mathematical Correction Formula:</strong>
+            <p style="font-family: var(--mono-stack); background: #03060f; padding: 10px; border-radius: 6px; margin-top: 6px; font-size: 12px; color: var(--cyan);">
+              p_L = max( 0 , (q_lo &minus; b_U) / (a_L &minus; b_U))
+            </p>
+            <p id="cal-formula-desc" style="margin-top: 6px; font-size: 12px;"></p>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #fff;">
+            Certified Area vs Calibration Labels (Live Subsampling)
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+            Certified area fraction recomputed dynamically by subsampling the calibration episodes.
+          </p>
+          <div class="svg-plot-container">
+            <svg id="cal-curve-svg" viewBox="0 0 640 300" width="100%" height="240"></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: DISTRIBUTION SHIFT (F5) -->
+    <section id="section-shift" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Hypothesis H4: Certificate Refusal Under Distribution Shift</h2>
+          <p id="shift-header-desc" class="section-desc"></p>
+        </div>
+        <div class="badge-pill badge-pill-fail">Refusal Bound Active</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #fff;">
+            Scatter Distribution: Mass vs Friction
+          </h3>
+          <div class="svg-plot-container">
+            <svg id="shift-scatter-svg" viewBox="0 0 640 360" width="100%" height="280"></svg>
+          </div>
+          <div style="display: flex; gap: 16px; justify-content: center; font-size: 12px; margin-top: 10px;">
+            <span><strong style="color: #10b981;">&bull; D Passed</strong></span>
+            <span><strong style="color: #f43f5e;">&bull; D Failed</strong></span>
+            <span><strong style="color: #38bdf8;">■ D' Passed</strong></span>
+            <span><strong style="color: #f59e0b;">■ D' Failed</strong></span>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #fff;">
+            Honest Refusal Accounting
+          </h3>
+          <div class="probe-detail-box" style="margin-top: 0;">
+            <div class="probe-ep-item">
+              <div>
+                <strong>Reference Cohort D:</strong>
+                <div id="shift-d-bound" style="color: var(--text-muted); font-size: 11px;"></div>
+              </div>
+              <div id="shift-d-rate" class="badge-pill badge-pill-pass"></div>
+            </div>
+            <div class="probe-ep-item">
+              <div>
+                <strong style="color: #f87171;">Shifted Cohort D' (Heavier/Slippery):</strong>
+                <div id="shift-dp-bound" style="color: var(--text-muted); font-size: 11px;"></div>
+              </div>
+              <div id="shift-dp-rate" class="badge-pill badge-pill-fail"></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; padding: 14px; background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 8px;">
+            <h4 style="font-size: 13px; color: #fb7185; font-weight: 800;">GUARANTEE HONESTY PRINCIPLE:</h4>
+            <p id="shift-honesty-note" style="font-size: 12px; color: #cbd5e1; margin-top: 4px; line-height: 1.5;"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: PROVENANCE & LEDGER (F6) -->
+    <section id="section-provenance" class="console-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Provenance &amp; Cryptographic Traceability</h2>
+          <p class="section-desc">
+            Rule H11 &amp; H12 provenance ledger. Every metric and figure is linked to run_id manifests and append-only episode records.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #fff;">
+          Linked Source Runs
+        </h3>
+        <div id="provenance-run-list"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div>
+      ClosedLoop &bull; Meta Global AI Developer Hackathon &bull; Push the Frontier Track
+    </div>
+    <div style="font-family: var(--mono-stack);">
+      Deterministic Phase 10b &bull; 100% Offline Static &bull; Rule H11 Compliant
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="repair_theatre_data.js"></script>
+  <script src="console.js"></script>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.console-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+
+      const sec = document.getElementById('section-' + tabId);
+      if (sec) sec.classList.add('active');
+
+      const tabs = document.querySelectorAll('.nav-tab-btn');
+      tabs.forEach(t => {
+        if (t.getAttribute('onclick')?.includes(tabId)) {
+          t.classList.add('active');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

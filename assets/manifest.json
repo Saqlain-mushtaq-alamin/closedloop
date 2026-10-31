@@ -1,0 +1,88 @@
+{
+  "assets": {
+    "filmstrip_sam": {
+      "config_hash": "0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e",
+      "description": "Five-frame event-boundary filmstrip with SAM 3.1 grounding box and centroid overlays",
+      "git_sha": "17e38303f29e93e0c04d02aa06ed057648430a6a",
+      "path": "assets/filmstrip_sam.svg",
+      "run_id": "judge-g2-03",
+      "sha256": "de00707a3e20a98f06926331e57dd7eaea07652ccf697881e6865e1fec927916",
+      "type": "filmstrip_sam"
+    },
+    "heatmap_camera": {
+      "config_hash": "04073afb3e1d4af2",
+      "description": "4x4 Camera judge corrected certification heatmap (calibrated Gate G2)",
+      "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
+      "path": "assets/heatmap_camera.svg",
+      "run_id": "cert-full-01",
+      "sha256": "3521ed8dd47ca72d576fa2f5ca18672a96c47966d3c4f2e1beb7245407eec704",
+      "type": "heatmap_camera"
+    },
+    "heatmap_state": {
+      "config_hash": "04073afb3e1d4af2",
+      "description": "4x4 State ground truth certification heatmap on hero task T1",
+      "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
+      "path": "assets/heatmap_state.svg",
+      "run_id": "cert-full-01",
+      "sha256": "c779665877fb0efb5f911770c56182fba1d9d79df4428f46ab11dc4cc24a50bb",
+      "type": "heatmap_state"
+    },
+    "price_plot": {
+      "config_hash": "04073afb3e1d4af2",
+      "description": "Price of rendered-footage certification: certified area vs calibration labels",
+      "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
+      "path": "assets/price_plot.svg",
+      "run_id": "cert-full-01",
+      "sha256": "1d7c21b51f04a988a5a5ea0f28a8dfe8a6f8350a981a4394ffcac5ef8e7ef8da",
+      "type": "price_plot"
+    },
+    "rollout_clip": {
+      "config_hash": "04073afb3e1d4af2",
+      "description": "Deterministic vector rollout trajectory replay for policy bec73dec45a88431",
+      "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
+      "path": "assets/rollout_clip.svg",
+      "run_id": "cert-full-01",
+      "sha256": "c96c6e215d56ceebf572cc4804c41c79337903c48a6c2ac2bf0f97028cae50ea",
+      "type": "rollout_clip"
+    },
+    "sam_inspect_frame": {
+      "config_hash": "0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e",
+      "description": "Ground truth rendered camera frame with SAM 3.1 segmentation mask from Gate G2",
+      "git_sha": "17e38303f29e93e0c04d02aa06ed057648430a6a",
+      "path": "assets/sam_inspect_frame.png",
+      "run_id": "judge-g2-03",
+      "sha256": "7a43b4d2882c50068583159a7ff3a57327b460c7b6b2613f7c2d8d321c813794",
+      "type": "sam_inspect_frame"
+    },
+    "shift_figure": {
+      "config_hash": "ab9b14b927674ac9",
+      "description": "Hypothesis H4 shift test: bound drop and refusal outside distribution envelope",
+      "git_sha": "6c3b89ffae7d74b86b67698ba4ffa8b257640082",
+      "path": "assets/shift_figure.svg",
+      "run_id": "shift-full-01",
+      "sha256": "f09176baa185b040891ebd8d01a9ec7e1f6b3046a2896c2bb80fe440075cdcae",
+      "type": "shift_figure"
+    }
+  },
+  "generator": "closedloop.report.generate_assets",
+  "phase": "10",
+  "provenance_standard": "Rule H11 (numbers generated strictly from logs)",
+  "source_runs": {
+    "cert-full-01": {
+      "config_hash": "04073afb3e1d4af2",
+      "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924"
+    },
+    "h2h3-full-03": {
+      "config_hash": "890a94b0788df688",
+      "git_sha": "206c32e1b6dbb20ccdf8f9111e280f22a3a6bdaa"
+    },
+    "judge-g2-03": {
+      "config_hash": "0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e",
+      "git_sha": "17e38303f29e93e0c04d02aa06ed057648430a6a"
+    },
+    "shift-full-01": {
+      "config_hash": "ab9b14b927674ac9",
+      "git_sha": "6c3b89ffae7d74b86b67698ba4ffa8b257640082"
+    }
+  }
+}

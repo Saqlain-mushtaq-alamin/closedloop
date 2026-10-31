@@ -1,0 +1,45 @@
+{
+  "clip_id": "sam_inspect_failure",
+  "title": "SAM 3.1 Response: Off Pad (Slip Failure)",
+  "description": "Real SAM 3.1 visual grounding from Gate G2 calibration (inspect_frame_01).",
+  "run_id": "judge-g2-03",
+  "episode_id": "cal-1000101",
+  "seed": 1000101,
+  "scenario": {
+    "x": -0.04373975713439161,
+    "y": -0.13608663029443308,
+    "yaw": -0.1120963273189659,
+    "mass": 0.3754207935204291,
+    "friction": 0.4314309388712585,
+    "seed": 1000101
+  },
+  "truth_success": false,
+  "margin": -0.29367250428158787,
+  "verified": true,
+  "step_count": 400,
+  "frames": [
+    "frame_00.png"
+  ],
+  "frame_count": 1,
+  "sam_overlay": {
+    "cube_box": [
+      38,
+      117,
+      58,
+      138
+    ],
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "cube_centroid": [
+      48.0,
+      127.5
+    ],
+    "verdict_pass": false,
+    "confidence": 0.98,
+    "label": "SAM 3.1 response"
+  }
+}

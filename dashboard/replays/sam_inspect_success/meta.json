@@ -1,0 +1,45 @@
+{
+  "clip_id": "sam_inspect_success",
+  "title": "SAM 3.1 Response: Stably Placed (On Pad)",
+  "description": "Real SAM 3.1 visual grounding from Gate G2 calibration (inspect_frame_00).",
+  "run_id": "judge-g2-03",
+  "episode_id": "cal-1000100",
+  "seed": 1000100,
+  "scenario": {
+    "x": -0.10866250354363392,
+    "y": -0.029583713066123674,
+    "yaw": 0.4659240636621951,
+    "mass": 0.07158979181313131,
+    "friction": 0.3131043908082266,
+    "seed": 1000100
+  },
+  "truth_success": true,
+  "margin": 0.004998864652907576,
+  "verified": true,
+  "step_count": 400,
+  "frames": [
+    "frame_00.png"
+  ],
+  "frame_count": 1,
+  "sam_overlay": {
+    "cube_box": [
+      145,
+      137,
+      168,
+      163
+    ],
+    "pad_box": [
+      123,
+      136,
+      188,
+      184
+    ],
+    "cube_centroid": [
+      156.5,
+      150.0
+    ],
+    "verdict_pass": true,
+    "confidence": 0.95,
+    "label": "SAM 3.1 response"
+  }
+}
