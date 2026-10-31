@@ -139,7 +139,12 @@ def generate_shift_figure_data(
             if not line:
                 continue
             rec = json.loads(line)
-            dist = rec.get("distribution")
+            dist = (
+                rec.get("distribution")
+                or rec.get("scenario", {}).get("distribution")
+                or ("D" if rec.get("trace_path") == "dist_D" else None)
+                or ("D_prime" if rec.get("trace_path") in ("dist_D_prime", "dist_dp") else None)
+            )
             if dist == "D":
                 d_episodes.append(rec)
             elif dist in ("D_prime", "D'"):
