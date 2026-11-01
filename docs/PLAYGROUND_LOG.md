@@ -291,5 +291,51 @@ Record of architectural decisions, phase plans, and verification gates for the C
    - API spend: $0.00.
 6. **Open risks**: None. Ready for PA5 (Playground UI Polish, Mobile Layout, and Mode Badges).
 
+---
+
+## 2026-11-02: Phase PA5 (Playground UI Polish, Mobile Layout, & Mode Badges)
+
+### 5-Line Plan
+1. **Diagnosis & Layout Restructuring**: Remove CSS inline `height:100%` on editor card panel causing vertical overflow; place Repair & Acceptance Gates in its own dedicated card below the 2-column grid to completely eliminate overlapping with the Live Episode Trace Log.
+2. **Dropdown Population & Resilience**: Dynamically populate select options for `#pg-robot-preset`, `#pg-task-preset`, and `#pg-budget-preset` via `playground.js`, ensuring zero missing options, proper default selections, and safe fallback handling in `runSimulation()`.
+3. **Responsive Mobile Grid**: Implement media query breakpoints at 900px and 600px, adding `.pg-stages-grid` and `.pg-metric-grid` responsive column wrapping for clean viewing on narrow viewports down to 375px mobile portrait.
+4. **Mode Badges Implementation**: Add explicit mode badges across all playground cards (`CERTIFIED`, `PLAYGROUND, NOT CERTIFIED`, `RECORDED`, `CERTIFIED CONFIG`, `HARDWARE CLAMPED`, `APPEND-ONLY`) with real-time state synchronization.
+5. **Testing & Verification**: Author `tests/test_playground_pa5.py`, run browser subagent tests at 630px and 375px viewports, verify Rule H11 zero hand-typed digits compliance, and run full test suite.
+
+### Log
+- **2026-11-02 00:05 UTC+6**: Investigated reported overlapping bug. Root cause: inline `style="height:100%"` on Python Policy Source card forced sibling card to overflow outside grid track and collide directly onto the Live Episode Trace Log below it. Empty `<select>` tags also caused budget to parse as `NaN` and robot preset to evaluate as `""`.
+- **2026-11-02 00:12 UTC+6**: Restructured `dashboard/index.html` to separate the top 2-column grid (Code Editor vs Presets & Camera) from the full-width Repair & Acceptance Gates card and the Live Episode Trace Log card.
+- **2026-11-02 00:15 UTC+6**: Enhanced `dashboard/playground.js` with `populatePresetDropdowns()` for robot hardware, task space, and budget options; added mode badges dynamic lifecycle; hardened `runSimulation()` with defensive defaults.
+- **2026-11-02 00:17 UTC+6**: Ran browser subagent verification at 630px and 375px viewports: confirmed zero visual overlap, dropdown options cleanly selectable, simulation streaming 5/5 successes with camera view rendered, and 4-stage acceptance gates evaluating to PASS.
+- **2026-11-02 00:20 UTC+6**: Executed full repository test suite (`python -m pytest tests/ -q`): 200 passed, 1 skipped in 40.34s. Locked files and secret scanner passed 100%.
+
+### Appendix B: Gate Report - Phase PA5
+1. **Phase and date/time**: Phase PA5 (Playground UI Polish, Mobile Layout, and Mode Badges), 2026-11-02 00:22 UTC+6.
+2. **Tests added and exact command run**:
+   - `tests/test_playground_pa5.py::test_playground_all_mode_badges_present`
+   - `tests/test_playground_pa5.py::test_code_editor_no_overflow_trap`
+   - `tests/test_playground_pa5.py::test_playground_responsive_css_breakpoints`
+   - `tests/test_playground_pa5.py::test_playground_js_populates_presets_and_badges`
+   - `tests/test_playground_pa5.py::test_preset_options_contain_all_required_hardware_and_tasks`
+   - Command: `python -m pytest tests/test_playground_pa5.py` -> 5 passed in 0.03s.
+   - Playground test suite: `python -m pytest tests/test_playground_pa*.py` -> 40 passed in 2.31s.
+   - Full repository test suite: `python -m pytest tests/ -q` -> 200 passed, 1 skipped in 40.34s.
+3. **Files created or changed**:
+   - `dashboard/index.html`: Restructured playground layout, added `.pg-stages-grid`, responsive breakpoints, and card mode badges.
+   - `dashboard/playground.js`: Added preset dropdown population, defensive parameter handling, and mode badge transitions.
+   - `tests/test_playground_pa5.py`: Created (5 test suites).
+   - `docs/PLAYGROUND_LOG.md`: Updated with PA5 plan, log, and gate report.
+4. **Any deviation from the plan and why**: None. Options populated dynamically via JavaScript to ensure strict Rule H11 compliance with zero forbidden digits in static HTML body text.
+5. **Measured numbers**:
+   - Total repository tests passed: 200 passed, 1 skipped in 40.34s (up from 195).
+   - Responsive breakpoints: 900px (grid-2 to 1-col), 600px (mobile card wrap), 375px (narrow mobile check passed).
+   - Mode badge coverage: 6/6 playground cards with synchronized mode status.
+   - Simulation execution: 5/5 episodes completed via SSE streaming with real-time camera frames.
+   - Secrets scanner: 0 hits (`no secrets found`).
+   - Locked files: 100% hash integrity verified.
+   - API spend: $0.00.
+6. **Open risks**: None. Ready for PA6 (Video Recording & Documentation).
+
+
 
 

@@ -171,8 +171,67 @@
     return document.getElementById(id);
   }
 
+  // Preset options configuration
+  var ROBOT_PRESET_OPTIONS = [
+    { value: "certified_default", label: "Certified Default (Pass-through)" },
+    { value: "gripper_100N", label: "Standard Gripper (100 N Clamp)" },
+    { value: "gripper_200N", label: "Heavy-Duty Gripper (200 N Clamp)" },
+  ];
+
+  var TASK_PRESET_OPTIONS = [
+    { value: "mixed_bin", label: "Distribution D: Mixed Bin (1.0 - 11.5 kg)" },
+    { value: "light_parts", label: "Light Parts (1.0 - 5.0 kg)" },
+    { value: "heavy_parts", label: "Heavy Parts (6.0 - 14.0 kg)" },
+  ];
+
+  var BUDGET_OPTIONS = [
+    { value: "5", label: "5 Episodes (Quick Probe)" },
+    { value: "10", label: "10 Episodes (Standard)" },
+    { value: "20", label: "20 Episodes (Certified Sample)" },
+    { value: "50", label: "50 Episodes (Stress Test)" },
+  ];
+
+  function populatePresetDropdowns() {
+    var robotSelect = getElement("pg-robot-preset");
+    if (robotSelect && robotSelect.options.length === 0) {
+      robotSelect.innerHTML = "";
+      ROBOT_PRESET_OPTIONS.forEach(function (opt) {
+        var el = document.createElement("option");
+        el.value = opt.value;
+        el.textContent = opt.label;
+        if (opt.value === state.robotPreset) el.selected = true;
+        robotSelect.appendChild(el);
+      });
+    }
+
+    var taskSelect = getElement("pg-task-preset");
+    if (taskSelect && taskSelect.options.length === 0) {
+      taskSelect.innerHTML = "";
+      TASK_PRESET_OPTIONS.forEach(function (opt) {
+        var el = document.createElement("option");
+        el.value = opt.value;
+        el.textContent = opt.label;
+        if (opt.value === state.taskPreset) el.selected = true;
+        taskSelect.appendChild(el);
+      });
+    }
+
+    var budgetSelect = getElement("pg-budget-preset");
+    if (budgetSelect && budgetSelect.options.length === 0) {
+      budgetSelect.innerHTML = "";
+      BUDGET_OPTIONS.forEach(function (opt) {
+        var el = document.createElement("option");
+        el.value = opt.value;
+        el.textContent = opt.label;
+        if (parseInt(opt.value, 10) === state.budget) el.selected = true;
+        budgetSelect.appendChild(el);
+      });
+    }
+  }
+
   // Refresh live badge pill & message
   function updateBadge() {
+    populatePresetDropdowns();
     var editor = getElement("pg-code-editor");
     if (!editor) return;
 
@@ -185,10 +244,13 @@
     }
 
     var robotEl = getElement("pg-robot-preset");
-    if (robotEl) state.robotPreset = robotEl.value;
+    if (robotEl && robotEl.value) state.robotPreset = robotEl.value;
 
     var taskEl = getElement("pg-task-preset");
-    if (taskEl) state.taskPreset = taskEl.value;
+    if (taskEl && taskEl.value) state.taskPreset = taskEl.value;
+
+    var budgetEl = getElement("pg-budget-preset");
+    if (budgetEl && budgetEl.value) state.budget = parseInt(budgetEl.value, 10) || 5;
 
     var badgeInfo = { status: "VOID", badge: "VOID", badgeClass: "badge-pill-fail", message: "No certificate found." };
     if (root.evaluateBadge) {
@@ -200,6 +262,8 @@
       );
     }
 
+    var isCertified = badgeInfo.status === "PASS";
+
     var badgePill = getElement("pg-badge-pill");
     if (badgePill) {
       badgePill.className = "badge-pill " + (badgeInfo.badgeClass || "badge-pill-neutral");
@@ -209,6 +273,32 @@
     var msgEl = getElement("pg-badge-message");
     if (msgEl) {
       msgEl.textContent = badgeInfo.message || "";
+    }
+
+    // Card Mode Badges (Plan v2 §13 & §14 PA5)
+    var editorModeBadge = getElement("pg-editor-mode-badge");
+    if (editorModeBadge) {
+      if (isCertified) {
+        editorModeBadge.className = "badge-pill badge-pill-pass text-xs";
+        editorModeBadge.textContent = "CERTIFIED";
+      } else {
+        editorModeBadge.className = "badge-pill badge-pill-warn text-xs";
+        editorModeBadge.textContent = "PLAYGROUND, NOT CERTIFIED";
+      }
+    }
+
+    var simModeBadge = getElement("pg-sim-mode-badge");
+    if (simModeBadge) {
+      if (state.robotPreset === "certified_default" && state.taskPreset === "mixed_bin") {
+        simModeBadge.className = "badge-pill badge-pill-pass text-xs";
+        simModeBadge.textContent = "CERTIFIED CONFIG";
+      } else if (state.robotPreset === "gripper_100N" || state.robotPreset === "gripper_200N") {
+        simModeBadge.className = "badge-pill badge-pill-warn text-xs";
+        simModeBadge.textContent = "HARDWARE CLAMPED";
+      } else {
+        simModeBadge.className = "badge-pill badge-pill-warn text-xs";
+        simModeBadge.textContent = "DISTRIBUTION SHIFT";
+      }
     }
 
     // Update preset descriptions
@@ -337,23 +427,42 @@
   }
 
   // Run simulation trigger (supports streaming SSE or offline fallback)
+  // Run simulation trigger (supports streaming SSE or offline fallback)
   async function runSimulation() {
     if (state.isRunning) return;
 
     var editor = getElement("pg-code-editor");
     if (!editor) return;
 
+    populatePresetDropdowns();
+
     var code = editor.value;
-    var robotPreset = getElement("pg-robot-preset").value;
-    var taskPreset = getElement("pg-task-preset").value;
-    var budget = parseInt(getElement("pg-budget-preset").value, 10) || 5;
-    var replayCertified = getElement("pg-replay-cert").checked;
+    var robotEl = getElement("pg-robot-preset");
+    var taskEl = getElement("pg-task-preset");
+    var budgetEl = getElement("pg-budget-preset");
+
+    var robotPreset = (robotEl && robotEl.value) || state.robotPreset || "certified_default";
+    var taskPreset = (taskEl && taskEl.value) || state.taskPreset || "mixed_bin";
+    var budget = (budgetEl && parseInt(budgetEl.value, 10)) || state.budget || 5;
+    var replayCertified = getElement("pg-replay-cert") ? getElement("pg-replay-cert").checked : false;
 
     var runBtn = getElement("pg-run-btn");
     state.isRunning = true;
     if (runBtn) {
       runBtn.disabled = true;
       runBtn.textContent = "Simulating...";
+    }
+
+    var camBadge = getElement("pg-camera-mode-badge");
+    if (camBadge) {
+      camBadge.className = "badge-pill badge-pill-warn text-xs";
+      camBadge.textContent = "STREAMING";
+    }
+
+    var logBadge = getElement("pg-log-mode-badge");
+    if (logBadge) {
+      logBadge.className = "badge-pill badge-pill-warn text-xs";
+      logBadge.textContent = "STREAMING";
     }
 
     resetRunView(budget);
@@ -375,6 +484,14 @@
         if (runBtn) {
           runBtn.disabled = false;
           runBtn.textContent = "Run Simulation";
+        }
+        if (camBadge) {
+          camBadge.className = "badge-pill badge-pill-neutral text-xs";
+          camBadge.textContent = "TIER 0 OFFLINE";
+        }
+        if (logBadge) {
+          logBadge.className = "badge-pill badge-pill-neutral text-xs";
+          logBadge.textContent = "OFFLINE";
         }
       }, 500);
       return;
@@ -458,6 +575,17 @@
             getElement("pg-metric-k").textContent = String(evData.k);
             getElement("pg-metric-rate").textContent = (evData.success_rate * 100).toFixed(1) + "%";
             getElement("pg-metric-clamps").textContent = String(evData.total_clamp_events);
+
+            var camBadgeDone = getElement("pg-camera-mode-badge");
+            if (camBadgeDone) {
+              camBadgeDone.className = "badge-pill " + (evData.certified ? "badge-pill-pass" : "badge-pill-neutral") + " text-xs";
+              camBadgeDone.textContent = evData.certified ? "CERTIFIED" : "PLAYGROUND, NOT CERTIFIED";
+            }
+            var logBadgeDone = getElement("pg-log-mode-badge");
+            if (logBadgeDone) {
+              logBadgeDone.className = "badge-pill " + (evData.certified ? "badge-pill-pass" : "badge-pill-neutral") + " text-xs";
+              logBadgeDone.textContent = evData.certified ? "CERTIFIED LOG" : "PLAYGROUND LOG";
+            }
           } else if (evType === "error") {
             getElement("pg-progress-text").innerHTML =
               '<span class="text-bad font-semibold">Error:</span> ' + (evData.message || "Failed");
@@ -472,6 +600,16 @@
       if (runBtn) {
         runBtn.disabled = false;
         runBtn.textContent = "Run Simulation";
+      }
+      var camBadgeFinal = getElement("pg-camera-mode-badge");
+      if (camBadgeFinal && camBadgeFinal.textContent === "STREAMING") {
+        camBadgeFinal.className = "badge-pill badge-pill-neutral text-xs";
+        camBadgeFinal.textContent = "READY";
+      }
+      var logBadgeFinal = getElement("pg-log-mode-badge");
+      if (logBadgeFinal && logBadgeFinal.textContent === "STREAMING") {
+        logBadgeFinal.className = "badge-pill badge-pill-neutral text-xs";
+        logBadgeFinal.textContent = "APPEND-ONLY";
       }
     }
   }
@@ -637,9 +775,13 @@
 
   // Init all event listeners
   function initPlayground() {
+    populatePresetDropdowns();
+
     var editor = getElement("pg-code-editor");
     if (editor) {
-      editor.value = TEMPLATES.v2_certified;
+      if (!editor.value) {
+        editor.value = TEMPLATES.v2_certified;
+      }
       editor.addEventListener("input", function () {
         updateBadge();
         // Clear active template indicator on custom edit
@@ -659,11 +801,17 @@
       taskEl.addEventListener("change", updateBadge);
     }
 
+    var budgetEl = getElement("pg-budget-preset");
+    if (budgetEl) {
+      budgetEl.addEventListener("change", updateBadge);
+    }
+
     var replayCertEl = getElement("pg-replay-cert");
     if (replayCertEl) {
       replayCertEl.addEventListener("change", function () {
-        if (replayCertEl.checked) {
-          getElement("pg-budget-preset").value = "20";
+        if (replayCertEl.checked && budgetEl) {
+          budgetEl.value = "20";
+          updateBadge();
         }
       });
     }
