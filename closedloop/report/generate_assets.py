@@ -488,6 +488,9 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     manifest_file = out_dir / "manifest.json"
     manifest_file.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
+    from closedloop.report.build_ui_data import build_ui_data
+    build_ui_data()
+
     return manifest
 
 

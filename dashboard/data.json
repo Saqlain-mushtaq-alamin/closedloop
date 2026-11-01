@@ -4374,258 +4374,258 @@
   ],
   "cells_v2": [
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.1,
+        0.325
       ],
       "id": "cell_00",
       "idx": 0,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        1.0,
+        3.625
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.325,
+        0.55
       ],
       "id": "cell_01",
       "idx": 1,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        1.0,
+        3.625
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.55,
+        0.775
       ],
       "id": "cell_02",
       "idx": 2,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        1.0,
+        3.625
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.775,
+        1.0
       ],
       "id": "cell_03",
       "idx": 3,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        1.0,
+        3.625
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.1,
+        0.325
       ],
       "id": "cell_04",
       "idx": 4,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        3.625,
+        6.25
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.325,
+        0.55
       ],
       "id": "cell_05",
       "idx": 5,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        3.625,
+        6.25
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.55,
+        0.775
       ],
       "id": "cell_06",
       "idx": 6,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        3.625,
+        6.25
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.775,
+        1.0
       ],
       "id": "cell_07",
       "idx": 7,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        3.625,
+        6.25
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.1,
+        0.325
       ],
       "id": "cell_08",
       "idx": 8,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        6.25,
+        8.875
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.325,
+        0.55
       ],
       "id": "cell_09",
       "idx": 9,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        6.25,
+        8.875
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.55,
+        0.775
       ],
       "id": "cell_10",
       "idx": 10,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        6.25,
+        8.875
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.775,
+        1.0
       ],
       "id": "cell_11",
       "idx": 11,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        6.25,
+        8.875
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.1,
+        0.325
       ],
       "id": "cell_12",
       "idx": 12,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        8.875,
+        11.5
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.325,
+        0.55
       ],
       "id": "cell_13",
       "idx": 13,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        8.875,
+        11.5
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.55,
+        0.775
       ],
       "id": "cell_14",
       "idx": 14,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        8.875,
+        11.5
       ],
       "n": 150
     },
     {
-      "bound_state": 0.0,
+      "bound_state": 0.9623,
       "certified_state": true,
       "friction_range": [
-        0.0,
-        0.0
+        0.775,
+        1.0
       ],
       "id": "cell_15",
       "idx": 15,
       "k_state": 150,
       "mass_range": [
-        0.0,
-        0.0
+        8.875,
+        11.5
       ],
       "n": 150
     }

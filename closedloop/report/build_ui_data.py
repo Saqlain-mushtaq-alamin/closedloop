@@ -170,17 +170,28 @@ def build_ui_data(
     # 2b. Cells for v2 (from cert2-full-01 if present)
     cert2_summary_path = rdir / "cert2-full-01" / "cert_summary.json"
     cells_v2_data: list[dict[str, Any]] = []
+    delta_cell = 0.05 / 16.0  # per-cell error budget (matching v1 cert)
+    target_p_cell = 0.90
     if cert2_summary_path.exists():
         cert2_summary = json.loads(cert2_summary_path.read_text(encoding="utf-8"))
         for c_idx in range(16):
             c_id = f"cell_{c_idx:02d}"
             c_raw = cert2_summary["cells"].get(c_id, {})
-            bounds = c_raw.get("bounds", {})
-            m_range = [round(bounds.get("mass", [0.0, 0.0])[0], 3), round(bounds.get("mass", [0.0, 0.0])[1], 3)]
-            f_range = [round(bounds.get("friction", [0.0, 0.0])[0], 3), round(bounds.get("friction", [0.0, 0.0])[1], 3)]
+            # Take grid ranges from v1 cells grid definition (same 4x4 grid) or cert2 summary fallback
+            if c_idx < len(cells_data):
+                m_range = list(cells_data[c_idx]["mass_range"])
+                f_range = list(cells_data[c_idx]["friction_range"])
+            else:
+                m_raw = c_raw.get("mass_bounds", [0.0, 0.0])
+                f_raw = c_raw.get("friction_bounds", [0.0, 0.0])
+                m_range = [round(m_raw[0], 3), round(m_raw[1], 3)]
+                f_range = [round(f_raw[0], 3), round(f_raw[1], 3)]
+
             k_s = c_raw.get("state", {}).get("k_pass", 0)
-            n_c = c_raw.get("n_episodes", 150)
-            b_s = c_raw.get("state", {}).get("bound", 0.0)
+            n_c = c_raw.get("state", {}).get("n_runs", c_raw.get("n_episodes", 150))
+            # Compute bound_state from k_state, n, and cell delta using existing stats function
+            b_s = cp_lower(k_s, n_c, delta_cell) if n_c > 0 else 0.0
+            certified = bool(b_s >= target_p_cell)
             cells_v2_data.append({
                 "id": c_id,
                 "idx": c_idx,
@@ -189,7 +200,7 @@ def build_ui_data(
                 "k_state": k_s,
                 "n": n_c,
                 "bound_state": round(b_s, 4),
-                "certified_state": bool(c_raw.get("state", {}).get("certified", False)),
+                "certified_state": certified,
             })
 
     # 3. Calibration (from judge-g2-03)
