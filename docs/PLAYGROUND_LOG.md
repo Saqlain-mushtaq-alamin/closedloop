@@ -146,4 +146,52 @@ Record of architectural decisions, phase plans, and verification gates for the C
    - API spend: \$0.00.
 6. **Open risks**: None for PA1. Ready for runner engine (PA2).
 
+---
+
+## 2026-11-01: Phase PA2 (Simulation Runner Engine & Streaming API)
+
+### 5-Line Plan
+1. **Scenario Generation**: Implement deterministic scenario sampler in `closedloop/playground/runner.py` drawing bounded physical parameters from task presets (`light_parts`, `mixed_bin`, `heavy_parts`) across budgets (3, 5, 20).
+2. **Safe Episode Execution**: Execute programs with `PlaygroundPolicyFacade` enforcing step limits, workspace boundaries, hardware force limits, and catching exceptions/timeouts as structured failures (H13).
+3. **Job Runner & Badge Binding**: Combine validation, canonicalisation, hashing, badge evaluation, and episode execution into `run_playground_job`.
+4. **SSE Streaming & API**: Implement `stream_playground_job` yielding real-time SSE progress events and integrate `/run` and `/presets` into `playground/server.py`.
+5. **Testing & Verification**: Create `tests/test_playground_pa2.py` asserting validation gating, failure accounting, deterministic scenario generation, badge integration, SSE streaming, and HTTP endpoints; verify full repo test suite passes.
+
+### Log
+- **2026-11-01 22:40 UTC+6**: Authored `tests/test_playground_pa2.py` defining 9 test cases covering deterministic sampling, immediate validation gating, exact certified replay, hardware force clamping slip physics, step limit failure accounting, policy exception handling, dynamic 4-tuple badge evaluation, SSE streaming sequence, and FastAPI HTTP endpoints. Verified tests fail on missing runner module.
+- **2026-11-01 22:45 UTC+6**: Implemented `closedloop/playground/runner.py` with `generate_playground_scenarios`, `load_certified_reproduction_episodes`, `run_playground_job`, and `stream_playground_job`.
+- **2026-11-01 22:47 UTC+6**: Updated `playground/server.py` with `GET /presets` and `POST /run` endpoints supporting both non-streaming JSON responses and live Server-Sent Events (`text/event-stream`).
+- **2026-11-01 22:49 UTC+6**: Ran PA2 tests; adjusted badge representation to export string badge and detailed dictionary metadata, and aligned hostile code import placement inside policy function. All 9 tests passed.
+- **2026-11-01 22:51 UTC+6**: Ran all playground tests (23 passed in 1.56s) and full repository test suite (183 passed, 1 skipped in 38.64s). Locked files check and secrets scan passed with 0 findings.
+
+### Appendix B: Gate Report - Phase PA2
+1. **Phase and date/time**: Phase PA2 (Simulation Runner Engine & Streaming API), 2026-11-01 22:52 UTC+6.
+2. **Tests added and exact command run**:
+   - `tests/test_playground_pa2.py::test_scenario_generation_deterministic_and_bounded`
+   - `tests/test_playground_pa2.py::test_runner_validation_error_aborts_before_sim`
+   - `tests/test_playground_pa2.py::test_runner_certified_program_20_episodes_reproduction`
+   - `tests/test_playground_pa2.py::test_runner_hardware_force_clamping_fails_heavy_bin`
+   - `tests/test_playground_pa2.py::test_runner_step_limit_failure_accounting`
+   - `tests/test_playground_pa2.py::test_runner_policy_exception_recorded_as_failure`
+   - `tests/test_playground_pa2.py::test_badge_evaluated_per_job_configuration`
+   - `tests/test_playground_pa2.py::test_sse_stream_generator_events_sequence`
+   - `tests/test_playground_pa2.py::test_server_run_and_presets_api`
+   - Command: `python -m pytest tests/test_playground_pa2.py` -> 9 passed in 0.87s.
+   - Playground suite: `python -m pytest tests/test_playground_pa0.py tests/test_playground_pa1.py tests/test_playground_pa2.py` -> 23 passed in 1.56s.
+   - Full repository suite: `python -m pytest tests/ -q` -> 183 passed, 1 skipped in 38.64s.
+3. **Files created or changed**:
+   - `closedloop/playground/runner.py`: Created (scenario sampling, episode simulation, job runner, SSE streaming).
+   - `playground/server.py`: Updated (added `/presets` and `/run` endpoints with SSE streaming).
+   - `tests/test_playground_pa2.py`: Created (9 test suites).
+   - `docs/PLAYGROUND_LOG.md`: Updated with PA2 plan, log, and gate report.
+4. **Any deviation from the plan and why**: None. Followed Plan v2 §9 specifications exactly.
+5. **Measured numbers**:
+   - 20-episode certified reproduction: 20/20 (100.0%) truth match under `certified_default` on `mixed_bin`.
+   - Immediate validation gating: 0 simulator episodes executed when program AST violates allow-list.
+   - Hardware force clamping: 100 N clamp triggers slip and failure on heavy parts (>8.5 kg) with clamp event logging.
+   - Step budget accounting: Exceeding 3000 steps triggers `StepBudgetExceeded` failure; runner does not crash and continues remaining episodes.
+   - Exception accounting: ZeroDivisionError caught and recorded as `truth_success=False` without dropping episode (H13).
+   - SSE streaming sequence: Yields `start` -> $N \times$ `episode` -> `done` in exact order.
+   - API spend: \$0.00.
+6. **Open risks**: None. Ready for PA3 (Dashboard UI & Interaction).
 

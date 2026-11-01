@@ -21,8 +21,12 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import BaseModel, Field
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+
+from closedloop.playground.presets import ROBOT_PRESETS, TASK_PRESETS
+from closedloop.playground.runner import run_playground_job, stream_playground_job
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -55,6 +59,64 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+
+class RunRequest(BaseModel):
+    code: str
+    robot_preset: str = Field(default="certified_default")
+    task_preset: str = Field(default="mixed_bin")
+    budget: int = Field(default=5, ge=1, le=20)
+    seed_base: int = Field(default=1000)
+    render_frames: bool = Field(default=False)
+    replay_certified_episodes: bool = Field(default=False)
+    stream: bool = Field(default=False)
+
+
+@app.get("/presets")
+def get_presets() -> dict[str, Any]:
+    """Return available robot and task presets with physical boundaries."""
+    return {
+        "robot_presets": ROBOT_PRESETS,
+        "task_presets": TASK_PRESETS,
+    }
+
+
+@app.post("/run")
+async def run_simulation(req: RunRequest):
+    """Run a simulation job across requested budget and presets."""
+    if req.stream:
+        async def event_generator():
+            async for ev in stream_playground_job(
+                code=req.code,
+                robot_preset=req.robot_preset,
+                task_preset=req.task_preset,
+                budget=req.budget,
+                seed_base=req.seed_base,
+                render_frames=req.render_frames,
+                replay_certified_episodes=req.replay_certified_episodes,
+                sim_code_sha256=SIM_CODE_SHA256,
+            ):
+                event_name = ev.get("event", "message")
+                data_str = json.dumps(ev.get("data", {}))
+                yield f"event: {event_name}\ndata: {data_str}\n\n"
+
+        return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+    result = run_playground_job(
+        code=req.code,
+        robot_preset=req.robot_preset,
+        task_preset=req.task_preset,
+        budget=req.budget,
+        seed_base=req.seed_base,
+        render_frames=req.render_frames,
+        replay_certified_episodes=req.replay_certified_episodes,
+        sim_code_sha256=SIM_CODE_SHA256,
+    )
+
+    if not result.ok and result.status == "VALIDATION_ERROR":
+        raise HTTPException(status_code=400, detail=result.error)
+
+    return result.to_dict()
 
 
 @app.get("/health")
