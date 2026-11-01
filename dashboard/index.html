@@ -878,6 +878,125 @@
     }
 
     /* =========================================================
+       Playground Section
+       ========================================================= */
+    .pg-editor-wrap {
+      width: 100%;
+      min-height: 310px;
+      padding: 14px 16px;
+      background: var(--screen-bg);
+      color: #f8fafc;
+      font-family: var(--mono-stack);
+      font-size: 12px;
+      line-height: 1.5;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+      resize: vertical;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .pg-badge-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-darkest);
+      border-radius: var(--radius-md);
+      box-shadow: var(--inset-sm);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .pg-badge-pill-lg {
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 6px 18px;
+      border-radius: 9999px;
+    }
+    .pg-meta-pill {
+      font-family: var(--mono-stack);
+      font-size: 11px;
+      color: var(--text-dim);
+      overflow-wrap: anywhere;
+    }
+    .pg-progress-container {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-inset);
+      border-radius: 9999px;
+      box-shadow: var(--inset-sm);
+      overflow: hidden;
+      margin: 12px 0 6px;
+    }
+    .pg-progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--emerald));
+      transition: width 0.2s ease;
+      border-radius: 9999px;
+    }
+    .pg-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pg-metric-card {
+      background: var(--bg-darkest);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--raise-xs);
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .pg-metric-label { font-size: 10px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
+    .pg-metric-val { font-size: 17px; font-weight: 700; color: var(--text-strong); margin-top: 2px; }
+    .pg-frame-box {
+      width: 100%;
+      height: 155px;
+      background: var(--screen-bg);
+      border-radius: var(--radius-md);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+    .pg-frame-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .pg-select-input {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg-darkest);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--inset-sm);
+      color: var(--text-strong);
+      font-size: 12.5px;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    .pg-template-btn {
+      padding: 7px 14px;
+      background: var(--bg-darkest);
+      border: none;
+      border-radius: 10px;
+      box-shadow: var(--raise-xs);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .pg-template-btn:hover { color: var(--text-strong); }
+    .pg-template-btn.active { box-shadow: var(--inset-sm); color: var(--accent); }
+
+    /* =========================================================
        Footer
        ========================================================= */
     .site-footer { max-width: var(--content-max); margin: 48px auto 0; padding: 0 var(--gutter) 40px; }
@@ -1135,6 +1254,9 @@
       </button>
       <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="provenance" onclick="switchTab('provenance')">
         <span class="tab-num">6</span> Provenance &amp; Ledger
+      </button>
+      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="playground" onclick="switchTab('playground')">
+        <span class="tab-num">7</span> ClosedLoop Playground (Live Lab)
       </button>
     </nav>
 
@@ -1834,6 +1956,175 @@
       </div>
     </section>
 
+    <!-- SECTION 7: CLOSEDLOOP PLAYGROUND -->
+    <section id="section-playground" class="console-section" role="tabpanel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">ClosedLoop Playground: Live Execution &amp; Badge Verification</h2>
+          <p class="section-desc">
+            Test policy code interactively across physical scenarios. Verify cryptographic certificate binding live in browser, stream real-time PyBullet simulation episodes, and inspect hardware force clamps.
+          </p>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span id="pg-service-badge" class="badge-pill badge-pill-pass">Backend: Checking...</span>
+          <span class="badge-pill badge-pill-neutral font-mono text-xs">Sim SHA: <span id="pg-sim-hash"></span></span>
+        </div>
+      </div>
+
+      <!-- Fallback Ladder Alert / Mode Card -->
+      <div class="card-panel mb-20" style="padding:16px 20px;">
+        <div class="row-between" style="flex-wrap:wrap; gap:8px;">
+          <div style="font-size:12.5px; color:var(--text-strong); font-weight:650;">
+            Execution Ladder: <span class="badge-pill badge-pill-neutral text-xs">Tier 2 Live Backend</span> &rarr;
+            <span class="badge-pill badge-pill-neutral text-xs">Tier L Local (<code class="font-mono">make playground-local</code>)</span> &rarr;
+            <span class="badge-pill badge-pill-neutral text-xs">Tier 0 Offline Hash Lab</span>
+          </div>
+          <div class="text-xs text-dim">
+            Offline proof: Badge verification requires zero backend calls.
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Certificate Badge Banner -->
+      <div class="pg-badge-banner">
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <div>
+            <div class="text-xs text-dim font-bold uppercase tracking-wider mb-4">Certificate Badge Status</div>
+            <span id="pg-badge-pill" class="badge-pill pg-badge-pill-lg badge-pill-pass">CERTIFIED</span>
+          </div>
+          <div>
+            <div id="pg-badge-message" class="text-sm font-semibold" style="color:var(--text-strong);"></div>
+            <div class="pg-meta-pill mt-4">Program Hash: <span id="pg-code-sha" class="font-mono text-dim"></span></div>
+          </div>
+        </div>
+        <div class="view-toggles">
+          <button type="button" class="pg-template-btn active" data-template="v2_certified">Certified High-Force</button>
+          <button type="button" class="pg-template-btn" data-template="v1_certified">Certified Grasp</button>
+          <button type="button" class="pg-template-btn" data-template="initial_flawed">Initial Flawed</button>
+          <button type="button" class="pg-template-btn" data-template="custom">Custom Policy</button>
+        </div>
+      </div>
+
+      <!-- 2-Column Playground Grid -->
+      <div class="grid-2 mb-24">
+        <!-- Column 1: Code Editor -->
+        <div>
+          <div class="card-panel" style="height:100%; display:flex; flex-direction:column;">
+            <div class="row-between mb-12">
+              <div class="panel-title" style="margin:0;">Python Policy Source</div>
+              <div class="text-xs text-dim">Strict AST allow-list &bull; statement budget</div>
+            </div>
+            <textarea id="pg-code-editor" class="pg-editor-wrap" spellcheck="false" placeholder="def policy(env, rng): ..."></textarea>
+            <div class="row-between mt-12 text-xs text-dim">
+              <span>Try editing any parameter to watch badge invalidate live.</span>
+              <span>UTF encoded &bull; LF normalized</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Presets, Live Controls, Metrics, Camera Frame -->
+        <div>
+          <div class="card-panel mb-20">
+            <h3 class="panel-title mb-12">Simulation Presets &amp; Budget</h3>
+            <div class="grid-2 mb-12">
+              <div>
+                <label for="pg-robot-preset" class="text-xs font-bold text-dim uppercase">Robot Hardware Preset</label>
+                <select id="pg-robot-preset" class="pg-select-input"></select>
+                <div id="pg-robot-desc" class="text-xs text-dim mt-4"></div>
+              </div>
+
+              <div>
+                <label for="pg-task-preset" class="text-xs font-bold text-dim uppercase">Task Operating Space</label>
+                <select id="pg-task-preset" class="pg-select-input"></select>
+                <div id="pg-task-desc" class="text-xs text-dim mt-4"></div>
+              </div>
+            </div>
+
+            <div class="row-between mb-16" style="flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <label for="pg-budget-preset" class="text-xs font-bold text-dim uppercase">Budget:</label>
+                <select id="pg-budget-preset" class="pg-select-input" style="width:auto; margin:0; padding:6px 10px;"></select>
+              </div>
+
+              <label class="text-xs text-main font-semibold" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="pg-replay-cert" style="accent-color:var(--accent);">
+                <span>Replay certified episodes</span>
+              </label>
+            </div>
+
+            <button type="button" id="pg-run-btn" class="btn-action w-100" style="padding:12px; font-size:14px; font-weight:700;">
+              Run Simulation
+            </button>
+
+            <!-- Progress Bar -->
+            <div id="pg-progress-container" class="pg-progress-container">
+              <div id="pg-progress-fill" class="pg-progress-bar-fill"></div>
+            </div>
+            <div id="pg-progress-text" class="text-xs text-dim font-mono">Ready to simulate.</div>
+          </div>
+
+          <!-- Metrics and Camera Box -->
+          <div class="card-panel">
+            <div class="pg-metric-grid">
+              <div class="pg-metric-card">
+                <div class="pg-metric-label">Passed</div>
+                <div id="pg-metric-k" class="pg-metric-val">—</div>
+              </div>
+              <div class="pg-metric-card">
+                <div class="pg-metric-label">Tested</div>
+                <div id="pg-metric-n" class="pg-metric-val">—</div>
+              </div>
+              <div class="pg-metric-card">
+                <div class="pg-metric-label">Success Rate</div>
+                <div id="pg-metric-rate" class="pg-metric-val">—</div>
+              </div>
+              <div class="pg-metric-card">
+                <div class="pg-metric-label">Force Clamps</div>
+                <div id="pg-metric-clamps" class="pg-metric-val">—</div>
+              </div>
+            </div>
+
+            <div class="text-xs font-bold text-dim uppercase mb-6">Camera View (PyBullet Camera Render)</div>
+            <div class="pg-frame-box">
+              <img id="pg-frame-img" src="" alt="Episode Camera Frame" style="display:none;">
+              <div id="pg-frame-empty" class="text-dim text-xs font-mono">Camera frame rendered live upon execution</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Episode Results Table -->
+      <div class="card-panel">
+        <div class="row-between mb-16">
+          <h3 class="panel-title" style="margin:0;">Live Episode Trace Log</h3>
+          <div class="text-xs text-dim">Per-episode physics state &bull; Append-only logs &amp; H13 compliance</div>
+        </div>
+        <div class="tt-table-scroll">
+          <table class="tt-table" id="pg-episodes-table">
+            <thead>
+              <tr>
+                <th>Ep #</th>
+                <th>Seed</th>
+                <th>Mass</th>
+                <th>Friction</th>
+                <th>Result</th>
+                <th>Margin</th>
+                <th>Steps</th>
+                <th>Hardware Clamps</th>
+                <th>Diagnostics</th>
+              </tr>
+            </thead>
+            <tbody id="pg-episodes-tbody">
+              <tr>
+                <td colspan="9" class="text-dim text-center py-16">No episodes run yet. Click "Run Simulation" above to execute.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="site-footer">
@@ -1850,6 +2141,8 @@
   <script src="repair_theatre_data.js"></script>
   <script src="challenge/challenge_data.js"></script>
   <script src="console.js"></script>
+  <script src="badge.js"></script>
+  <script src="playground.js"></script>
   <script>
     function switchTab(tabId) {
       document.querySelectorAll('.console-section').forEach(function (el) { el.classList.remove('active'); });

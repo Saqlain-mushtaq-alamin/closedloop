@@ -22,18 +22,17 @@ from typing import Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-
-from closedloop.playground.presets import ROBOT_PRESETS, TASK_PRESETS
-from closedloop.playground.runner import run_playground_job, stream_playground_job
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import pybullet as p
+from closedloop.playground.presets import ROBOT_PRESETS, TASK_PRESETS
+from closedloop.playground.runner import run_playground_job, stream_playground_job
 from closedloop.sim.env import T1Env
+import pybullet as p
 
 
 def compute_sim_code_sha256() -> str:
@@ -207,12 +206,9 @@ if dash_dir.exists():
     app.mount("/dashboard", StaticFiles(directory=str(dash_dir), html=True), name="dashboard")
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 def root_redirect():
-    dash_index = ROOT / "dashboard" / "index.html"
-    if dash_index.exists():
-        return HTMLResponse(content=dash_index.read_text(encoding="utf-8"))
-    return HTMLResponse(content="<h1>ClosedLoop Playground Service Running</h1>")
+    return RedirectResponse(url="/dashboard/index.html")
 
 
 def run_server(host: str = "127.0.0.1", port: int = 8000):
