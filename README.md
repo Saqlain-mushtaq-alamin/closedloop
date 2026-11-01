@@ -31,6 +31,23 @@ make verify-evidence
 
 ---
 
+### 🎮 Tab 7: ClosedLoop Playground (Live Lab & Interactive Execution)
+The dashboard includes an interactive simulation and cryptographic verification lab:
+- **Tier 2 Live Simulator & Tier L Local Runner**: Run live physics episodes via FastAPI + PyBullet (`make playground-local`), streaming per-episode telemetry and camera frames over Server-Sent Events (SSE).
+- **4-Tuple Cryptographic Badge Evaluation**: Instantaneously verifies whether the in-browser controller matches the frozen certified program (`5f74f776...` / `bec73dec...`), robot hardware preset, task space distribution, and simulation engine hash. Any code edit or parameter deviation voids the certificate in real time.
+- **Hardware Preset Clamps**: Standard (100 N) and Heavy-Duty (200 N) gripper clamps prevent impossible software repairs on heavy physical payloads.
+- **4-Stage Acceptance Gate Pipeline**: Evaluates candidate patches against Stage I (Minimal CE), Stage II (Severe CE), Stage III (Regression Suite), and Stage IV (Falsifier Rerun).
+- **Tier 0 Hash Lab (Offline Fallback)**: Full client-side SHA-256 certificate evaluation runs 100% offline in pure JavaScript with zero backend dependencies.
+
+To launch the interactive playground locally:
+```bash
+make playground-local
+# Open http://127.0.0.1:8000/dashboard/index.html -> Click Tab 7 (Playground: Live Lab)
+```
+See [`docs/PLAYGROUND_WALKTHROUGH.md`](file:///d:/canvas/closedloop/docs/PLAYGROUND_WALKTHROUGH.md) for the complete step-by-step evaluator guide and video walkthrough.
+
+---
+
 ### 🤖 Model & Tooling Disclosures
 - **Policy Synthesis & Repair:** Meta Model API (`https://api.meta.ai/v1`) using `muse-spark-1.3` (temperature 0.2, top-p 0.95).
 - **Vision Judge:** Meta Model API SAM 3.1 (`sam-3.1`) segmentor paired with `muse-spark-1.3` evaluator for rendered camera footage.
