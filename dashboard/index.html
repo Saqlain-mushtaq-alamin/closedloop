@@ -2020,6 +2020,57 @@
               <span>UTF encoded &bull; LF normalized</span>
             </div>
           </div>
+
+          <!-- Acceptance Gates & Repair Section -->
+          <div class="card-panel mt-20">
+            <div class="row-between mb-12">
+              <div>
+                <h3 class="panel-title" style="margin:0;">Repair &amp; Acceptance Gates</h3>
+                <div class="text-xs text-dim">Tier 1 Recorded Patches &bull; Live Four-Stage Acceptance Gates</div>
+              </div>
+              <div id="pg-repair-source-chip" class="badge-pill badge-pill-neutral text-xs">RECORDED</div>
+            </div>
+
+            <div id="pg-hardware-warning" class="pg-alert-banner mb-12" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:10px 14px; font-size:12px; color:#fca5a5;">
+              Hardware Preset Clamped: Grip force limit is active. Objects exceeding payload cannot be lifted by software modification alone.
+            </div>
+
+            <div class="row-between mb-16" style="gap:10px; flex-wrap:wrap;">
+              <button type="button" id="pg-load-repair-btn" class="btn-action" style="flex:1; padding:10px; font-size:12px;">
+                Load Recorded Repair
+              </button>
+              <button type="button" id="pg-run-gates-btn" class="btn-action" style="flex:1; padding:10px; font-size:12px; background:var(--card-bg); border:1px solid var(--border-color);">
+                Run Acceptance Gates
+              </button>
+            </div>
+
+            <!-- Acceptance Stages Grid -->
+            <div class="grid-2 mb-16" style="gap:8px;">
+              <div class="pg-metric-card" id="pg-stage1-box" style="padding:10px;">
+                <div class="text-xs font-bold text-dim uppercase">Stage I: Minimal CE</div>
+                <div id="pg-stage1-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
+              </div>
+              <div class="pg-metric-card" id="pg-stage2-box" style="padding:10px;">
+                <div class="text-xs font-bold text-dim uppercase">Stage II: Severe CE</div>
+                <div id="pg-stage2-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
+              </div>
+              <div class="pg-metric-card" id="pg-stage3-box" style="padding:10px;">
+                <div class="text-xs font-bold text-dim uppercase">Stage III: Regression</div>
+                <div id="pg-stage3-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
+              </div>
+              <div class="pg-metric-card" id="pg-stage4-box" style="padding:10px;">
+                <div class="text-xs font-bold text-dim uppercase">Stage IV: Falsifier Rerun</div>
+                <div id="pg-stage4-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
+              </div>
+            </div>
+
+            <!-- Diff and Rationale Viewer -->
+            <div id="pg-diff-container" style="display:none;">
+              <div class="text-xs font-bold text-dim uppercase mb-6">Patch Unified Diff</div>
+              <pre id="pg-diff-view" class="pg-diff-wrap text-xs font-mono" style="background:#0f172a; padding:10px; border-radius:6px; max-height:160px; overflow-y:auto;"></pre>
+              <div id="pg-repair-rationale" class="text-xs text-dim mt-8 italic"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Column 2: Presets, Live Controls, Metrics, Camera Frame -->

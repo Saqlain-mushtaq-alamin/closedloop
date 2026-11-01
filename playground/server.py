@@ -30,6 +30,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from closedloop.playground.presets import ROBOT_PRESETS, TASK_PRESETS
+from closedloop.playground.repair import (
+    RecordedRepairCatalog,
+    evaluate_acceptance_gates,
+    RepairBroker,
+)
 from closedloop.playground.runner import run_playground_job, stream_playground_job
 from closedloop.sim.env import T1Env
 import pybullet as p
@@ -69,6 +74,23 @@ class RunRequest(BaseModel):
     render_frames: bool = Field(default=False)
     replay_certified_episodes: bool = Field(default=False)
     stream: bool = Field(default=False)
+
+
+class GatesRequest(BaseModel):
+    code: str
+    robot_preset: str = Field(default="certified_default")
+    task_preset: str = Field(default="mixed_bin")
+    minimal_ce: dict[str, Any]
+    severe_ce: dict[str, Any]
+
+
+class RepairRequest(BaseModel):
+    code: str
+    robot_preset: str = Field(default="certified_default")
+    task_preset: str = Field(default="mixed_bin")
+    minimal_ce: dict[str, Any]
+    severe_ce: dict[str, Any]
+    allow_live: bool = Field(default=False)
 
 
 @app.get("/presets")
@@ -116,6 +138,93 @@ async def run_simulation(req: RunRequest):
         raise HTTPException(status_code=400, detail=result.error)
 
     return result.to_dict()
+
+
+@app.get("/repair/recorded")
+def get_recorded_repairs() -> dict[str, Any]:
+    """Return catalog of validated historical repair items (Plan §10, §13 PA4)."""
+    catalog = RecordedRepairCatalog()
+    items = catalog.get_all()
+    return {
+        "catalog": [
+            {
+                "repair_id": item.repair_id,
+                "label": item.label,
+                "source_run_id": item.source_run_id,
+                "start_program_sha256": item.start_program_sha256,
+                "repaired_sha256": item.repaired_sha256,
+                "diff": item.diff,
+                "rationale": item.rationale,
+                "code": item.repaired_code,
+                "tokens": item.tokens,
+                "source": item.source,
+            }
+            for item in items
+        ]
+    }
+
+
+@app.post("/gates")
+def run_gates(req: GatesRequest) -> dict[str, Any]:
+    """Run the 4 acceptance stages against a candidate program (Plan §10)."""
+    robot = ROBOT_PRESETS.get(req.robot_preset)
+    task = TASK_PRESETS.get(req.task_preset)
+    if not robot:
+        raise HTTPException(status_code=400, detail=f"Unknown robot preset '{req.robot_preset}'")
+    if not task:
+        raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
+
+    res = evaluate_acceptance_gates(
+        code=req.code,
+        minimal_ce=req.minimal_ce,
+        severe_ce=req.severe_ce,
+        robot_preset=robot,
+        task_preset=task,
+    )
+    return {
+        "accepted": res.accepted,
+        "stages": res.stages,
+        "counterexamples": res.counterexamples,
+    }
+
+
+@app.post("/repair")
+def repair_program(req: RepairRequest) -> dict[str, Any]:
+    """Generate or retrieve a repair patch and evaluate acceptance gates."""
+    robot = ROBOT_PRESETS.get(req.robot_preset)
+    task = TASK_PRESETS.get(req.task_preset)
+    if not robot:
+        raise HTTPException(status_code=400, detail=f"Unknown robot preset '{req.robot_preset}'")
+    if not task:
+        raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
+
+    broker = RepairBroker()
+    res = broker.repair(
+        code=req.code,
+        minimal_ce=req.minimal_ce,
+        severe_ce=req.severe_ce,
+        robot_preset=robot,
+        task_preset=task,
+        allow_live=req.allow_live,
+    )
+
+    return {
+        "source": res.source,
+        "patch": {
+            "code": res.patch.code,
+            "sha256": res.patch.sha256,
+            "diff": res.patch.diff,
+            "rationale": res.patch.rationale,
+        },
+        "gates": {
+            "accepted": res.gates.accepted,
+            "stages": res.gates.stages,
+            "counterexamples": res.gates.counterexamples,
+        },
+        "cost_usd": res.cost_usd,
+        "tokens": res.tokens,
+    }
+
 
 
 @app.get("/health")

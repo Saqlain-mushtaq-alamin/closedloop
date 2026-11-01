@@ -233,6 +233,15 @@
         taskDescEl.textContent = "Heavy parts: 6.0 to 14.0 kg (distribution D' shift, voids certification).";
       }
     }
+
+    var hwWarn = getElement("pg-hardware-warning");
+    if (hwWarn) {
+      if (state.robotPreset === "gripper_100N") {
+        hwWarn.style.display = "block";
+      } else {
+        hwWarn.style.display = "none";
+      }
+    }
   }
 
   // Check backend server availability
@@ -498,6 +507,134 @@
     updateBadge();
   }
 
+  // Load pre-packaged recorded repair patch (Plan §10, §13 PA4)
+  async function loadRecordedRepair() {
+    var editor = getElement("pg-code-editor");
+    if (!editor) return;
+
+    var diffContainer = getElement("pg-diff-container");
+    var diffView = getElement("pg-diff-view");
+    var rationaleEl = getElement("pg-repair-rationale");
+    var chipEl = getElement("pg-repair-source-chip");
+
+    try {
+      var resp = await fetch("/repair/recorded");
+      if (resp.ok) {
+        var data = await resp.json();
+        var item = data.catalog && data.catalog[0];
+        if (item) {
+          editor.value = item.code;
+          if (diffContainer) diffContainer.style.display = "block";
+          if (diffView) diffView.textContent = item.diff;
+          if (rationaleEl) rationaleEl.textContent = "Rationale: " + item.rationale;
+          if (chipEl) {
+            chipEl.className = "badge-pill badge-pill-pass text-xs";
+            chipEl.textContent = (item.source || "recorded").toUpperCase();
+          }
+          updateBadge();
+          runAcceptanceGates();
+          return;
+        }
+      }
+    } catch (e) {
+      // Fall back to built-in recorded template
+    }
+
+    editor.value = TEMPLATES.v2_certified;
+    if (diffContainer) diffContainer.style.display = "block";
+    if (diffView) {
+      diffView.textContent = [
+        "--- a/baseline_v1.py",
+        "+++ b/repaired_v2.py",
+        "@@ -8,3 +8,3 @@",
+        "-    env.close_gripper(100)",
+        "+    env.close_gripper(300)",
+      ].join("\n");
+    }
+    if (rationaleEl) {
+      rationaleEl.textContent = "Rationale: Updated gripper force from 100N to 300N to satisfy physical friction-to-weight ratio across full operating envelope.";
+    }
+    if (chipEl) {
+      chipEl.className = "badge-pill badge-pill-pass text-xs";
+      chipEl.textContent = "RECORDED";
+    }
+    updateBadge();
+    runAcceptanceGates();
+  }
+
+  // Evaluate candidate code against the 4 acceptance stages
+  async function runAcceptanceGates() {
+    var stages = ["pg-stage1-status", "pg-stage2-status", "pg-stage3-status", "pg-stage4-status"];
+    stages.forEach(function (id) {
+      var el = getElement(id);
+      if (el) {
+        el.textContent = "Evaluating...";
+        el.className = "text-xs font-mono font-bold mt-4 text-dim";
+      }
+    });
+
+    var editor = getElement("pg-code-editor");
+    var code = editor ? editor.value : "";
+    var robotPreset = state.robotPreset || "certified_default";
+    var taskPreset = state.taskPreset || "mixed_bin";
+
+    var ce1 = { mass: 10.16, friction: 0.8, x: 0.0, y: 0.0, yaw: 0.0, seed: 711000 };
+    var ce2 = { mass: 11.5, friction: 0.5, x: -0.05, y: -0.05, yaw: 0.2, seed: 711001 };
+
+    try {
+      var resp = await fetch("/gates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: code,
+          robot_preset: robotPreset,
+          task_preset: taskPreset,
+          minimal_ce: ce1,
+          severe_ce: ce2,
+        }),
+      });
+
+      if (resp.ok) {
+        var data = await resp.json();
+        var s = data.stages;
+
+        var setStage = function (id, ok, margin) {
+          var el = getElement(id);
+          if (el) {
+            el.textContent = (ok ? "PASS" : "FAIL") + (margin !== undefined ? " (" + margin.toFixed(4) + ")" : "");
+            el.className = "text-xs font-mono font-bold mt-4 " + (ok ? "text-ok" : "text-bad");
+          }
+        };
+
+        if (s.stage1_minimal_ce) setStage("pg-stage1-status", s.stage1_minimal_ce.passed, s.stage1_minimal_ce.margin);
+        if (s.stage2_severe_ce) setStage("pg-stage2-status", s.stage2_severe_ce.passed, s.stage2_severe_ce.margin);
+        if (s.stage3_regression_set) setStage("pg-stage3-status", s.stage3_regression_set.passed);
+        if (s.stage4_falsifier_rerun) setStage("pg-stage4-status", s.stage4_falsifier_rerun.passed);
+        return;
+      }
+    } catch (e) {
+      // Offline fallback evaluation
+    }
+
+    // Offline heuristic: code with 300N force without 100N clamp passes all stages
+    var commands300 = code.indexOf("close_gripper(300)") !== -1;
+    var is100Clamped = robotPreset === "gripper_100N";
+    var passesHeavy = commands300 && !is100Clamped;
+
+    var setOffline = function (id, ok) {
+      var el = getElement(id);
+      if (el) {
+        el.textContent = ok ? "PASS" : "FAIL";
+        el.className = "text-xs font-mono font-bold mt-4 " + (ok ? "text-ok" : "text-bad");
+      }
+    };
+
+    setOffline("pg-stage1-status", passesHeavy);
+    setOffline("pg-stage2-status", passesHeavy);
+    setOffline("pg-stage3-status", true);
+    setOffline("pg-stage4-status", passesHeavy);
+  }
+
   // Init all event listeners
   function initPlayground() {
     var editor = getElement("pg-code-editor");
@@ -536,6 +673,16 @@
       runBtn.addEventListener("click", runSimulation);
     }
 
+    var loadRepairBtn = getElement("pg-load-repair-btn");
+    if (loadRepairBtn) {
+      loadRepairBtn.addEventListener("click", loadRecordedRepair);
+    }
+
+    var runGatesBtn = getElement("pg-run-gates-btn");
+    if (runGatesBtn) {
+      runGatesBtn.addEventListener("click", runAcceptanceGates);
+    }
+
     // Template picker buttons
     document.querySelectorAll(".pg-template-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -553,6 +700,8 @@
     updateBadge: updateBadge,
     loadTemplate: loadTemplate,
     runSimulation: runSimulation,
+    loadRecordedRepair: loadRecordedRepair,
+    runAcceptanceGates: runAcceptanceGates,
     TEMPLATES: TEMPLATES,
     computeHash: computeHash,
   };

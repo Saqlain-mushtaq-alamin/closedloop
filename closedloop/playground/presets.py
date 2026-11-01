@@ -92,13 +92,22 @@ class HardwareClampEvent:
 class PlaygroundPolicyFacade:
     """Restricted policy facade wrapping T1Env with preset hardware limits and safeguards."""
 
-    def __init__(self, env: T1Env, robot_preset: str = "certified_default") -> None:
-        if robot_preset not in ROBOT_PRESETS:
-            raise ValueError(f"Unknown robot preset: {robot_preset} (valid: {list(ROBOT_PRESETS.keys())})")
+    def __init__(self, env: T1Env, robot_preset: str | dict[str, Any] = "certified_default") -> None:
+        if isinstance(robot_preset, dict):
+            found_key = None
+            for k, cfg in ROBOT_PRESETS.items():
+                if cfg == robot_preset or cfg.get("name") == robot_preset.get("name"):
+                    found_key = k
+                    break
+            self._robot_preset = found_key or robot_preset.get("name", "custom")
+            self._preset_cfg = robot_preset
+        else:
+            if robot_preset not in ROBOT_PRESETS:
+                raise ValueError(f"Unknown robot preset: {robot_preset} (valid: {list(ROBOT_PRESETS.keys())})")
+            self._robot_preset = robot_preset
+            self._preset_cfg = ROBOT_PRESETS[robot_preset]
         self._env = env
-        self._robot_preset = robot_preset
-        self._preset_cfg = ROBOT_PRESETS[robot_preset]
-        self._force_limit = self._preset_cfg["force_limit_n"]
+        self._force_limit = self._preset_cfg.get("force_limit_n")
         self.clamp_events: list[HardwareClampEvent] = []
 
     def _check_step_budget(self, additional_steps: int) -> None:

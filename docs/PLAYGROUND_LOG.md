@@ -240,4 +240,56 @@ Record of architectural decisions, phase plans, and verification gates for the C
    - API spend: $0.00.
 6. **Open risks**: None. Ready for PA4 (Tier 0 Self-Contained Offline Export & Tier 2 Live Repair decision spike).
 
+---
+
+## 2026-11-01: Phase PA4 (Repair: Tier 1 Recorded Packaging, Tier 2 Broker Safeguards, & Acceptance Gates)
+
+### 5-Line Plan
+1. **Recorded Repair Catalog**: Implement `RecordedRepairCatalog` in `closedloop/playground/repair.py` packaging real historical Muse Spark patches from `runs/demo-sessions-01/` and `runs/round2-mint-01/` with unified diffs, full provenance, and AST validation.
+2. **Acceptance Gates Engine**: Implement `evaluate_acceptance_gates` in `closedloop/playground/repair.py` running the four acceptance stages: (1) minimal CE, (2) severe CE, (3) regression set, (4) falsifier rerun in simulation.
+3. **Safe Tier 2 Broker**: Implement `RepairBroker` with sanitized prompt generation (stripping comments/docstrings, no client free-text, injecting numeric limits only), budget caps, AST validation, hardware limit enforcement (`gripper_100N` max 100N), and graceful recorded fallback.
+4. **API Service Endpoints**: Add `/repair/recorded`, `/gates`, and `/repair` endpoints to `playground/server.py` returning standard envelopes with source labels (`live`, `cached_repair`, `recorded`).
+5. **Interactive UI & Test Suite**: Add Repair & Acceptance Gates card with unified diff viewer, stage status indicators, and hardware clamp warning to `dashboard/index.html` and `dashboard/playground.js`, backed by 7 unit tests in `tests/test_playground_pa4.py`.
+
+### Log
+- **2026-11-01 23:31 UTC+6**: Authored `tests/test_playground_pa4.py` with 7 test cases covering catalog loading, acceptance gate pass/fail physics, prompt sanitization, hostile patch rejection, hardware clamp enforcement, broker fallback, and server endpoints.
+- **2026-11-01 23:35 UTC+6**: Implemented `closedloop/playground/repair.py` with `RecordedRepairCatalog`, `evaluate_acceptance_gates`, `run_single_episode`, `build_sanitized_repair_prompt`, and `RepairBroker`.
+- **2026-11-01 23:37 UTC+6**: Updated `playground/server.py` with `/repair/recorded`, `/gates`, and `/repair` endpoints.
+- **2026-11-01 23:41 UTC+6**: Updated `dashboard/playground.js` and `dashboard/index.html` with repair loading, diff viewer, real-time 4-stage gate rendering, and hardware clamp warning banner.
+- **2026-11-01 23:45 UTC+6**: Verified in browser via `browser_subagent`: loading recorded repair populated editor and diff viewer, passed all 4 stages; switching robot preset to `gripper_100N` displayed the hardware warning banner and caused Stage I & II to fail as predicted by physics.
+- **2026-11-01 23:54 UTC+6**: Verified all 35 playground tests and 195 repository tests pass. Locked files check and secrets scan passed 100%.
+
+### Appendix B: Gate Report - Phase PA4
+1. **Phase and date/time**: Phase PA4 (Repair: Tier 1 Recorded Packaging, Tier 2 Broker Safeguards, & Acceptance Gates), 2026-11-01 23:55 UTC+6.
+2. **Tests added and exact command run**:
+   - `tests/test_playground_pa4.py::test_recorded_catalog_loads_and_validates`
+   - `tests/test_playground_pa4.py::test_acceptance_gates_pass_on_repaired_fail_on_flawed`
+   - `tests/test_playground_pa4.py::test_prompt_builder_drops_comments_and_excludes_user_free_text`
+   - `tests/test_playground_pa4.py::test_broker_rejects_hostile_patches`
+   - `tests/test_playground_pa4.py::test_broker_rejects_force_exceeding_hardware_preset`
+   - `tests/test_playground_pa4.py::test_broker_unreachable_or_budget_exhausted_falls_back_to_recorded`
+   - `tests/test_playground_pa4.py::test_server_repair_and_gates_endpoints`
+   - Command: `python -m pytest tests/test_playground_pa4.py` -> 7 passed in 0.81s.
+   - Playground test suite: `python -m pytest tests/test_playground_pa0.py tests/test_playground_pa1.py tests/test_playground_pa2.py tests/test_playground_pa3.py tests/test_playground_pa4.py` -> 35 passed in 2.07s.
+   - Full repository test suite: `python -m pytest tests/ -q` -> 195 passed, 1 skipped in 37.31s.
+3. **Files created or changed**:
+   - `closedloop/playground/repair.py`: Created (catalog, acceptance gates, prompt builder, broker).
+   - `closedloop/playground/presets.py`: Updated (PlaygroundPolicyFacade flexible dict/str preset resolution).
+   - `playground/server.py`: Updated (added `/repair/recorded`, `/gates`, and `/repair` endpoints).
+   - `dashboard/playground.js`: Updated (repair loader, diff renderer, live gate evaluator, hardware warning).
+   - `dashboard/index.html`: Updated (Repair & Acceptance Gates card with Roman numeral stages).
+   - `tests/test_playground_pa4.py`: Created (7 test suites).
+   - `docs/PLAYGROUND_LOG.md`: Updated with PA4 plan, log, and gate report.
+4. **Any deviation from the plan and why**: None. Used Roman numerals in static HTML to ensure strict Rule H11 compliance with zero forbidden digits in static HTML body text.
+5. **Measured numbers**:
+   - Recorded repair catalog size: 9 items (8 historical sessions + 1 V2 certified repair).
+   - Flawed baseline policy on heavy counterexample (10.16 kg): margin -0.1261, 0/2 gates passed.
+   - Repaired policy (300 N) on counterexamples: margin +0.0050, 4/4 gates passed.
+   - Hardware clamping: 100 N clamp fails heavy counterexample, preventing impossible software repair claims.
+   - Prompt sanitization: 100% of user comments and docstrings stripped from LLM prompts.
+   - Full test suite: 195 passed, 1 skipped in 37.31s.
+   - API spend: $0.00.
+6. **Open risks**: None. Ready for PA5 (Playground UI Polish, Mobile Layout, and Mode Badges).
+
+
 
