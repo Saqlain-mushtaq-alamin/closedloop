@@ -338,10 +338,68 @@ def build_ui_data(
         "pooled_cell_total_episodes": total_episodes_cells,
     }
 
+    # 9. Certificates (Plan §6.3)
+    sim_files = sorted((ROOT / "closedloop" / "sim").glob("*.py"))
+    sim_h = hashlib.sha256()
+    for f in sim_files:
+        content = f.read_bytes().replace(b"\r\n", b"\n")
+        sim_h.update(f.name.encode("utf-8"))
+        sim_h.update(content)
+    sim_code_hash = sim_h.hexdigest()
+
+    certificates_data: list[dict[str, Any]] = [
+        {
+            "cert_id": "cert-full-01",
+            "run_id": "cert-full-01",
+            "program_id": programs_data.get("program_id", "bec73dec45a88431"),
+            "program_sha256": "bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55",
+            "robot_preset": "certified_default",
+            "task_preset": "mixed_bin",
+            "task_bounds": {
+                "mass": [1.0, 11.5],
+                "friction": [0.1, 1.0],
+                "x": [-0.15, 0.15],
+                "y": [-0.15, 0.15],
+                "yaw": [-0.5, 0.5],
+            },
+            "delta": 0.05,
+            "target_p_cell": 0.90,
+            "sim_code_sha256": sim_code_hash,
+            "evidence_platform": "win_amd64",
+            "config_hash": provenance.get("cert-full-01", {}).get("config_hash", "fa1421c3101bc93a"),
+            "episodes_sha256": provenance.get("cert-full-01", {}).get("episodes_sha256", ""),
+        }
+    ]
+
+    if (rdir / "cert2-full-01").exists():
+        c2_summary = json.loads((rdir / "cert2-full-01" / "cert_summary.json").read_text(encoding="utf-8"))
+        certificates_data.append({
+            "cert_id": "cert2-full-01",
+            "run_id": "cert2-full-01",
+            "program_id": c2_summary.get("program_id", "5f74f7762ee1f378"),
+            "program_sha256": c2_summary.get("program_sha256", "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1"),
+            "robot_preset": "certified_default",
+            "task_preset": "mixed_bin",
+            "task_bounds": {
+                "mass": [1.0, 11.5],
+                "friction": [0.1, 1.0],
+                "x": [-0.15, 0.15],
+                "y": [-0.15, 0.15],
+                "yaw": [-0.5, 0.5],
+            },
+            "delta": 0.05,
+            "target_p_cell": 0.90,
+            "sim_code_sha256": sim_code_hash,
+            "evidence_platform": "win_amd64",
+            "config_hash": provenance.get("cert2-full-01", {}).get("config_hash", "c07fb1f819a557a6"),
+            "episodes_sha256": provenance.get("cert2-full-01", {}).get("episodes_sha256", ""),
+        })
+
     ui_dataset: dict[str, Any] = {
         "version": "1.0.0",
         "generator": "closedloop.report.build_ui_data",
         "provenance": provenance,
+        "certificates": certificates_data,
         "cells": cells_data,
         "cells_v2": cells_v2_data,
         "calibration": calibration_data,

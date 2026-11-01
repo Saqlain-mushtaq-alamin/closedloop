@@ -90,3 +90,60 @@ Record of architectural decisions, phase plans, and verification gates for the C
 6. **Open risks**: Cloud hosting requiring a credit card cannot run continuously for 6 days on free credits without card attachment.
 7. **Recommendation**: For Gate D1, adopt the planned fallback ladder: Ship **Tier 0 (Hash Lab) + Tier L (Local Run: `make playground-local`) + Recorded Mode**. Do not rely on fragile paid cloud infrastructure without card verification.
 
+---
+
+## 2026-11-01: Phase PA1 (Language Grammar, Presets, and Badge Logic)
+
+### 5-Line Plan
+1. **Empirical Survey**: Survey all frozen programs across `runs/` (`cert-mint-02`, `cert-mint-03`, `round2-mint-01`, `demo-sessions-01`) to inventory AST nodes, allowable statements, and maximum commanded grip forces.
+2. **Grammar & Validator**: Implement `closedloop/playground/lang.py` enforcing strict AST allow-list, UTF-8 LF normalization, canonicalisation (`ast.unparse`), and line-numbered diagnostic errors.
+3. **Facade & Presets**: Implement `closedloop/playground/presets.py` containing robot presets (`certified_default`, `gripper_100N`, `gripper_200N`), task presets (`light_parts`, `mixed_bin`, `heavy_parts`), and `PlaygroundPolicyFacade` enforcing step limits, workspace limits, and grip force clamping.
+4. **Certificate Registry & Badge Logic**: Export certificate registry in `closedloop/report/build_ui_data.py`, implement 4-tuple badge evaluator in `closedloop/playground/badge.py` and `dashboard/badge.js` with cross-platform test vectors.
+5. **Testing & Verification**: Create `tests/test_playground_pa1.py` covering frozen programs, 80+ hostile cases, mutation fuzzing, canonical execution invariance, hardware preset slip physics, and badge test vectors; verify 100% pass across repository.
+
+### Log
+- **2026-11-01 22:24 UTC+6**: Completed empirical AST survey across all frozen programs (`docs/PLAYGROUND_LANG_SURVEY.md`). Confirmed all policies adhere to strict allow-list: 0 imports, 0 loops, 0 dunders, single `policy(env, rng)` function, and max commanded force of 300 N.
+- **2026-11-01 22:26 UTC+6**: Created `closedloop/playground/__init__.py`, `closedloop/playground/lang.py`, `closedloop/playground/presets.py`, and `closedloop/playground/badge.py`.
+- **2026-11-01 22:28 UTC+6**: Implemented `dashboard/badge.js` with identical badge resolution rules. Added certificate registry export to `closedloop/report/build_ui_data.py` and regenerated `dashboard/data.js` and `dashboard/data.json`.
+- **2026-11-01 22:30 UTC+6**: Authored `tests/test_playground_pa1.py` with 9 comprehensive test suites (including 91 hostile programs and random AST mutation fuzzing).
+- **2026-11-01 22:33 UTC+6**: Refined AST string constant checks in `lang.py` to strictly permit strings only as arguments to `env.get_object_pos` / `env.get_object_pose`. All 9 tests passed.
+- **2026-11-01 22:34 UTC+6**: Full repository test suite passed (174 passed, 1 skipped). Locked file checks and secret scan passed with 0 violations.
+
+### Appendix B: Gate Report - Phase PA1
+1. **Phase and date/time**: Phase PA1 (Language Grammar, Presets, and Badge Logic), 2026-11-01 22:35 UTC+6.
+2. **Tests added and exact command run**:
+   - `tests/test_playground_pa1.py::test_every_frozen_program_validates`
+   - `tests/test_playground_pa1.py::test_reject_at_least_80_hostile_programs`
+   - `tests/test_playground_pa1.py::test_random_mutation_fuzzing`
+   - `tests/test_playground_pa1.py::test_hash_program_matches_certified_sha256`
+   - `tests/test_playground_pa1.py::test_canonical_form_gives_same_result_hash_for_20_scenarios`
+   - `tests/test_playground_pa1.py::test_certified_default_reproduces_logged_episodes_byte_for_byte`
+   - `tests/test_playground_pa1.py::test_gripper_presets_clamp_force_and_trigger_slip`
+   - `tests/test_playground_pa1.py::test_section_6_3_badge_evaluation`
+   - `tests/test_playground_pa1.py::test_shared_test_vectors_badge`
+   - Command: `python -m pytest tests/test_playground_pa1.py` -> 9 passed in 0.66s.
+   - Full suite command: `python -m pytest tests/ -q` -> 174 passed, 1 skipped in 37.72s.
+3. **Files created or changed**:
+   - `closedloop/playground/__init__.py`: Created.
+   - `closedloop/playground/lang.py`: Created (AST parser, validator, canonicaliser, program hasher).
+   - `closedloop/playground/presets.py`: Created (robot & task presets, hardware facade).
+   - `closedloop/playground/badge.py`: Created (badge resolution logic & test vectors).
+   - `dashboard/badge.js`: Created (browser badge evaluator matching Python).
+   - `closedloop/report/build_ui_data.py`: Updated (added certificate registry export).
+   - `dashboard/data.js`: Regenerated with certificate registry.
+   - `dashboard/data.json`: Regenerated with certificate registry.
+   - `docs/PLAYGROUND_LANG_SURVEY.md`: Created (frozen program AST & physics survey).
+   - `docs/PLAYGROUND_LOG.md`: Updated with PA1 log and gate report.
+   - `tests/test_playground_pa1.py`: Created (9 test suites).
+4. **Any deviation from the plan and why**: None. Followed Plan v2 §6, §7, §8 specifications exactly.
+5. **Measured numbers**:
+   - Frozen programs surveyed: 4 distinct files across `runs/`, 100% compliant with AST allow-list.
+   - Hostile programs rejected: 91 / 91 (100.0% rejected with descriptive diagnostics).
+   - Random AST fuzzing: 100 mutated inputs tested, 0 unhandled exceptions.
+   - Canonical equivalence: 20 / 20 episodes matched byte-for-byte across raw vs canonical AST.
+   - Force clamping & slip: Mass 11.5 kg lifts successfully at 300 N, fails at 100 N as predicted by $F < m \cdot g \cdot 1.2$.
+   - Badge test vectors: 10 / 10 identical status resolutions across Python and JS implementations.
+   - API spend: \$0.00.
+6. **Open risks**: None for PA1. Ready for runner engine (PA2).
+
+

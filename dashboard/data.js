@@ -4630,6 +4630,80 @@ window.DATA = {
       "n": 150
     }
   ],
+  "certificates": [
+    {
+      "cert_id": "cert-full-01",
+      "config_hash": "04073afb3e1d4af2",
+      "delta": 0.05,
+      "episodes_sha256": "dba1508c8e4b013fa2c143b527a871e34839a5fa83e09a89e6e8882ef6bd541a",
+      "evidence_platform": "win_amd64",
+      "program_id": "bec73dec45a88431",
+      "program_sha256": "bec73dec45a88431d2b6f705dfc26fe1e81f896bc4e72bf651a397cf89e6fc55",
+      "robot_preset": "certified_default",
+      "run_id": "cert-full-01",
+      "sim_code_sha256": "bf28d7d8a1480d480349869c6c0d775861ed5000a86cf44eeae478a1a4ac34c3",
+      "target_p_cell": 0.9,
+      "task_bounds": {
+        "friction": [
+          0.1,
+          1.0
+        ],
+        "mass": [
+          1.0,
+          11.5
+        ],
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ]
+      },
+      "task_preset": "mixed_bin"
+    },
+    {
+      "cert_id": "cert2-full-01",
+      "config_hash": "1f2191d4d8e0afb1",
+      "delta": 0.05,
+      "episodes_sha256": "7fd5d8ecb500af83f62627de186c25b2689ff760d731fc586ad349a07348e61e",
+      "evidence_platform": "win_amd64",
+      "program_id": "5f74f7762ee1f378",
+      "program_sha256": "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1",
+      "robot_preset": "certified_default",
+      "run_id": "cert2-full-01",
+      "sim_code_sha256": "bf28d7d8a1480d480349869c6c0d775861ed5000a86cf44eeae478a1a4ac34c3",
+      "target_p_cell": 0.9,
+      "task_bounds": {
+        "friction": [
+          0.1,
+          1.0
+        ],
+        "mass": [
+          1.0,
+          11.5
+        ],
+        "x": [
+          -0.15,
+          0.15
+        ],
+        "y": [
+          -0.15,
+          0.15
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ]
+      },
+      "task_preset": "mixed_bin"
+    }
+  ],
   "generator": "closedloop.report.build_ui_data",
   "honesty": {
     "friction_effect_note": "Friction had no measurable effect below 6.25 kg or above 8.88 kg in this grasp model (the certificate is effectively one-dimensional in mass, governed by the 100 N grasp slip threshold).",
