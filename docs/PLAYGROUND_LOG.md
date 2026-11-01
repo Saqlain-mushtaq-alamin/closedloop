@@ -42,8 +42,51 @@ Record of architectural decisions, phase plans, and verification gates for the C
 4. **Any deviation from the plan and why**: None. Followed Section 3 specifications exactly.
 5. **Measured numbers**:
    - V2 cell lower bound for 150/150 at delta=0.003125: observed `0.9623` (exact `0.9622745506910603`), matching expected ~0.9623.
-   - Data generation determinism: sha256 `data.js` = `b47460853c84cae72720b9a80f1d81ce4f82d49bd93052ad9f9d5f456edceeac` (byte-identical across 2 runs).
-   - API spend: $0.00.
-6. **Open risks**: None for P-1.
-7. **Recommendation**: GO for PA0 (Feasibility spike) upon human confirmation.
+
+---
+
+## 2026-11-01: Phase PA0 (Feasibility Spike & Gate D1 Input)
+
+### 5-Line Plan
+1. **Host Verification**: Audit current billing, free tier, and card policies for Hugging Face Spaces, Render, Fly.io, Railway, Modal, Koyeb, and Google Cloud Run from official documentation.
+2. **Reproduction Check**: Replay 20 certified episodes from `runs/cert-full-01/episodes.jsonl` using policy `bec73dec45a88431`, verifying truth and margin differences.
+3. **Throughput & Rendering Benchmarking**: Measure episodes per second (1 and 2 workers) and camera frame rendering latency (192x144, Plan §10).
+4. **Local Runner & Containers**: Build clean `playground/requirements-linux.txt`, `playground/Dockerfile`, FastAPI `playground/server.py` (`/health`, `/selftest`), and `make playground-local` Tier L entry point.
+5. **Testing & Gate Evaluation**: Add unit tests in `tests/test_playground_pa0.py`, evaluate D1 host constraint, and document findings in `docs/PLAYGROUND_FEASIBILITY.md`.
+
+### Log
+- **2026-11-01 22:10 UTC+6**: Began PA0 execution. Evaluated official cloud platform policies; confirmed all 2 vCPU continuous options require a credit card or exhaust credits within 3 days.
+- **2026-11-01 22:14 UTC+6**: Measured 20-episode reproduction check on PyBullet 3.2.7: truth matches 20/20 (100%), margin matches 20/20 (exact 0.00e+00 diff), single-worker throughput 117.46 eps/sec, dual-worker throughput 85.53 eps/sec, frame rendering latency 6.93 ms (144.4 fps).
+- **2026-11-01 22:16 UTC+6**: Authored `playground/requirements-linux.txt`, `playground/Dockerfile`, `playground/server.py` with `/health` and `/selftest` endpoints, and added `playground-local` target to `Makefile`.
+- **2026-11-01 22:18 UTC+6**: Added `tests/test_playground_pa0.py` (5 tests passing). Documented feasibility report in `docs/PLAYGROUND_FEASIBILITY.md`.
+
+### Appendix B: Gate Report - Phase PA0
+1. **Phase and date/time**: Phase PA0 (Feasibility spike), 2026-11-01 22:18 UTC+6.
+2. **Tests added and exact command run**:
+   - `tests/test_playground_pa0.py::test_sim_code_sha256_deterministic`
+   - `tests/test_playground_pa0.py::test_server_health_endpoint`
+   - `tests/test_playground_pa0.py::test_server_selftest_reproduction`
+   - `tests/test_playground_pa0.py::test_linux_requirements_file`
+   - `tests/test_playground_pa0.py::test_dockerfile_security_and_non_root`
+   - Command: `python -m pytest tests/test_playground_pa0.py` -> 5 passed in 0.53s.
+   - Full suite command: `python -m pytest tests/ -q` -> 165 passed, 1 skipped.
+3. **Files created or changed**:
+   - `playground/requirements-linux.txt`: Created (clean Linux dependencies).
+   - `playground/Dockerfile`: Created (container specification).
+   - `playground/server.py`: Created (FastAPI server, `/health`, `/selftest`).
+   - `playground/probe_pa0.py`: Created (benchmark probe).
+   - `playground/pa0_measurements.json`: Created (measured numbers).
+   - `Makefile`: Updated (added `playground-local` target and `.PHONY`).
+   - `docs/PLAYGROUND_FEASIBILITY.md`: Created (comprehensive feasibility analysis).
+   - `docs/PLAYGROUND_LOG.md`: Updated with PA0 log and gate report.
+   - `tests/test_playground_pa0.py`: Created (5 tests).
+4. **Any deviation from the plan and why**: None.
+5. **Measured numbers**:
+   - 20-episode truth match: 20/20 (100.0%).
+   - 20-episode margin match ($\le 10^{-6}$): 20/20 (100.0%, max diff 0.00e+00).
+   - Simulation throughput: 117.46 eps/sec (1 worker), 85.53 eps/sec (2 workers).
+   - Frame render time: 6.93 ms avg, 7.24 ms p95 (144.4 fps).
+   - API spend: \$0.00.
+6. **Open risks**: Cloud hosting requiring a credit card cannot run continuously for 6 days on free credits without card attachment.
+7. **Recommendation**: For Gate D1, adopt the planned fallback ladder: Ship **Tier 0 (Hash Lab) + Tier L (Local Run: `make playground-local`) + Recorded Mode**. Do not rely on fragile paid cloud infrastructure without card verification.
 

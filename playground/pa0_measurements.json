@@ -1,0 +1,231 @@
+{
+  "truth_matches": 20,
+  "margin_matches": 20,
+  "max_diff": 0.0,
+  "eps_1_worker": 117.4588483184286,
+  "eps_2_workers": 85.53260834324335,
+  "avg_frame_render_ms": 6.927099998574704,
+  "p95_frame_render_ms": 7.242454995866864,
+  "results_20": [
+    {
+      "episode_id": "cert-cell_00-s2000000",
+      "seed": 2000000,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004998999334847273,
+      "actual_margin": 0.004998999334847273,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.018169199989642948
+    },
+    {
+      "episode_id": "cert-cell_00-s2000001",
+      "seed": 2000001,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004999016160630103,
+      "actual_margin": 0.004999016160630103,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.0110512999817729
+    },
+    {
+      "episode_id": "cert-cell_00-s2000002",
+      "seed": 2000002,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.0049963554029173,
+      "actual_margin": 0.0049963554029173,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.00808060000417754
+    },
+    {
+      "episode_id": "cert-cell_00-s2000003",
+      "seed": 2000003,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004997518601379402,
+      "actual_margin": 0.004997518601379402,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007917600043583661
+    },
+    {
+      "episode_id": "cert-cell_00-s2000004",
+      "seed": 2000004,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004997330122280541,
+      "actual_margin": 0.004997330122280541,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.008039700041990727
+    },
+    {
+      "episode_id": "cert-cell_00-s2000005",
+      "seed": 2000005,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.00499900316014837,
+      "actual_margin": 0.00499900316014837,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007907200022600591
+    },
+    {
+      "episode_id": "cert-cell_00-s2000006",
+      "seed": 2000006,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004999015083103214,
+      "actual_margin": 0.004999015083103214,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.00772820005659014
+    },
+    {
+      "episode_id": "cert-cell_00-s2000007",
+      "seed": 2000007,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004999019658816779,
+      "actual_margin": 0.004999019658816779,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007552299997769296
+    },
+    {
+      "episode_id": "cert-cell_00-s2000008",
+      "seed": 2000008,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004997050207518848,
+      "actual_margin": 0.004997050207518848,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007570000016130507
+    },
+    {
+      "episode_id": "cert-cell_00-s2000009",
+      "seed": 2000009,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.0049989987332981455,
+      "actual_margin": 0.0049989987332981455,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007370600011199713
+    },
+    {
+      "episode_id": "cert-cell_00-s2000010",
+      "seed": 2000010,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.0049990129045214575,
+      "actual_margin": 0.0049990129045214575,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007457600033376366
+    },
+    {
+      "episode_id": "cert-cell_00-s2000011",
+      "seed": 2000011,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004998993444821395,
+      "actual_margin": 0.004998993444821395,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.0075953000341542065
+    },
+    {
+      "episode_id": "cert-cell_00-s2000012",
+      "seed": 2000012,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004997494141161104,
+      "actual_margin": 0.004997494141161104,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.0076852000202052295
+    },
+    {
+      "episode_id": "cert-cell_00-s2000013",
+      "seed": 2000013,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004996636017765151,
+      "actual_margin": 0.004996636017765151,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007371500018052757
+    },
+    {
+      "episode_id": "cert-cell_00-s2000014",
+      "seed": 2000014,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004998999065844331,
+      "actual_margin": 0.004998999065844331,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007599300006404519
+    },
+    {
+      "episode_id": "cert-cell_00-s2000015",
+      "seed": 2000015,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.00499901869175417,
+      "actual_margin": 0.00499901869175417,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007423400005791336
+    },
+    {
+      "episode_id": "cert-cell_00-s2000016",
+      "seed": 2000016,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004996350487825283,
+      "actual_margin": 0.004996350487825283,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.00742590002482757
+    },
+    {
+      "episode_id": "cert-cell_00-s2000017",
+      "seed": 2000017,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004997561362036288,
+      "actual_margin": 0.004997561362036288,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007191000040620565
+    },
+    {
+      "episode_id": "cert-cell_00-s2000018",
+      "seed": 2000018,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.004998994362114071,
+      "actual_margin": 0.004998994362114071,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007442800037097186
+    },
+    {
+      "episode_id": "cert-cell_00-s2000019",
+      "seed": 2000019,
+      "logged_truth": true,
+      "actual_truth": true,
+      "truth_match": true,
+      "logged_margin": 0.0049970497170414,
+      "actual_margin": 0.0049970497170414,
+      "margin_diff": 0.0,
+      "elapsed_s": 0.007200099993497133
+    }
+  ]
+}

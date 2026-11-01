@@ -7,7 +7,7 @@ PY := .venv/bin/python
 endif
 PHASE ?=
 
-.PHONY: setup test lint controls gate report verify-evidence
+.PHONY: setup test lint controls gate report verify-evidence playground-local
 
 setup:
 	python3 -m venv --without-pip .venv
@@ -62,3 +62,7 @@ report:
 
 verify-evidence:
 	@$(PY) scripts/verify_evidence.py
+
+playground-local:
+	@$(PY) -m playground.server --port 8000
+
