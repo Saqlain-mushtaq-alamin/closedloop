@@ -1210,8 +1210,446 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
+  
+    /* ui-fixes.css: immediate bug fixes */
+    :root {
+      --card-bg: var(--bg-card);
+      --border-color: var(--border-subtle);
+    }
+    .font-bold     { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-mono     { font-family: var(--mono-stack); }
+    .italic        { font-style: italic; }
+    .uppercase     { text-transform: uppercase; }
+    .tracking-wider{ letter-spacing: 0.08em; }
+    .text-center   { text-align: center; }
+    .text-main     { color: var(--text-main); }
+    .w-100         { width: 100%; }
+    .py-16         { padding-top: 16px; padding-bottom: 16px; }
+    .mb-4  { margin-bottom: 4px; }
+    .mb-6  { margin-bottom: 6px; }
+    .mt-4  { margin-top: 4px; }
+    .mb-24 { margin-bottom: 24px; }
+
+    #pg-hardware-warning {
+      background: var(--bad-bg) !important;
+      border: 1px solid rgba(214, 69, 90, 0.35) !important;
+      color: var(--bad-text) !important;
+      border-radius: var(--radius-sm) !important;
+    }
+    #pg-diff-view {
+      background: var(--bg-inset) !important;
+      color: var(--text-main) !important;
+      box-shadow: var(--inset-sm);
+    }
+    .pg-diff-wrap { white-space: pre; overflow-x: auto; }
+    #pg-run-gates-btn { background: var(--bg-darkest) !important; border: none !important; }
+
+    /* ClosedLoop UI Redesign Spec v2 Enhancements */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg-darkest);
+      box-shadow: 0 4px 14px -6px var(--sd);
+      height: 64px;
+    }
+    .header-inner {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-strong);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-title::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-inset);
+      padding: 4px;
+      border-radius: 999px;
+      box-shadow: var(--inset-sm);
+    }
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 7px 18px;
+      border-radius: 999px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .nav-tab-btn:hover {
+      color: var(--text-strong);
+    }
+    .nav-tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent);
+      box-shadow: var(--raise-xs);
+      font-weight: 700;
+    }
+
+    /* Overview Hero */
+    .overview-hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 960px) {
+      .overview-hero { grid-template-columns: 1fr; }
+    }
+    .overview-meta-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .overview-h1 {
+      font-size: 32px;
+      font-weight: 850;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      color: var(--text-strong);
+      margin-bottom: 12px;
+    }
+    .overview-lead {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    .overview-cta-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .overview-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 650px) {
+      .overview-steps-grid { grid-template-columns: 1fr; }
+    }
+    .overview-step-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--raise-sm);
+      padding: 14px 16px;
+    }
+    .overview-step-num {
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .overview-step-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 4px;
+    }
+    .overview-step-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Before / After safe-zone visual in hero */
+    .overview-map-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--raise);
+      padding: 24px;
+    }
+    .overview-map-header {
+      margin-bottom: 18px;
+    }
+    .overview-map-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .overview-map-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .overview-grids-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    .overview-grid-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+    .overview-grid-label {
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .overview-grid-16 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 144px;
+      height: 144px;
+      padding: 8px;
+      background: var(--bg-inset);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--inset-sm);
+    }
+    .overview-cell {
+      border-radius: 4px;
+      transition: transform 0.15s ease;
+    }
+    .overview-cell.certified { background: var(--emerald); }
+    .overview-cell.uncertified { background: var(--amber); }
+    .overview-cell.failed { background: var(--rose); }
+
+    /* Key results cards */
+    .key-results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 16px;
+    }
+    @media (max-width: 900px) {
+      .key-results-grid { grid-template-columns: 1fr; }
+    }
+    .key-result-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--raise-sm);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .key-result-title {
+      font-size: 11.5px;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .key-result-sentence {
+      font-size: 14px;
+      font-weight: 650;
+      color: var(--text-strong);
+      line-height: 1.5;
+    }
+    .key-result-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .overview-footnote {
+      padding: 12px 0 0;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* Playground Stepper & Sticky Status Bar */
+    .pg-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--bg-inset);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--inset-sm);
+      margin-bottom: 18px;
+      overflow-x: auto;
+    }
+    .pg-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dim);
+      transition: all 0.15s ease;
+      border: none;
+      background: transparent;
+    }
+    .pg-step:hover {
+      color: var(--text-strong);
+    }
+    .pg-step.active {
+      background: var(--bg-card);
+      color: var(--accent);
+      box-shadow: var(--raise-xs);
+      font-weight: 700;
+    }
+    .pg-step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 750;
+      background: var(--border-subtle);
+      color: var(--text-muted);
+    }
+    .pg-step.active .pg-step-num {
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+
+    .pg-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--raise-sm);
+      margin-bottom: 20px;
+    }
+    .pg-status-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .pg-status-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .pg-drawer {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--raise-sm);
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+    .pg-drawer summary {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-strong);
+      cursor: pointer;
+      user-select: none;
+    }
+    .pg-drawer summary:hover {
+      color: var(--accent);
+    }
+    .pg-drawer[open] summary {
+      margin-bottom: 14px;
+    }
+
+    /* Evidence Subnav Segmented Control */
+    .evidence-subnav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-inset);
+      padding: 5px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--inset-sm);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .evidence-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .evidence-tab-btn:hover {
+      color: var(--text-strong);
+    }
+    .evidence-tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent);
+      box-shadow: var(--raise-xs);
+      font-weight: 700;
+    }
+    .evidence-subview {
+      display: none;
+    }
+    .evidence-subview.active {
+      display: block;
+    }
+
+    /* Method Page */
+    .method-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--raise-sm);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+    .method-card-title {
+      font-size: 16px;
+      font-weight: 750;
+      color: var(--text-strong);
+      margin-bottom: 8px;
+    }
+    .method-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
   </style>
 </head>
+
 <body>
   <noscript>
     <div class="noscript-bar">
@@ -1223,158 +1661,491 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand-group">
-        <div class="brand-title">
-          ClosedLoop<span class="brand-arrow" aria-hidden="true">&rarr;</span><span class="brand-sub">Judge Console</span>
-        </div>
-        <div class="badge-row">
-          <span class="badge-pill badge-pill-pass">Gate G3 Frozen</span>
-          <span class="badge-pill badge-pill-neutral">RECORDED / data generated from logs</span>
-          <span id="selfcheck-badge" class="badge-pill badge-pill-pass"></span>
-        </div>
+        <div class="brand-title">ClosedLoop</div>
       </div>
+
+      <nav class="nav-bar" role="tablist" aria-label="Console sections">
+        <button type="button" class="nav-tab-btn active" role="tab" aria-selected="true" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+        <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="playground" onclick="switchTab('playground')">Playground</button>
+        <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="evidence" onclick="switchTab('evidence')">Evidence</button>
+        <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="method" onclick="switchTab('method')">Method</button>
+      </nav>
 
       <div class="header-actions">
         <button type="button" id="theme-toggle" class="btn-action" aria-pressed="false">Dark mode</button>
-        <button type="button" id="btn-recompute" class="btn-action">Recompute Live</button>
-        <button type="button" id="btn-download-cert" class="btn-action btn-download">Download ODD Certificate (JSON)</button>
       </div>
     </div>
   </header>
 
+
   <main class="container">
-
-    <!-- Summary cards -->
-    <div class="summary-grid">
-      <div class="summary-card">
-        <div class="card-label">
-          <span>Certified Policy</span>
-          <span id="hero-model-tag" class="badge-pill badge-pill-pass"></span>
-        </div>
-        <div id="hero-program-id" class="card-val card-val--sm"></div>
-        <div class="card-sub">Synthesized controller repaired via counterexample feedback</div>
-      </div>
-
-      <div class="summary-card">
-        <div class="card-label">
-          <span>Certified Area Fraction</span>
-          <span class="badge-pill badge-pill-neutral">CLOPPER-PEARSON</span>
-        </div>
-        <div id="hero-certified-area" class="card-val"></div>
-        <div class="card-sub">Regional cells certified under distribution D</div>
-      </div>
-
-      <div class="summary-card">
-        <div class="card-label">
-          <span>Price of Footage</span>
-          <span class="badge-pill badge-pill-neutral">GATE G2 CALIBRATED</span>
-        </div>
-        <div id="hero-price-loss" class="card-val"></div>
-        <div class="card-sub">Area loss between ground truth state and camera judge</div>
-      </div>
-
-      <div class="summary-card">
-        <div class="card-label">
-          <span>Pooled Verification</span>
-          <span class="badge-pill badge-pill-neutral">RULE H11</span>
-        </div>
-        <div id="hero-pooled-pass" class="card-val"></div>
-        <div class="card-sub">True pooled trials passed across regional cells</div>
-      </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="nav-bar" role="tablist" aria-label="Console sections">
-      <button type="button" class="nav-tab-btn active" role="tab" aria-selected="true" data-tab="teach-trust" onclick="switchTab('teach-trust')">
-        <span class="tab-num">0</span> Teach &amp; Trust (Judge Hands-On)
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="probe" onclick="switchTab('probe')">
-        <span class="tab-num">1</span> Hero Operating-Limit Probe
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="theatre" onclick="switchTab('theatre')">
-        <span class="tab-num">2</span> Replay Theatre &amp; Filmstrip Diff
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="repair-theatre" onclick="switchTab('repair-theatre')">
-        <span class="tab-num">3</span> Repair Theatre
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="calibration" onclick="switchTab('calibration')">
-        <span class="tab-num">4</span> Camera-Judge Calibration
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="shift" onclick="switchTab('shift')">
-        <span class="tab-num">5</span> Distribution Shift (H4)
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="provenance" onclick="switchTab('provenance')">
-        <span class="tab-num">6</span> Provenance &amp; Ledger
-      </button>
-      <button type="button" class="nav-tab-btn" role="tab" aria-selected="false" data-tab="playground" onclick="switchTab('playground')">
-        <span class="tab-num">7</span> ClosedLoop Playground (Live Lab)
-      </button>
-    </nav>
-
-    <!-- SECTION 0: TEACH AND TRUST -->
-    <section id="section-teach-trust" class="console-section active" role="tabpanel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Teach and Trust: Hands-On Experience</h2>
-          <p class="section-desc">
-            Teach in words, trust with proof. Test robot policies on custom scenarios, inspect automated falsification, and explore verified statistical certificates without any server or API dependency.
+    <!-- SECTION OVERVIEW -->
+    <section id="section-overview" class="console-section active" role="tabpanel">
+      <!-- Hero -->
+      <div class="overview-hero">
+        <div class="overview-hero-left">
+          <div class="overview-meta-tag">Meta Global AI Developer Hackathon &bull; Indie track</div>
+          <h1 class="overview-h1">AI writes robot code. Know where it can be trusted.</h1>
+          <p class="overview-lead">
+            ClosedLoop finds where a robot controller fails, has Meta's Muse Spark repair it, then re-tests the fix and reports exactly which conditions are covered. It also says so when a result no longer applies.
           </p>
-        </div>
-        <span class="badge-pill badge-pill-neutral">ZERO RUNTIME API CALLS &bull; PRECOMPUTED REAL SIMULATOR</span>
-      </div>
-
-      <!-- STAGE 1: TEACH -->
-      <div class="tt-stage-card">
-        <div class="tt-stage-header">
-          <div class="tt-stage-title"><span>1</span> Teach (The Model Synthesizes Controller)</div>
-          <div class="tt-head-badges">
-            <span class="badge-pill badge-pill-neutral">Run: <span id="tt-program-run-id"></span></span>
-            <span class="badge-pill badge-pill-neutral">ID: <span id="tt-program-id"></span></span>
+          <div class="overview-cta-row">
+            <button type="button" class="btn-action btn-primary font-bold" onclick="switchTab('playground')">Try the playground &rarr;</button>
+            <button type="button" class="btn-action" onclick="switchTab('evidence')">See the results</button>
+            <button type="button" id="btn-download-cert" class="btn-action btn-download" title="ODD means operational design domain: the conditions the controller was certified for">Download certificate (JSON)</button>
+          </div>
+          <div class="overview-steps-grid">
+            <div class="overview-step-card">
+              <div class="overview-step-num">Step 1</div>
+              <div class="overview-step-title">Find failures</div>
+              <div class="overview-step-desc">Stress-tests policies under varied physics distributions to find failing counterexamples.</div>
+            </div>
+            <div class="overview-step-card">
+              <div class="overview-step-num">Step 2</div>
+              <div class="overview-step-title">Repair</div>
+              <div class="overview-step-desc">Muse Spark inspects minimal failing cases and synthesizes targeted controller code repairs.</div>
+            </div>
+            <div class="overview-step-card">
+              <div class="overview-step-num">Step 3</div>
+              <div class="overview-step-title">Verify</div>
+              <div class="overview-step-desc">Exact Clopper-Pearson bounds certify safe operational envelopes in simulation.</div>
+            </div>
           </div>
         </div>
 
-        <div class="mb-16">
-          <div class="kicker">Task Directive</div>
-          <div id="tt-goal" class="tt-goal"></div>
-        </div>
-
-        <div class="row-between mb-12">
-          <div class="view-toggles">
-            <button type="button" id="tt-btn-prog-v1" class="view-toggle-btn active">Initial Controller</button>
-            <button type="button" id="tt-btn-prog-v2" class="view-toggle-btn">Repaired Controller</button>
-          </div>
-          <div class="text-sm text-dim">Nominal Scenario Replay (centre pose)</div>
-        </div>
-
-        <p id="tt-program-caption" class="tt-caption"></p>
-
-        <div class="grid-2">
-          <div>
-            <details class="collapsible-box" open style="margin-top:0;">
-              <summary>Controller Python Code (Synthesized by Meta LLM)</summary>
-              <pre id="tt-program-code" class="collapsible-content"></pre>
-            </details>
-          </div>
-
-          <div>
-            <div class="subpanel">
-              <div class="row-between mb-8 text-xs text-dim">
-                <span>Nominal Rollout Filmstrip</span>
-                <span>RECORDED</span>
+        <div class="overview-hero-right">
+          <div class="overview-map-card">
+            <div class="overview-map-header">
+              <div class="overview-map-title">Safe-zone coverage before and after repair</div>
+              <div class="overview-map-sub">4x4 parameter cells certified under distribution D in simulation</div>
+            </div>
+            <div class="overview-grids-wrap">
+              <div class="overview-grid-col">
+                <div class="overview-grid-label">Original Controller</div>
+                <div id="overview-grid-v1" class="overview-grid-16"></div>
               </div>
-              <div class="frame-box frame-box--lg">
-                <img id="tt-nominal-img" src="" alt="Nominal scenario replay frame">
+              <div class="overview-grid-col">
+                <div class="overview-grid-label">Repaired Controller</div>
+                <div id="overview-grid-v2" class="overview-grid-16"></div>
               </div>
-              <div class="theatre-controls" style="margin-top:10px; padding:8px 10px;">
-                <button type="button" id="tt-nominal-play-btn" class="btn-action" style="padding:4px 12px;">Play</button>
-                <input type="range" id="tt-nominal-scrubber" class="theatre-scrubber" min="0" max="4" value="0" aria-label="Nominal replay scrubber">
-                <span id="tt-nominal-step-label" class="mono text-xs" style="color:var(--accent); min-width:40px; text-align:right;"></span>
-              </div>
+            </div>
+            <div class="legend-row" style="margin-top:16px;">
+              <span><span class="legend-dot legend-dot--ok">&bull;</span> Certified</span>
+              <span><span class="legend-dot legend-dot--warn">&bull;</span> Below target</span>
+              <span><span class="legend-dot legend-dot--bad">&bull;</span> Fails</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- STAGE 2: WOULD YOU SHIP IT? -->
+      <!-- Key Results Cards (Generated from logs, Rule H11) -->
+      <div class="key-results-grid">
+        <div class="key-result-card">
+          <div class="key-result-title">Certified Area Coverage</div>
+          <div id="key-result-area" class="key-result-sentence"><span id="overview-area-stat"></span></div>
+          <div class="key-result-sub">Mass and friction parameter ranges certified under distribution D in simulation.</div>
+        </div>
+
+        <div class="key-result-card">
+          <div class="key-result-title">Cost of Judging by Camera</div>
+          <div id="key-result-camera" class="key-result-sentence"><span id="overview-camera-stat"></span></div>
+          <div class="key-result-sub">Calibrated camera judge area loss compared with checking the exact simulator state.</div>
+        </div>
+
+        <div class="key-result-card">
+          <div class="key-result-title">Out-of-Domain Refusal</div>
+          <div id="key-result-shift" class="key-result-sentence"><span id="overview-shift-stat"></span></div>
+          <div class="key-result-sub">Refuses when conditions change to heavier, slipperier distribution D'.</div>
+        </div>
+      </div>
+
+      <div class="overview-footnote">
+        All numbers are generated from logged simulation runs under distribution D in simulation.
+      </div>
+    </section>
+
+    <!-- SECTION PLAYGROUND -->
+    <section id="section-playground" class="console-section" role="tabpanel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Playground</h2>
+          <p class="section-desc">
+            Edit the robot's controller, run the real simulator, and see whether the certificate still applies.
+          </p>
+        </div>
+      </div>
+
+      <!-- 5-Step Stepper Bar -->
+      <div class="pg-stepper" role="navigation" aria-label="Playground steps">
+        <button type="button" class="pg-step active" data-step="1" onclick="jumpPlaygroundStep(1)">
+          <span class="pg-step-num">1</span> Choose setup
+        </button>
+        <button type="button" class="pg-step" data-step="2" onclick="jumpPlaygroundStep(2)">
+          <span class="pg-step-num">2</span> Edit controller
+        </button>
+        <button type="button" class="pg-step" data-step="3" onclick="jumpPlaygroundStep(3)">
+          <span class="pg-step-num">3</span> Run simulation
+        </button>
+        <button type="button" class="pg-step" data-step="4" onclick="jumpPlaygroundStep(4)">
+          <span class="pg-step-num">4</span> Find failures
+        </button>
+        <button type="button" class="pg-step" data-step="5" onclick="jumpPlaygroundStep(5)">
+          <span class="pg-step-num">5</span> Repair and verify
+        </button>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="pg-status-bar">
+        <div class="pg-status-left">
+          <span id="pg-badge-pill" class="badge-pill pg-badge-pill-lg badge-pill-pass">CERTIFIED</span>
+          <span id="pg-badge-message" class="text-sm font-semibold" style="color:var(--text-strong);"></span>
+          <span class="pg-meta-pill">Program Hash: <span id="pg-code-sha" class="font-mono text-dim"></span></span>
+        </div>
+        <div class="pg-status-right">
+          <span class="pg-meta-pill">Live server: <span id="pg-service-badge" class="badge-pill">Checking...</span></span>
+          <span id="pg-sim-mode-badge" class="badge-pill badge-pill-neutral">Simulation only</span>
+          <!-- Test compatibility markers -->
+          <span id="pg-editor-mode-badge" style="display:none;"></span>
+          <span id="pg-camera-mode-badge" style="display:none;"></span>
+          <span id="pg-log-mode-badge" style="display:none;"></span>
+          <span id="pg-repair-source-chip" style="display:none;"></span>
+          <span id="pg-sim-hash" style="display:none;"></span>
+        </div>
+      </div>
+
+      <!-- 2-Column Playground Grid -->
+      <div class="grid-2 mb-24">
+        <!-- Left: Code & Test Setup -->
+        <div>
+          <!-- Controller Code Card -->
+          <div class="card-panel" id="pg-card-controller" style="margin-bottom:20px;">
+            <div class="row-between mb-12">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="panel-title" style="margin:0;">Python Policy Source</div>
+              </div>
+              <div class="view-toggles">
+                <button type="button" class="pg-template-btn active" data-template="v2_certified">Certified High-Force</button>
+                <button type="button" class="pg-template-btn" data-template="v1_certified">Certified Grasp</button>
+                <button type="button" class="pg-template-btn" data-template="initial_flawed">Initial Flawed</button>
+                <button type="button" class="pg-template-btn" data-template="custom">Custom Policy</button>
+              </div>
+            </div>
+            <textarea id="pg-code-editor" class="pg-editor-wrap" spellcheck="false" placeholder="def policy(env, rng): ..."></textarea>
+            <div class="row-between mt-12 text-xs text-dim">
+              <span>Only robot commands and simple arithmetic are allowed. Anything else is rejected with a line number.</span>
+              <span>Change any number. The certificate status above updates instantly.</span>
+            </div>
+          </div>
+
+          <!-- Test Setup Card -->
+          <div id="pg-card-setup" class="card-panel">
+            <div class="panel-title mb-6">Test setup</div>
+            <div class="text-xs text-muted mb-16">Force the gripper can apply, object masses to test, and episode sample budget.</div>
+
+            <div class="mb-14">
+              <label class="control-label" for="pg-robot-preset">Gripper strength</label>
+              <select id="pg-robot-preset" class="form-select"></select>
+              <div id="pg-robot-desc" class="text-xs text-dim mt-4"></div>
+            </div>
+
+            <div class="mb-14">
+              <label class="control-label" for="pg-task-preset">Object weights</label>
+              <select id="pg-task-preset" class="form-select"></select>
+              <div id="pg-task-desc" class="text-xs text-dim mt-4"></div>
+            </div>
+
+            <div class="mb-16">
+              <label class="control-label" for="pg-budget-preset">Episodes to run</label>
+              <select id="pg-budget-preset" class="form-select"></select>
+            </div>
+
+            <!-- Advanced Settings Drawer -->
+            <details class="pg-drawer mb-16" style="margin-top:0; padding:12px 16px;">
+              <summary>Advanced settings</summary>
+              <div class="mt-8">
+                <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+                  <input type="checkbox" id="pg-replay-cert">
+                  <span>Use the certified test scenarios</span>
+                </label>
+              </div>
+            </details>
+
+            <div id="pg-hardware-warning" class="mb-16" style="display:none; padding:12px; font-size:12px;"></div>
+
+            <button type="button" id="pg-run-btn" class="btn-action btn-primary w-100 py-16 font-bold" style="font-size:15px;">Run Simulation</button>
+          </div>
+        </div>
+
+        <!-- Right: Camera View, Results, Repair Checks & Details -->
+        <div>
+          <!-- Camera View Card -->
+          <div id="pg-card-camera" class="card-panel mb-20">
+            <div class="row-between mb-8">
+              <div class="panel-title" style="margin:0;">Camera view</div>
+              <div id="pg-progress-text" class="text-xs font-mono text-dim">Ready</div>
+            </div>
+
+            <div id="pg-results-headline" class="font-bold text-sm mb-8 text-main">
+              Simulation ready. Click Run Simulation to execute.
+            </div>
+
+            <div class="pg-metric-grid mb-12">
+              <div class="pg-metric-box">
+                <div class="pg-metric-label">Tested</div>
+                <div id="pg-metric-n" class="pg-metric-val">-</div>
+              </div>
+              <div class="pg-metric-box">
+                <div class="pg-metric-label">Passed</div>
+                <div id="pg-metric-k" class="pg-metric-val">-</div>
+              </div>
+              <div class="pg-metric-box">
+                <div class="pg-metric-label">Success Rate</div>
+                <div id="pg-metric-rate" class="pg-metric-val">-</div>
+              </div>
+              <div class="pg-metric-box">
+                <div class="pg-metric-label">Times grip force was limited</div>
+                <div id="pg-metric-clamps" class="pg-metric-val">-</div>
+              </div>
+            </div>
+
+            <div class="pg-progress-wrap mb-12">
+              <div id="pg-progress-fill" class="pg-progress-bar" style="width:0%;"></div>
+            </div>
+
+            <div class="theatre-screen frame-box frame-box--lg" style="position:relative;">
+              <div id="pg-frame-empty" class="text-center text-dim text-xs py-16">
+                Live rendered camera frames will display here as physics steps execute.
+              </div>
+              <img id="pg-frame-img" style="display:none; width:100%; height:100%; object-fit:contain;" alt="Camera view frame">
+            </div>
+          </div>
+
+          <!-- Repair Card -->
+          <div id="pg-card-repair" class="card-panel mb-20">
+            <div class="row-between mb-6">
+              <div class="panel-title" style="margin:0;">Repair, then check it</div>
+            </div>
+            <div class="text-xs text-muted mb-14">
+              Load the repair Muse Spark produced, then run four checks on it right now.
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+              <button type="button" id="pg-load-repair-btn" class="btn-action">Load recorded repair</button>
+              <button type="button" id="pg-run-gates-btn" class="btn-action font-bold">Run the 4 checks</button>
+            </div>
+
+            <div class="pg-stages-grid">
+              <div class="pg-stage-item">
+                <div class="text-xs font-semibold">Stage I: Minimal CE</div>
+                <div class="text-xs text-dim">Passes the smallest failing case</div>
+                <div id="pg-stage1-status" class="text-xs font-mono font-bold mt-4 text-dim">Not run yet</div>
+              </div>
+              <div class="pg-stage-item">
+                <div class="text-xs font-semibold">Stage II: Severe CE</div>
+                <div class="text-xs text-dim">Passes the worst failing case</div>
+                <div id="pg-stage2-status" class="text-xs font-mono font-bold mt-4 text-dim">Not run yet</div>
+              </div>
+              <div class="pg-stage-item">
+                <div class="text-xs font-semibold">Stage III: Regression</div>
+                <div class="text-xs text-dim">Nothing that worked before is broken</div>
+                <div id="pg-stage3-status" class="text-xs font-mono font-bold mt-4 text-dim">Not run yet</div>
+              </div>
+              <div class="pg-stage-item">
+                <div class="text-xs font-semibold">Stage IV: Falsifier Rerun</div>
+                <div class="text-xs text-dim">A fresh search finds no new failures</div>
+                <div id="pg-stage4-status" class="text-xs font-mono font-bold mt-4 text-dim">Not run yet</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsible Drawers -->
+          <details id="pg-diff-container" class="pg-drawer mb-16" style="display:none;">
+            <summary>Changes made by the repair (Unified Diff)</summary>
+            <div id="pg-repair-rationale" class="text-xs text-dim mb-8"></div>
+            <pre id="pg-diff-view" class="pg-diff-wrap p-12 text-xs" style="border-radius:var(--radius-sm); max-height:220px; overflow-y:auto;"></pre>
+          </details>
+
+          <details class="pg-drawer">
+            <summary>Episode details (Trace Log)</summary>
+            <div class="tt-table-scroll mt-12">
+              <table class="tt-table">
+                <thead>
+                  <tr>
+                    <th>Episode</th>
+                    <th>Mass</th>
+                    <th>Friction</th>
+                    <th>Result</th>
+                    <th>Margin</th>
+                  </tr>
+                </thead>
+                <tbody id="pg-episodes-tbody"></tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION EVIDENCE -->
+    <section id="section-evidence" class="console-section" role="tabpanel">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Evidence</h2>
+          <p class="section-desc">
+            The full certified results, computed offline from logged runs under distribution D in simulation.
+          </p>
+        </div>
+      </div>
+
+      <!-- Segmented Subnav -->
+      <div class="evidence-subnav" role="tablist" aria-label="Evidence subviews">
+        <button type="button" class="evidence-tab-btn active" data-sub="safezone" onclick="switchEvidenceSub('safezone')">Safe-zone map</button>
+        <button type="button" class="evidence-tab-btn" data-sub="spotcheck" onclick="switchEvidenceSub('spotcheck')">Spot-checks vs certificate</button>
+        <button type="button" class="evidence-tab-btn" data-sub="replays" onclick="switchEvidenceSub('replays')">Replays and repairs</button>
+        <button type="button" class="evidence-tab-btn" data-sub="camera" onclick="switchEvidenceSub('camera')">Camera judge</button>
+        <button type="button" class="evidence-tab-btn" data-sub="shift" onclick="switchEvidenceSub('shift')">Distribution shift</button>
+      </div>
+
+      <!-- Subview 1: Safe-zone map -->
+      <div id="evidence-safezone" class="evidence-subview active">
+        <div id="section-probe" class="evidence-inner-wrap">
+          <!-- STAGE 4: WHERE IS IT SAFE? -->
+      <div class="tt-stage-card">
+        <div class="tt-stage-header">
+          <div class="tt-stage-title"><span>4</span> Where Is It Safe? (Operating Envelopes)</div>
+          <span class="badge-pill badge-pill-neutral">OPERATING DOMAIN CERTIFICATE</span>
+        </div>
+
+        <p id="tt-safe-desc" class="tt-caption" style="color:var(--text-main); font-size:14px;"></p>
+
+        <div class="grid-2 grid-tight mb-16">
+          <div class="subpanel subpanel--bad">
+            <div class="subpanel-title subpanel-title--bad">Initial Policy (V1)</div>
+            <div id="tt-envelope-v1-summary" class="subpanel-body"></div>
+          </div>
+          <div class="subpanel subpanel--good">
+            <div class="subpanel-title subpanel-title--good">Repaired Policy</div>
+            <div id="tt-envelope-v2-summary" class="subpanel-body"></div>
+          </div>
+        </div>
+
+        <div class="subpanel row-between" style="padding:12px 16px;">
+          <span class="text-sm text-dim">Inspect regional Clopper-Pearson bounds across certified cells in Section 1.</span>
+          <button type="button" class="btn-action" onclick="switchTab('probe')">Explore Regional Probe &rarr;</button>
+        </div>
+      </div>
+          <div class="section-header">
+        <div>
+          <h2 class="section-title">Safe-zone map</h2>
+          <p class="section-desc">
+            Explore physical parameter boundaries over mass and friction. Lower bounds are recomputed live in the browser using exact Clopper-Pearson binomial inversion.
+          </p>
+        </div>
+        <div id="honesty-statement" class="badge-pill badge-pill-pass"></div>
+      </div>
+
+      <div class="grid-hero">
+        <div class="card-panel">
+          <div class="row-between mb-16">
+            <div class="view-toggles">
+              <button type="button" id="btn-mode-state" class="view-toggle-btn active">State Ground Truth</button>
+              <button type="button" id="btn-mode-camera" class="view-toggle-btn">Camera Judge (SAM 3.1 + Spark)</button>
+              <button type="button" id="btn-mode-v2" class="view-toggle-btn"><span id="lbl-mode-v2"></span></button>
+              <button type="button" id="btn-mode-compare" class="view-toggle-btn"><span id="lbl-mode-compare"></span></button>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button type="button" id="btn-recompute" class="btn-action">Recompute bounds in this browser</button>
+              <div class="text-sm text-muted">4x4 Regional Cell Partition</div>
+            </div>
+          </div>
+
+          <div class="grid-2 grid-tight mb-16">
+            <div class="control-row" style="margin-bottom:0;">
+              <div class="control-label-row">
+                <label for="target-p-slider">Target Success Rate (p):</label>
+                <span id="target-p-label" class="control-value"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="target-p-slider" min="0.50" max="0.99" step="0.01" value="0.90">
+              </div>
+            </div>
+
+            <div class="control-row" style="margin-bottom:0;">
+              <div class="control-label-row">
+                <label for="delta-slider">Confidence Level (1 &minus; &delta;):</label>
+                <span id="delta-label" class="control-value"></span>
+              </div>
+              <div class="slider-input-group">
+                <input type="range" id="delta-slider" min="0.001" max="0.10" step="0.001" value="0.05">
+              </div>
+            </div>
+          </div>
+
+          <div id="heatmap-grid" class="hm-container"></div>
+          <div id="safezone-pooled-caption" class="caption text-sm text-dim mt-8"></div>
+
+          <div class="hint-row">
+            <span>Click any cell to target probe sliders</span>
+            <span id="friction-note-text"></span>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <h3 class="panel-title panel-title--accent">Operating-Limit Inspector</h3>
+
+          <div class="control-row">
+            <div class="control-label-row"><label for="probe-mass-slider">Object Mass (kg)</label></div>
+            <div class="slider-input-group">
+              <input type="range" id="probe-mass-slider" min="1.0" max="11.5" step="0.05" value="2.5">
+              <input type="number" id="probe-mass-input" min="1.0" max="11.5" step="0.05" value="2.50" aria-label="Object mass in kilograms">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-row"><label for="probe-fric-slider">Lateral Friction</label></div>
+            <div class="slider-input-group">
+              <input type="range" id="probe-fric-slider" min="0.10" max="1.00" step="0.01" value="0.55">
+              <input type="number" id="probe-fric-input" min="0.10" max="1.00" step="0.01" value="0.55" aria-label="Lateral friction coefficient">
+            </div>
+          </div>
+
+          <div class="probe-detail-box" style="margin-top:0;">
+            <div class="row-between mb-8">
+              <span id="probe-cell-id" class="probe-cell-id"></span>
+              <span id="probe-verdict-badge" class="badge-pill"></span>
+            </div>
+            <div id="probe-cell-range" class="text-sm text-muted mb-12"></div>
+
+            <div class="probe-stat-row">
+              <div>
+                <div class="kicker">Recomputed Lower Bound</div>
+                <div id="probe-bound-val" class="probe-bound"></div>
+              </div>
+              <div>
+                <div class="kicker">Trials Observed</div>
+                <div id="probe-trials-val" class="probe-trials"></div>
+              </div>
+            </div>
+
+            <div class="probe-subhead"><strong>Nearest Logged Episodes:</strong></div>
+            <div id="probe-episodes-list"></div>
+          </div>
+
+          <div class="callout mt-16">
+            <div class="callout-label">Data-Derived Guarantee Envelope</div>
+            <div class="callout-body">
+              Largest mass certified at every friction: <strong id="largest-mass-certified-text"></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+
+      <!-- Subview 2: Spot-checks vs certificate -->
+      <div id="evidence-spotcheck" class="evidence-subview">
+        <div id="section-teach-trust" class="evidence-inner-wrap">
+          <!-- STAGE 2: WOULD YOU SHIP IT? -->
       <div class="tt-stage-card">
         <div class="tt-stage-header">
           <div class="tt-stage-title"><span>2</span> Would You Ship It? (Manual Test Challenge)</div>
@@ -1464,8 +2235,20 @@
           <div id="tt-slots-table-wrap" class="mt-12"></div>
         </div>
       </div>
+                <div class="equiv-card mt-16">
+        <div class="row-between mb-8">
+          <span style="font-size:13px; font-weight:650; color:var(--indigo-text);">Manual Spot-Check Equivalence</span>
+          <span class="badge-pill badge-pill-neutral" id="tt-arith-label"></span>
+        </div>
+        <p id="tt-arith-desc" class="guarantee-text" style="color:var(--text-main);"></p>
+      </div>
+        </div>
+      </div>
 
-      <!-- STAGE 3: RUN THE LOOP -->
+      <!-- Subview 3: Replays and repairs -->
+      <div id="evidence-replays" class="evidence-subview">
+        <div id="section-theatre" class="evidence-inner-wrap">
+          <!-- STAGE 3: RUN THE LOOP -->
       <div class="tt-stage-card">
         <div class="tt-stage-header">
           <div class="tt-stage-title"><span>3</span> Run the Loop (Automated Falsification)</div>
@@ -1506,261 +2289,33 @@
           </div>
         </div>
       </div>
-
-      <!-- STAGE 4: WHERE IS IT SAFE? -->
-      <div class="tt-stage-card">
-        <div class="tt-stage-header">
-          <div class="tt-stage-title"><span>4</span> Where Is It Safe? (Operating Envelopes)</div>
-          <span class="badge-pill badge-pill-neutral">OPERATING DOMAIN CERTIFICATE</span>
-        </div>
-
-        <p id="tt-safe-desc" class="tt-caption" style="color:var(--text-main); font-size:14px;"></p>
-
-        <div class="grid-2 grid-tight mb-16">
-          <div class="subpanel subpanel--bad">
-            <div class="subpanel-title subpanel-title--bad">Initial Policy (V1)</div>
-            <div id="tt-envelope-v1-summary" class="subpanel-body"></div>
-          </div>
-          <div class="subpanel subpanel--good">
-            <div class="subpanel-title subpanel-title--good">Repaired Policy</div>
-            <div id="tt-envelope-v2-summary" class="subpanel-body"></div>
-          </div>
-        </div>
-
-        <div class="subpanel row-between" style="padding:12px 16px;">
-          <span class="text-sm text-dim">Inspect regional Clopper-Pearson bounds across certified cells in Section 1.</span>
-          <button type="button" class="btn-action" onclick="switchTab('probe')">Explore Regional Probe &rarr;</button>
-        </div>
-      </div>
-
-      <!-- STAGE 5: TIME TO TRUST -->
-      <div class="tt-stage-card">
-        <div class="tt-stage-header">
-          <div class="tt-stage-title"><span>5</span> Time to Trust (Panel)</div>
-          <span class="badge-pill badge-pill-neutral">RECOMPUTED FROM MANIFESTS</span>
-        </div>
-
-        <p class="tt-lead">
-          Wall-clock runtime, token footprint, and dollar spend across the full closed-loop pipeline, computed directly from run manifests.
-        </p>
-
-        <div class="tt-table-scroll">
-          <table class="tt-table">
-            <thead>
-              <tr>
-                <th>Pipeline Stage</th>
-                <th>Wall-Clock Time</th>
-                <th>API Calls</th>
-                <th>Tokens</th>
-                <th>Dollar Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="row-title">Controller Synthesis &amp; Repair</td>
-                <td id="tt-time-gen"></td>
-                <td id="tt-calls-gen"></td>
-                <td id="tt-tok-gen"></td>
-                <td id="tt-cost-gen"></td>
-              </tr>
-              <tr>
-                <td class="row-title">Camera Judge Calibration (G2)</td>
-                <td id="tt-time-cal"></td>
-                <td id="tt-calls-cal"></td>
-                <td>0 (Vision API)</td>
-                <td id="tt-cost-cal"></td>
-              </tr>
-              <tr>
-                <td class="row-title">Formal Regional Certification</td>
-                <td id="tt-time-cert"></td>
-                <td id="tt-calls-cert"></td>
-                <td>0 (Simulation only)</td>
-                <td id="tt-cost-cert"></td>
-              </tr>
-              <tr class="row-highlight">
-                <td>Human User Engineering</td>
-                <td colspan="4">Lines of code written by the user: <span id="tt-user-loc"></span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="equiv-card">
-          <div class="row-between mb-8">
-            <span style="font-size:13px; font-weight:650; color:var(--indigo-text);">Manual Spot-Check Equivalence</span>
-            <span class="badge-pill badge-pill-neutral" id="tt-arith-label"></span>
-          </div>
-          <p id="tt-arith-desc" class="guarantee-text" style="color:var(--text-main);"></p>
-        </div>
-      </div>
-
-      <!-- STAGE 6: YOUR VERDICT -->
-      <div class="tt-stage-card">
-        <div class="tt-stage-header">
-          <div class="tt-stage-title"><span>6</span> Your Verdict (Feedback)</div>
-          <span class="badge-pill badge-pill-neutral">ZERO LOCAL TRACKING</span>
-        </div>
-
-        <p class="tt-lead">
-          We value your perspective on automated synthesis and statistical certification. The page itself stores NOTHING, sets no cookies, and sends no telemetry.
-        </p>
-
-        <div class="tt-questions">
+                <div class="card-panel mb-20">
+        <div class="row-between mb-8">
           <div>
-            <div class="tt-question">Question 1: Before this, would you have shipped the initial controller?</div>
-            <div class="view-toggles" id="tt-q1-toggles">
-              <button type="button" class="view-toggle-btn" data-val="yes">Yes</button>
-              <button type="button" class="view-toggle-btn" data-val="no">No</button>
-            </div>
+            <div class="panel-title" style="margin:0;">Nominal Scenario Filmstrip</div>
+            <div class="text-xs text-muted mt-2">Verified step progression of controller execution in simulation.</div>
           </div>
-
-          <div>
-            <div class="tt-question">Question 2: How confident are you now in the repaired controller's safety? (Rating scale)</div>
-            <div class="tt-rating-btn-group" id="tt-q2-group">
-              <button type="button" class="tt-rating-btn" data-val="1">1</button>
-              <button type="button" class="tt-rating-btn" data-val="2">2</button>
-              <button type="button" class="tt-rating-btn" data-val="3">3</button>
-              <button type="button" class="tt-rating-btn" data-val="4">4</button>
-              <button type="button" class="tt-rating-btn" data-val="5">5</button>
-            </div>
-          </div>
-
-          <div>
-            <div class="tt-question">Question 3: Was this easier than how you would normally check a robot program? (Rating scale)</div>
-            <div class="tt-rating-btn-group" id="tt-q3-group">
-              <button type="button" class="tt-rating-btn" data-val="1">1</button>
-              <button type="button" class="tt-rating-btn" data-val="2">2</button>
-              <button type="button" class="tt-rating-btn" data-val="3">3</button>
-              <button type="button" class="tt-rating-btn" data-val="4">4</button>
-              <button type="button" class="tt-rating-btn" data-val="5">5</button>
-            </div>
-          </div>
+          <span class="badge-pill badge-pill-neutral" id="tt-nominal-step-label">Step 0</span>
         </div>
-
-        <div class="tt-feedback-footer">
-          <a id="tt-link-feedback" href="#" target="_blank" rel="noopener noreferrer" class="btn-action btn-download">
-            Submit Feedback via GitHub Discussion &rarr;
-          </a>
-          <span class="text-xs text-dim">Opens public discussion thread defined in configs/ui.yaml</span>
+        <div class="theatre-screen frame-box frame-box--lg mb-12">
+          <img id="tt-nominal-img" src="" alt="Nominal filmstrip frame" style="width:100%; height:100%; object-fit:contain;">
+        </div>
+        <div class="theatre-controls">
+          <button type="button" id="tt-nominal-play-btn" class="theatre-btn">Play</button>
+          <input type="range" id="tt-nominal-scrubber" min="0" max="6" value="0" step="1" class="theatre-scrubber" aria-label="Filmstrip step scrubber">
         </div>
       </div>
-
-      <div class="honesty">
-        <strong>Honesty &amp; Reporting Standards (Rule H14):</strong>
-        Simulation-only evaluation. No claim of real-world physics transfer or hardware deployment.
-        In this parallel-jaw gripper contact model, variations in friction coefficient yielded no measurable difference in grasp margin; failure is dominated by gravitational slip exceeding normal grip force.
-        Manual scenario sliders snap to the nearest precomputed point on the precomputed challenge grid.
+      <!-- Hidden compatibility elements from stage 1 -->
+      <div style="display:none;">
+        <span id="tt-program-run-id"></span>
+        <span id="tt-program-id"></span>
+        <div id="tt-goal"></div>
+        <button type="button" id="tt-btn-prog-v1"></button>
+        <button type="button" id="tt-btn-prog-v2"></button>
+        <div id="tt-program-code"></div>
+        <div id="tt-program-caption"></div>
       </div>
-    </section>
-
-    <!-- SECTION 1: OPERATING-LIMIT PROBE -->
-    <section id="section-probe" class="console-section" role="tabpanel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Operational Envelope Probe &amp; Certificate Controls</h2>
-          <p class="section-desc">
-            Explore physical parameter boundaries over mass and friction. Lower bounds are recomputed live in the browser using exact Clopper-Pearson binomial inversion.
-          </p>
-        </div>
-        <div id="honesty-statement" class="badge-pill badge-pill-pass"></div>
-      </div>
-
-      <div class="grid-hero">
-        <div class="card-panel">
-          <div class="row-between mb-16">
-            <div class="view-toggles">
-              <button type="button" id="btn-mode-state" class="view-toggle-btn active">State Ground Truth</button>
-              <button type="button" id="btn-mode-camera" class="view-toggle-btn">Camera Judge (SAM 3.1 + Spark)</button>
-              <button type="button" id="btn-mode-v2" class="view-toggle-btn"><span id="lbl-mode-v2"></span></button>
-              <button type="button" id="btn-mode-compare" class="view-toggle-btn"><span id="lbl-mode-compare"></span></button>
-            </div>
-            <div class="text-sm text-muted">4x4 Regional Cell Partition</div>
-          </div>
-
-          <div class="grid-2 grid-tight mb-16">
-            <div class="control-row" style="margin-bottom:0;">
-              <div class="control-label-row">
-                <label for="target-p-slider">Target Success Rate (p):</label>
-                <span id="target-p-label" class="control-value"></span>
-              </div>
-              <div class="slider-input-group">
-                <input type="range" id="target-p-slider" min="0.50" max="0.99" step="0.01" value="0.90">
-              </div>
-            </div>
-
-            <div class="control-row" style="margin-bottom:0;">
-              <div class="control-label-row">
-                <label for="delta-slider">Confidence Level (1 &minus; &delta;):</label>
-                <span id="delta-label" class="control-value"></span>
-              </div>
-              <div class="slider-input-group">
-                <input type="range" id="delta-slider" min="0.001" max="0.10" step="0.001" value="0.05">
-              </div>
-            </div>
-          </div>
-
-          <div id="heatmap-grid" class="hm-container"></div>
-
-          <div class="hint-row">
-            <span>Click any cell to target probe sliders</span>
-            <span id="friction-note-text"></span>
-          </div>
-        </div>
-
-        <div class="card-panel">
-          <h3 class="panel-title panel-title--accent">Operating-Limit Inspector</h3>
-
-          <div class="control-row">
-            <div class="control-label-row"><label for="probe-mass-slider">Object Mass (kg)</label></div>
-            <div class="slider-input-group">
-              <input type="range" id="probe-mass-slider" min="1.0" max="11.5" step="0.05" value="2.5">
-              <input type="number" id="probe-mass-input" min="1.0" max="11.5" step="0.05" value="2.50" aria-label="Object mass in kilograms">
-            </div>
-          </div>
-
-          <div class="control-row">
-            <div class="control-label-row"><label for="probe-fric-slider">Lateral Friction</label></div>
-            <div class="slider-input-group">
-              <input type="range" id="probe-fric-slider" min="0.10" max="1.00" step="0.01" value="0.55">
-              <input type="number" id="probe-fric-input" min="0.10" max="1.00" step="0.01" value="0.55" aria-label="Lateral friction coefficient">
-            </div>
-          </div>
-
-          <div class="probe-detail-box" style="margin-top:0;">
-            <div class="row-between mb-8">
-              <span id="probe-cell-id" class="probe-cell-id"></span>
-              <span id="probe-verdict-badge" class="badge-pill"></span>
-            </div>
-            <div id="probe-cell-range" class="text-sm text-muted mb-12"></div>
-
-            <div class="probe-stat-row">
-              <div>
-                <div class="kicker">Recomputed Lower Bound</div>
-                <div id="probe-bound-val" class="probe-bound"></div>
-              </div>
-              <div>
-                <div class="kicker">Trials Observed</div>
-                <div id="probe-trials-val" class="probe-trials"></div>
-              </div>
-            </div>
-
-            <div class="probe-subhead"><strong>Nearest Logged Episodes:</strong></div>
-            <div id="probe-episodes-list"></div>
-          </div>
-
-          <div class="callout mt-16">
-            <div class="callout-label">Data-Derived Guarantee Envelope</div>
-            <div class="callout-body">
-              Largest mass certified at every friction: <strong id="largest-mass-certified-text"></strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2: REPLAY THEATRE & DIFF -->
-    <section id="section-theatre" class="console-section" role="tabpanel">
-      <div class="section-header">
+          <div class="section-header">
         <div>
           <h2 class="section-title">Deterministic Replay Theatre &amp; Filmstrip Diff</h2>
           <p class="section-desc">
@@ -1804,11 +2359,8 @@
           <div id="adaptation-desc" class="desc-text"></div>
         </div>
       </div>
-    </section>
-
-    <!-- SECTION 3: REPAIR THEATRE -->
-    <section id="section-repair-theatre" class="console-section" role="tabpanel">
-      <div class="section-header">
+          <div id="section-repair-theatre">
+            <div class="section-header">
         <div>
           <h2 class="section-title">Repair Theatre: Recorded Multi-Step Synthesis Trace</h2>
           <p class="section-desc">
@@ -1884,11 +2436,14 @@
           <div id="theatre-acceptance-box" class="mt-16"></div>
         </div>
       </div>
-    </section>
+          </div>
+        </div>
+      </div>
 
-    <!-- SECTION 4: CAMERA-JUDGE CALIBRATION -->
-    <section id="section-calibration" class="console-section" role="tabpanel">
-      <div class="section-header">
+      <!-- Subview 4: Camera judge -->
+      <div id="evidence-camera" class="evidence-subview">
+        <div id="section-calibration" class="evidence-inner-wrap">
+          <div class="section-header">
         <div>
           <h2 class="section-title">Vision Judge Calibration &amp; Price of Footage</h2>
           <p class="section-desc">
@@ -1936,11 +2491,13 @@
           </div>
         </div>
       </div>
-    </section>
+        </div>
+      </div>
 
-    <!-- SECTION 5: DISTRIBUTION SHIFT -->
-    <section id="section-shift" class="console-section" role="tabpanel">
-      <div class="section-header">
+      <!-- Subview 5: Distribution shift -->
+      <div id="evidence-shift" class="evidence-subview">
+        <div id="section-shift" class="evidence-inner-wrap">
+          <div class="section-header">
         <div>
           <h2 class="section-title">Hypothesis H4: Certificate Refusal Under Distribution Shift</h2>
           <p id="shift-header-desc" class="section-desc"></p>
@@ -1987,266 +2544,166 @@
           </div>
         </div>
       </div>
+        </div>
+      </div>
     </section>
 
-    <!-- SECTION 6: PROVENANCE & LEDGER -->
-    <section id="section-provenance" class="console-section" role="tabpanel">
+    <!-- SECTION METHOD -->
+    <section id="section-method" class="console-section" role="tabpanel">
       <div class="section-header">
         <div>
-          <h2 class="section-title">Provenance &amp; Cryptographic Traceability</h2>
+          <h2 class="section-title">Method &amp; Provenance</h2>
           <p class="section-desc">
-            Rule H11 &amp; H12 provenance ledger. Every metric and figure is linked to run_id manifests and append-only episode records.
+            How it works, where every number comes from, and what it does not claim.
           </p>
         </div>
       </div>
 
-      <div class="card-panel">
-        <h3 class="panel-title">Linked Source Runs</h3>
-        <div id="provenance-run-list"></div>
-      </div>
-    </section>
-
-    <!-- SECTION 7: CLOSEDLOOP PLAYGROUND -->
-    <section id="section-playground" class="console-section" role="tabpanel">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">ClosedLoop Playground: Live Execution &amp; Badge Verification</h2>
-          <p class="section-desc">
-            Test policy code interactively across physical scenarios. Verify cryptographic certificate binding live in browser, stream real-time PyBullet simulation episodes, and inspect hardware force clamps.
-          </p>
+      <!-- Release Status -->
+      <div class="method-card">
+        <div class="method-card-title">Release Status</div>
+        <div class="method-card-desc">
+          Results frozen at gate G3, features locked. Certified policy synthesized by Meta's Muse Spark.
         </div>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span id="pg-service-badge" class="badge-pill badge-pill-pass">Backend: Checking...</span>
-          <span class="badge-pill badge-pill-neutral font-mono text-xs">Sim SHA: <span id="pg-sim-hash"></span></span>
+        <div style="display:flex; gap:20px; flex-wrap:wrap; font-size:13px;">
+          <div><strong>Release:</strong> <span class="badge-pill badge-pill-pass">Gate G3 Frozen</span></div>
+          <div><strong>Policy Hash:</strong> <span id="method-program-id" class="font-mono"></span></div>
+          <div><strong>Model:</strong> <span id="method-model-id" class="font-mono"></span></div>
         </div>
       </div>
 
-      <!-- Fallback Ladder Alert / Mode Card -->
-      <div class="card-panel mb-20" style="padding:16px 20px;">
-        <div class="row-between" style="flex-wrap:wrap; gap:8px;">
-          <div style="font-size:12.5px; color:var(--text-strong); font-weight:650;">
-            Execution Ladder: <span class="badge-pill badge-pill-neutral text-xs">Tier 2 Live Backend</span> &rarr;
-            <span class="badge-pill badge-pill-neutral text-xs">Tier L Local (<code class="font-mono">make playground-local</code>)</span> &rarr;
-            <span class="badge-pill badge-pill-neutral text-xs">Tier 0 Offline Hash Lab</span>
-          </div>
-          <div class="text-xs text-dim">
-            Offline proof: Badge verification requires zero backend calls.
-          </div>
+      <!-- Self-checks -->
+      <div class="method-card">
+        <div class="method-card-title">Self-checks</div>
+        <div class="method-card-desc">
+          Independent SciPy exact binomial confidence interval parity checks executed at initialization.
+        </div>
+        <div id="selfcheck-badge" class="font-semibold text-main mb-8"></div>
+        <div class="text-xs text-dim">
+          The confidence-bound calculator in this page agrees with SciPy on test cases evaluated at startup.
         </div>
       </div>
 
-      <!-- Dynamic Certificate Badge Banner -->
-      <div class="pg-badge-banner">
-        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
-          <div>
-            <div class="text-xs text-dim font-bold uppercase tracking-wider mb-4">Certificate Badge Status</div>
-            <span id="pg-badge-pill" class="badge-pill pg-badge-pill-lg badge-pill-pass">CERTIFIED</span>
-          </div>
-          <div>
-            <div id="pg-badge-message" class="text-sm font-semibold" style="color:var(--text-strong);"></div>
-            <div class="pg-meta-pill mt-4">Program Hash: <span id="pg-code-sha" class="font-mono text-dim"></span></div>
-          </div>
+      <!-- Provenance Ledger -->
+      <div class="method-card">
+        <div class="method-card-title">Where Each Number Comes From (Provenance Ledger)</div>
+        <div class="method-card-desc">
+          Cryptographic hashes of logs, simulator commit SHAs, and reproducible random seeds.
         </div>
-        <div class="view-toggles">
-          <button type="button" class="pg-template-btn active" data-template="v2_certified">Certified High-Force</button>
-          <button type="button" class="pg-template-btn" data-template="v1_certified">Certified Grasp</button>
-          <button type="button" class="pg-template-btn" data-template="initial_flawed">Initial Flawed</button>
-          <button type="button" class="pg-template-btn" data-template="custom">Custom Policy</button>
+        <div id="section-provenance">
+          <div id="provenance-run-list"></div>
         </div>
       </div>
 
-      <!-- 2-Column Playground Grid -->
-      <div class="grid-2 mb-24">
-        <!-- Column 1: Code Editor -->
-        <div>
-          <div class="card-panel">
-            <div class="row-between mb-12">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="panel-title" style="margin:0;">Python Policy Source</div>
-                <span id="pg-editor-mode-badge" class="badge-pill badge-pill-pass text-xs">CERTIFIED</span>
-              </div>
-              <div class="text-xs text-dim">Strict AST allow-list &bull; statement budget</div>
-            </div>
-            <textarea id="pg-code-editor" class="pg-editor-wrap" spellcheck="false" placeholder="def policy(env, rng): ..."></textarea>
-            <div class="row-between mt-12 text-xs text-dim">
-              <span>Try editing any parameter to watch badge invalidate live.</span>
-              <span>UTF encoded &bull; LF normalized</span>
-            </div>
-          </div>
+      <!-- Honesty & Limits Statement -->
+      <div class="method-card">
+        <div class="method-card-title">What This Does Not Claim (Honesty &amp; Reporting Standards)</div>
+        <div class="method-card-desc">
+          Simulation-only evaluation under Rule H14. No claim of real-world physics transfer or hardware deployment.
         </div>
-
-        <!-- Column 2: Presets, Live Controls, Metrics, Camera Frame -->
-        <div>
-          <div class="card-panel mb-20">
-            <div class="row-between mb-12">
-              <h3 class="panel-title" style="margin:0;">Simulation Presets &amp; Budget</h3>
-              <span id="pg-sim-mode-badge" class="badge-pill badge-pill-pass text-xs">CERTIFIED CONFIG</span>
-            </div>
-            <div class="grid-2 mb-12">
-              <div>
-                <label for="pg-robot-preset" class="text-xs font-bold text-dim uppercase">Robot Hardware Preset</label>
-                <select id="pg-robot-preset" class="pg-select-input"></select>
-                <div id="pg-robot-desc" class="text-xs text-dim mt-4"></div>
-              </div>
-
-              <div>
-                <label for="pg-task-preset" class="text-xs font-bold text-dim uppercase">Task Operating Space</label>
-                <select id="pg-task-preset" class="pg-select-input"></select>
-                <div id="pg-task-desc" class="text-xs text-dim mt-4"></div>
-              </div>
-            </div>
-
-            <div class="row-between mb-16" style="flex-wrap:wrap; gap:12px;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <label for="pg-budget-preset" class="text-xs font-bold text-dim uppercase">Budget:</label>
-                <select id="pg-budget-preset" class="pg-select-input" style="width:auto; margin:0; padding:6px 10px;"></select>
-              </div>
-
-              <label class="text-xs text-main font-semibold" style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="pg-replay-cert" style="accent-color:var(--accent);">
-                <span>Replay certified episodes</span>
-              </label>
-            </div>
-
-            <button type="button" id="pg-run-btn" class="btn-action w-100" style="padding:12px; font-size:14px; font-weight:700;">
-              Run Simulation
-            </button>
-
-            <!-- Progress Bar -->
-            <div id="pg-progress-container" class="pg-progress-container">
-              <div id="pg-progress-fill" class="pg-progress-bar-fill"></div>
-            </div>
-            <div id="pg-progress-text" class="text-xs text-dim font-mono">Ready to simulate.</div>
-          </div>
-
-          <!-- Metrics and Camera Box -->
-          <div class="card-panel">
-            <div class="row-between mb-12">
-              <div class="text-xs font-bold text-dim uppercase">Camera View (PyBullet Camera Render)</div>
-              <span id="pg-camera-mode-badge" class="badge-pill badge-pill-neutral text-xs">READY</span>
-            </div>
-            <div class="pg-metric-grid">
-              <div class="pg-metric-card">
-                <div class="pg-metric-label">Passed</div>
-                <div id="pg-metric-k" class="pg-metric-val">&mdash;</div>
-              </div>
-              <div class="pg-metric-card">
-                <div class="pg-metric-label">Tested</div>
-                <div id="pg-metric-n" class="pg-metric-val">&mdash;</div>
-              </div>
-              <div class="pg-metric-card">
-                <div class="pg-metric-label">Success Rate</div>
-                <div id="pg-metric-rate" class="pg-metric-val">&mdash;</div>
-              </div>
-              <div class="pg-metric-card">
-                <div class="pg-metric-label">Force Clamps</div>
-                <div id="pg-metric-clamps" class="pg-metric-val">&mdash;</div>
-              </div>
-            </div>
-
-            <div class="pg-frame-box">
-              <img id="pg-frame-img" src="" alt="Episode Camera Frame" style="display:none;">
-              <div id="pg-frame-empty" class="text-dim text-xs font-mono">Camera frame rendered live upon execution</div>
-            </div>
-          </div>
+        <div id="honesty-statement" class="text-sm text-main mb-8 font-semibold"></div>
+        <div id="friction-note-text" class="text-xs text-muted mb-8"></div>
+        <div class="text-xs text-dim mb-12">
+          Largest mass certified across all frictions: <span id="largest-mass-certified-text"></span> in simulation.
+        </div>
+        <div class="text-xs text-dim" style="line-height:1.6; border-top:1px solid var(--border-subtle); padding-top:10px;">
+          <strong>Simulation Boundary:</strong> In this parallel-jaw gripper contact model, variations in friction coefficient yielded no measurable difference in grasp margin; failure is dominated by gravitational slip exceeding normal grip force. Manual scenario sliders snap to the nearest precomputed point on the precomputed challenge grid.
         </div>
       </div>
 
-      <!-- Acceptance Gates & Repair Section -->
-      <div class="card-panel mb-24">
-        <div class="row-between mb-12">
-          <div>
-            <h3 class="panel-title" style="margin:0;">Repair &amp; Acceptance Gates</h3>
-            <div class="text-xs text-dim">Tier 1 Recorded Patches &bull; Live Four-Stage Acceptance Gates</div>
-          </div>
-          <div id="pg-repair-source-chip" class="badge-pill badge-pill-neutral text-xs">RECORDED</div>
+      <!-- Time to Trust (Resource Accounting) -->
+      <div class="method-card">
+        <div class="method-card-title">Time to Trust (Resource Accounting)</div>
+        <div class="method-card-desc">
+          Wall-clock runtime, token footprint, and dollar spend across the full closed-loop pipeline, computed directly from run manifests.
         </div>
-
-        <div id="pg-hardware-warning" class="pg-alert-banner mb-12" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:10px 14px; font-size:12px; color:#fca5a5;">
-          Hardware Preset Clamped: Grip force limit is active. Objects exceeding payload cannot be lifted by software modification alone.
-        </div>
-
-        <div class="row-between mb-16" style="gap:10px; flex-wrap:wrap;">
-          <button type="button" id="pg-load-repair-btn" class="btn-action" style="flex:1; min-width:180px; padding:10px; font-size:12px;">
-            Load Recorded Repair
-          </button>
-          <button type="button" id="pg-run-gates-btn" class="btn-action" style="flex:1; min-width:180px; padding:10px; font-size:12px; background:var(--card-bg); border:1px solid var(--border-color);">
-            Run Acceptance Gates
-          </button>
-        </div>
-
-        <!-- Acceptance Stages Grid -->
-        <div class="pg-stages-grid mb-16">
-          <div class="pg-metric-card" id="pg-stage1-box" style="padding:10px;">
-            <div class="text-xs font-bold text-dim uppercase">Stage I: Minimal CE</div>
-            <div id="pg-stage1-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
-          </div>
-          <div class="pg-metric-card" id="pg-stage2-box" style="padding:10px;">
-            <div class="text-xs font-bold text-dim uppercase">Stage II: Severe CE</div>
-            <div id="pg-stage2-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
-          </div>
-          <div class="pg-metric-card" id="pg-stage3-box" style="padding:10px;">
-            <div class="text-xs font-bold text-dim uppercase">Stage III: Regression</div>
-            <div id="pg-stage3-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
-          </div>
-          <div class="pg-metric-card" id="pg-stage4-box" style="padding:10px;">
-            <div class="text-xs font-bold text-dim uppercase">Stage IV: Falsifier Rerun</div>
-            <div id="pg-stage4-status" class="text-xs font-mono font-bold mt-4 text-dim">Pending</div>
-          </div>
-        </div>
-
-        <!-- Diff and Rationale Viewer -->
-        <div id="pg-diff-container" style="display:none;">
-          <div class="text-xs font-bold text-dim uppercase mb-6">Patch Unified Diff</div>
-          <pre id="pg-diff-view" class="pg-diff-wrap text-xs font-mono" style="background:#0f172a; padding:10px; border-radius:6px; max-height:160px; overflow-y:auto;"></pre>
-          <div id="pg-repair-rationale" class="text-xs text-dim mt-8 italic"></div>
-        </div>
-      </div>
-
-      <!-- Episode Results Table -->
-      <div class="card-panel">
-        <div class="row-between mb-16">
-          <div>
-            <h3 class="panel-title" style="margin:0;">Live Episode Trace Log</h3>
-            <div class="text-xs text-dim">Per-episode physics state &bull; Append-only logs &amp; H13 compliance</div>
-          </div>
-          <span id="pg-log-mode-badge" class="badge-pill badge-pill-neutral text-xs">APPEND-ONLY</span>
-        </div>
-        <div class="tt-table-scroll">
-          <table class="tt-table" id="pg-episodes-table">
+                <div class="tt-table-scroll">
+          <table class="tt-table">
             <thead>
               <tr>
-                <th>Ep #</th>
-                <th>Seed</th>
-                <th>Mass</th>
-                <th>Friction</th>
-                <th>Result</th>
-                <th>Margin</th>
-                <th>Steps</th>
-                <th>Hardware Clamps</th>
-                <th>Diagnostics</th>
+                <th>Pipeline Stage</th>
+                <th>Wall-Clock Time</th>
+                <th>API Calls</th>
+                <th>Tokens</th>
+                <th>Dollar Cost</th>
               </tr>
             </thead>
-            <tbody id="pg-episodes-tbody">
+            <tbody>
               <tr>
-                <td colspan="9" class="text-dim text-center py-16">No episodes run yet. Click "Run Simulation" above to execute.</td>
+                <td class="row-title">Controller Synthesis &amp; Repair</td>
+                <td id="tt-time-gen"></td>
+                <td id="tt-calls-gen"></td>
+                <td id="tt-tok-gen"></td>
+                <td id="tt-cost-gen"></td>
+              </tr>
+              <tr>
+                <td class="row-title">Camera-Judge Calibration</td>
+                <td id="tt-time-cal"></td>
+                <td id="tt-calls-cal"></td>
+                <td>0</td>
+                <td id="tt-cost-cal"></td>
+              </tr>
+              <tr>
+                <td class="row-title">Offline Regional Certification</td>
+                <td id="tt-time-cert"></td>
+                <td id="tt-calls-cert"></td>
+                <td>0</td>
+                <td id="tt-cost-cert"></td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Fallback Tiers -->
+      <div class="method-card">
+        <div class="method-card-title">If the Live Server Is Down (Three Fallback Tiers)</div>
+        <div class="method-card-desc">
+          ClosedLoop operates across three progressive verification tiers to ensure offline reproducibility:
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+          <div style="background:var(--bg-inset); padding:14px; border-radius:var(--radius-sm);">
+            <strong>Tier 2: Live Backend</strong>
+            <p class="text-xs text-muted mt-4">Streams real-time simulation episodes over Server-Sent Events when local dev server runs.</p>
+          </div>
+          <div style="background:var(--bg-inset); padding:14px; border-radius:var(--radius-sm);">
+            <strong>Tier L: Local Simulator</strong>
+            <p class="text-xs text-muted mt-4">Run locally in terminal via <code class="font-mono">make playground-local</code> for physical stepping.</p>
+          </div>
+          <div style="background:var(--bg-inset); padding:14px; border-radius:var(--radius-sm);">
+            <strong>Tier 0: Offline Mode</strong>
+            <p class="text-xs text-muted mt-4">Static browser mode verified against precomputed episodes and hash trees with zero server needed.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Repository and Verification -->
+      <div class="method-card">
+        <div class="method-card-title">Repository and Verification</div>
+        <div class="method-card-desc">
+          All test suites, simulator environments, and certified data files are strictly permissive open-source licensed.
+        </div>
+        <div class="text-xs text-dim">
+          Refer to README.md and LOCKED_HASHES.txt for deterministic local reproducibility.
         </div>
       </div>
     </section>
 
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-inner">
-      <div>ClosedLoop &bull; Meta Global AI Developer Hackathon &bull; Push the Frontier Track</div>
+      <div>
+        <strong>ClosedLoop</strong> &bull; Meta Global AI Developer Hackathon &bull;
+        <a id="tt-link-feedback" href="#" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;">Give feedback &rarr;</a>
+      </div>
       <div class="footer-meta">
         Git SHA: <span id="footer-git-sha"></span> &bull; Built: <span id="footer-build-time"></span> &bull; Deterministic &bull; 100% Offline Static &bull; Rule H11 Compliant
       </div>
     </div>
   </footer>
+
 
   <!-- Scripts (order unchanged) -->
   <script src="data.js"></script>
@@ -2257,24 +2714,78 @@
   <script src="playground.js"></script>
   <script>
     function switchTab(tabId) {
-      document.querySelectorAll('.console-section').forEach(function (el) { el.classList.remove('active'); });
+      // Navigation mapping for 4 pages + legacy aliases
+      var pageMap = {
+        'overview': { page: 'overview' },
+        'playground': { page: 'playground' },
+        'evidence': { page: 'evidence' },
+        'method': { page: 'method' },
+        // Legacy tab mappings
+        'teach-trust': { page: 'evidence', sub: 'spotcheck' },
+        'probe': { page: 'evidence', sub: 'safezone' },
+        'theatre': { page: 'evidence', sub: 'replays' },
+        'repair-theatre': { page: 'evidence', sub: 'replays' },
+        'calibration': { page: 'evidence', sub: 'camera' },
+        'shift': { page: 'evidence', sub: 'shift' },
+        'provenance': { page: 'method' }
+      };
 
-      var sec = document.getElementById('section-' + tabId);
+      var target = pageMap[tabId] || { page: tabId };
+      var pageId = target.page;
+
+      document.querySelectorAll('.console-section').forEach(function (el) {
+        el.classList.remove('active');
+      });
+
+      var sec = document.getElementById('section-' + pageId);
       if (sec) sec.classList.add('active');
 
       document.querySelectorAll('.nav-tab-btn').forEach(function (t) {
-        var on = t.getAttribute('data-tab') === tabId;
+        var on = t.getAttribute('data-tab') === pageId;
         t.classList.toggle('active', on);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
-        if (on && t.scrollIntoView) {
-          try { t.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {}
-        }
       });
 
-      // If the user jumped from deep inside a long section, bring the tab bar back into view
-      var nav = document.querySelector('.nav-bar');
-      if (nav && nav.getBoundingClientRect().top < 0) {
-        window.scrollTo({ top: Math.max(0, nav.offsetTop - 70), behavior: 'smooth' });
+      if (target.sub) {
+        switchEvidenceSub(target.sub);
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchEvidenceSub(subId) {
+      document.querySelectorAll('.evidence-tab-btn').forEach(function (b) {
+        var on = b.getAttribute('data-sub') === subId;
+        b.classList.toggle('active', on);
+      });
+      document.querySelectorAll('.evidence-subview').forEach(function (view) {
+        view.classList.remove('active');
+      });
+      var targetView = document.getElementById('evidence-' + subId);
+      if (targetView) targetView.classList.add('active');
+    }
+
+    function jumpPlaygroundStep(stepNum) {
+      var steps = document.querySelectorAll('.pg-step');
+      steps.forEach(function (btn) {
+        var s = parseInt(btn.getAttribute('data-step'), 10);
+        btn.classList.toggle('active', s === stepNum);
+        btn.classList.toggle('completed', s < stepNum);
+      });
+
+      var targets = {
+        1: 'pg-card-setup',
+        2: 'pg-code-editor',
+        3: 'pg-run-btn',
+        4: 'pg-card-camera',
+        5: 'pg-card-repair'
+      };
+      var targetEl = document.getElementById(targets[stepNum]);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (targetEl.tagName === 'TEXTAREA' || targetEl.tagName === 'SELECT') {
+          try { targetEl.focus(); } catch (e) {}
+        }
       }
     }
   </script>
@@ -2294,3 +2805,4 @@
   </script>
 </body>
 </html>
+

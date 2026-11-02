@@ -328,8 +328,13 @@
     if (hwWarn) {
       if (state.robotPreset === "gripper_100N") {
         hwWarn.style.display = "block";
+        hwWarn.textContent = "Hardware limit: gripper clamp is restricted to 100 N maximum force. Payload slip will occur above ~8.49 kg.";
+      } else if (state.robotPreset === "gripper_200N") {
+        hwWarn.style.display = "block";
+        hwWarn.textContent = "Hardware limit: gripper clamp is restricted to 200 N maximum force. Payload slip will occur above ~16.99 kg.";
       } else {
         hwWarn.style.display = "none";
+        hwWarn.textContent = "";
       }
     }
   }
@@ -466,6 +471,13 @@
     }
 
     resetRunView(budget);
+    var resHeadline = getElement("pg-results-headline");
+    if (resHeadline) {
+      resHeadline.textContent = "Running episodes in simulator...";
+    }
+    if (typeof window.jumpPlaygroundStep === "function") {
+      window.jumpPlaygroundStep(3);
+    }
 
     var isLive = await checkBackend();
     if (!isLive) {
@@ -480,6 +492,12 @@
         }
         var pbar = getElement("pg-progress-fill");
         if (pbar) pbar.style.width = "100%";
+        if (resHeadline) {
+          resHeadline.textContent = "Offline Hash Lab: Verified against certified hash database.";
+        }
+        if (typeof window.jumpPlaygroundStep === "function") {
+          window.jumpPlaygroundStep(4);
+        }
         state.isRunning = false;
         if (runBtn) {
           runBtn.disabled = false;
@@ -576,6 +594,14 @@
             getElement("pg-metric-rate").textContent = (evData.success_rate * 100).toFixed(1) + "%";
             getElement("pg-metric-clamps").textContent = String(evData.total_clamp_events);
 
+            var resHeadlineDone = getElement("pg-results-headline");
+            if (resHeadlineDone) {
+              resHeadlineDone.textContent = evData.k + " of " + evData.n + " episodes succeeded (" + (evData.success_rate * 100).toFixed(1) + "%).";
+            }
+            if (typeof window.jumpPlaygroundStep === "function") {
+              window.jumpPlaygroundStep(4);
+            }
+
             var camBadgeDone = getElement("pg-camera-mode-badge");
             if (camBadgeDone) {
               camBadgeDone.className = "badge-pill " + (evData.certified ? "badge-pill-pass" : "badge-pill-neutral") + " text-xs";
@@ -643,6 +669,9 @@
     });
 
     updateBadge();
+    if (typeof window.jumpPlaygroundStep === "function") {
+      window.jumpPlaygroundStep(2);
+    }
   }
 
   // Load pre-packaged recorded repair patch (Plan §10, §13 PA4)
@@ -698,6 +727,9 @@
     }
     updateBadge();
     runAcceptanceGates();
+    if (typeof window.jumpPlaygroundStep === "function") {
+      window.jumpPlaygroundStep(5);
+    }
   }
 
   // Evaluate candidate code against the 4 acceptance stages
