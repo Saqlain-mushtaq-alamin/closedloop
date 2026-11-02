@@ -1,0 +1,134 @@
+{
+  "budget_cap_usd": 60.0,
+  "valid_runs_spend_usd": 4.584327,
+  "total_all_runs_spend_usd": 5.467327,
+  "sam_metering_note": "SAM 3.1 costs are labeled as ESTIMATE because token counts are synthetic (1,000 in, 50 out per image).",
+  "runs": [
+    {
+      "run_id": "cert-mint-01",
+      "stage": "Policy Synthesis",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.006349,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Zero-shot candidate synthesis"
+    },
+    {
+      "run_id": "cert-mint-02",
+      "stage": "Policy Synthesis",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.009645,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "G0 retry"
+    },
+    {
+      "run_id": "cert-mint-03",
+      "stage": "Policy Synthesis",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.009968,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Accepted v1 initial policy"
+    },
+    {
+      "run_id": "round2-mint-01",
+      "stage": "Repair Synthesis",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.007736,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Accepted v2 candidate policy"
+    },
+    {
+      "run_id": "judge-g2-03-pilot",
+      "stage": "Judge Calibration Pilot",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 0.127529,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "60 episodes (SAM token count synthetic)"
+    },
+    {
+      "run_id": "judge-g2-03",
+      "stage": "Judge Calibration Full",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 0.662375,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "700 calibration episodes (SAM token count synthetic)"
+    },
+    {
+      "run_id": "cert-pilot-01",
+      "stage": "Certification Pilot",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 0.01403,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "15 episodes with vision judge (ESTIMATE)"
+    },
+    {
+      "run_id": "cert-full-01",
+      "stage": "Certification Full (v1)",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 2.594031,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "Vision judge evaluation on 16 cells (ESTIMATE)"
+    },
+    {
+      "run_id": "cert3-full-01",
+      "stage": "Certification Full (v2)",
+      "model": "deterministic_sim",
+      "spend_usd": 0.0,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "State ground truth mode ($0.00 API spend)"
+    },
+    {
+      "run_id": "shift-full-01",
+      "stage": "Distribution Shift Test",
+      "model": "deterministic_sim",
+      "spend_usd": 0.0,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Deterministic simulation ($0.00 API spend)"
+    },
+    {
+      "run_id": "challenge-grid-01",
+      "stage": "Challenge Grid Sweep",
+      "model": "deterministic_sim",
+      "spend_usd": 0.0,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Deterministic simulation ($0.00 API spend)"
+    },
+    {
+      "run_id": "judge-g2-01",
+      "stage": "Judge Calibration (Quarantined)",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 0.883,
+      "is_estimate": true,
+      "status": "quarantined",
+      "notes": "Quarantined in INVALID_RUNS.json"
+    },
+    {
+      "run_id": "judge-g2-02-pilot",
+      "stage": "Judge Calibration Pilot (Quarantined)",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 0.149516,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "Superseded pilot"
+    },
+    {
+      "run_id": "judge-g2-02",
+      "stage": "Judge Calibration Full (Quarantined)",
+      "model": "muse-spark-1.3 + sam-3.1",
+      "spend_usd": 1.003148,
+      "is_estimate": true,
+      "status": "valid",
+      "notes": "Superseded run (uneven deep bucket)"
+    }
+  ]
+}

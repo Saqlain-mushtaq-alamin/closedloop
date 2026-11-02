@@ -84,10 +84,16 @@ All metrics below are generated strictly by `make report` from committed, append
 | **Vision Judge TPR ($a$)** | **1.0000** ($a_U = 0.9825$) | `runs/judge-g2-03/` | 300 success calibration episodes |
 | **Vision Judge FPR ($b$)** | **0.0050** ($b_U = 0.1048$) | `runs/judge-g2-03/` | 400 failure calibration episodes |
 | **Vision Judge Ceiling Target** | **0.9435** | `runs/judge-g2-03/` | Gate G2 calibrated threshold |
-| **Repair Arm B1 Acceptance Rate** | **0.25** | `runs/h2h3-full-03/` | Random failure feedback |
-| **Repair Arm B2 Acceptance Rate** | **0.65** | `runs/h2h3-full-03/` | Minimal counterexample feedback |
-| **Repair Arm B3 Acceptance Rate** | **0.80** | `runs/h2h3-full-03/` | Minimal CE + SAM filmstrip |
-| **Damage Rate Across All Arms** | **0.00%** | `runs/h2h3-full-03/` | Zero regressions admitted |
+| **Repair Arm B1 Acceptance Rate** | **0.25** | `runs/h2h3-full-03/` | Random failure feedback (for one starting program) |
+| **Repair Arm B2 Acceptance Rate** | **0.10** | `runs/h2h3-full-03/` | Minimal counterexample feedback (for one starting program) |
+| **Repair Arm B3 Acceptance Rate** | **0.05** | `runs/h2h3-full-03/` | Minimal CE + SAM filmstrip (for one starting program) |
+| **Damage Rate B2** | **0.05** | `runs/h2h3-full-03/` | 1 regression in 20 trajectories (B1: 0.00, B3: 0.00) |
+
+### 3.1 Hypothesis Evaluation Summary (H1 – H4)
+- **Hypothesis H1 (Autonomous Repair vs Generation Alone): Supported (+0.1875 gap for B1 over B0, 95% CI [0.10, 0.2875]) for one starting program.** Autonomous repair with execution feedback significantly improved task reliability over zero-shot generation alone.
+- **Hypothesis H2 (Minimal Counterexample B2 vs Random Failure B1): Negative (acceptance rate B2 = 0.10 vs B1 = 0.25, difference -0.15, 95% CI [-0.2125, 0.0]) for one starting program.** Counter-intuitively, presenting a tightly minimized counterexample led the LLM to synthesize brittle patches that passed the isolated counterexample but failed broader rerun scenarios or caused localized regressions (damage rate 0.05 in B2 vs 0.00 in B1).
+- **Hypothesis H3 (Visual Filmstrip B3 vs Minimal Counterexample B2): Null (acceptance rate B3 = 0.05 vs B2 = 0.10, difference -0.05, 95% CI [-0.125, +0.0625]) for one starting program.** Adding a 5-frame SAM 3.1 visual filmstrip with segmentation overlays did not yield a statistically significant improvement in patch acceptance over minimal counterexample text alone.
+- **Hypothesis H4 (Distribution Shift Refusal): Supported (bound drop 0.6186 -> 0.2017, difference 0.4169).** When evaluated outside the operational distribution D, statistical bounds dropped sharply below the 0.90 target threshold, triggering automatic and honest refusal.
 
 ---
 
@@ -106,36 +112,33 @@ The overall error rate is bounded by $\delta = 0.05$ (95% confidence level), all
 
 ---
 
-## 5. Model IDs, Tooling, and Sample API Log
+## 5. Model IDs, Tooling, and Verified Log Entry
 
 ### 5.1 Meta Model Tooling
 - **LLM Reasoning & Patch Synthesis:** Meta Model API (`https://api.meta.ai/v1`) using model `muse-spark-1.3`.
 - **Vision Grounding & Segmentation:** Meta Model API SAM 3.1 (`sam-3.1`) generating bounding boxes and binary segmentation masks for rendered camera footage.
 - **Budget Governance:** Enforced by local `CostMeter` with a hard $60.00 budget cap. Total project spend remained under $18.50 across all phases.
 
-### 5.2 Sample Model API Log
+### 5.2 Real Model API Cache Entry (Source: `runs/judge-g2-03/llm_cache.json`)
+The following is an authentic entry copied directly from `runs/judge-g2-03/llm_cache.json` (prompt hash `00f88acec02cf524211b6be4`), recording live Meta Model API invocation for SAM 3.1 visual grounding and `muse-spark-1.3` reasoning:
+
 ```json
 {
-  "timestamp": "2026-10-29T18:42:11.204Z",
-  "endpoint": "https://api.meta.ai/v1/chat/completions",
+  "source_file": "runs/judge-g2-03/llm_cache.json",
+  "prompt_hash": "00f88acec02cf524211b6be4",
   "model": "muse-spark-1.3",
-  "request": {
-    "temperature": 0.2,
-    "top_p": 0.95,
-    "max_output_tokens": 2048,
-    "messages": [
-      {"role": "system", "content": "You are an expert robot controller synthesis engineer..."},
-      {"role": "user", "content": "The controller dropped the payload under minimal failure: mass=3.40kg, friction=0.22..."}
-    ]
-  },
-  "response": {
-    "id": "chatcmpl-spark-992a8f",
-    "prompt_tokens": 842,
-    "completion_tokens": 318,
-    "total_tokens": 1160,
-    "prompt_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "cost_usd": 0.000785
-  }
+  "vision_model": "sam-3.1",
+  "tokens_in": 2247,
+  "tokens_out": 364,
+  "cost_usd": 0.003531,
+  "cube_box": [178, 159, 204, 189],
+  "cube_centroid": [191.0, 174.0],
+  "pad_box": [123, 136, 188, 184],
+  "geometric_pass": false,
+  "spark_pass": false,
+  "pass_verdict": false,
+  "confidence": 0.95,
+  "reason": "red cube is beside green pad on table, not resting on top of pad"
 }
 ```
 
@@ -143,14 +146,14 @@ The overall error rate is bounded by $\delta = 0.05$ (95% confidence level), all
 
 ## 6. Limitations (Plan §16)
 
-### 6.1 Simulation-to-Reality Gap
-All experiments and certificates were conducted using the PyBullet 3.2.5 physics engine. Contact physics, friction models, and simulated rendering represent approximations of physical reality. Real-world physical robots introduce mechanical wear, sensor noise, calibration drift, and unmodeled compliance. Consequently, certificates generated by ClosedLoop describe the simulator's distribution D and serve as pre-deployment screening, not proof of real-world physical transfer.
+1. **Simulation-to-Reality Gap:** All experiments and certificates were conducted using the PyBullet 3.2.5 physics engine. Contact physics, friction models, and simulated rendering represent approximations of physical reality. Real-world physical robots introduce mechanical wear, sensor noise, calibration drift, and unmodeled compliance. Consequently, certificates generated by ClosedLoop describe the simulator's distribution D and serve as pre-deployment screening, not proof of real-world physical transfer or safety.
+2. **Judge Error Assumption and Frame Reuse:** The camera judge corrected bound assumes that the vision judge error rates ($a_U, b_U$) measured during the calibration phase remain statistically invariant during certification rollouts. In practice, visual error rates can drift if lighting, camera angles, or controller trajectories diverge from calibration rollouts. The pipeline reuses fixed 5-frame event boundaries, which may miss transient mid-trajectory slips.
+3. **Distribution-Specific Certificate:** Statistical certificates hold strictly under the defined scenario distribution D. When the operational distribution shifts (as demonstrated in our Hypothesis H4 shift experiment where object mass and friction were perturbed), the certificate from distribution D ceases to apply, and recertification on D' drops the bound and honestly refuses certification.
+4. **H2 Negative and H3 Null Results:** For the starting program evaluated, minimal counterexample feedback (Arm B2, acceptance rate 0.10) underperformed random failure feedback (Arm B1, acceptance rate 0.25; negative result), and SAM 3.1 visual filmstrip feedback (Arm B3, acceptance rate 0.05; null result) yielded no measurable benefit over minimal counterexamples alone.
+5. **Single Starting Program:** Hypotheses H1–H3 were evaluated on one initial synthesized controller program (`bec73dec...`). Results reflect this program family and may vary across alternative architectures.
+6. **Friction Insensitivity:** Grasp slip failures in the hero task were governed predominantly by payload mass relative to commanded normal force; friction variation across $[0.10, 1.00]$ exhibited no measurable effect on slip boundaries.
+7. **Partial Envelope Certified:** For program v1, only 8 of 16 operational cells (50.0%) certified under target $p \ge 0.90$; payloads with mass $8.5 \le m \le 11.5$ kg consistently failed standard clamping forces and remained uncertified.
 
-### 6.2 Judge Error and Non-Differential Assumption
-The camera judge corrected bound assumes that the vision judge error rates ($a_U, b_U$) measured during the calibration phase remain statistically invariant during certification rollouts. In practice, visual error rates can drift if lighting, camera angles, or controller trajectories diverge from calibration rollouts. We mitigate this using bucketed margin-stratified FPR calculations, including final repaired controllers in calibration, freezing judge weights, and reporting gaps if calibration distributions drift.
-
-### 6.3 Distribution-Specific Guarantee
-Statistical certificates hold strictly under the defined scenario distribution D. When the operational distribution shifts (as demonstrated in our Hypothesis H4 shift experiment where object mass and friction were perturbed), the certificate from distribution D ceases to apply, and recertification on D' drops the bound and honestly refuses certification.
 
 ---
 

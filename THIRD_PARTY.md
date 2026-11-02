@@ -1,31 +1,47 @@
-# Third-party assets and dependencies
+# Third-Party Assets and Dependencies
 
-Permissive licences only (MIT, BSD, Apache-2.0, PSF). No copyrighted media.
-Licences below verified against each package's PyPI metadata, not guessed.
+Permissive licences only (MIT, BSD, Apache-2.0, PSF, zlib). No copyrighted media.
+Licences verified against each package's PyPI metadata and distribution licence files.
 
-| Asset | Licence | Source | Purpose in this repo |
+## Python Dependencies (from `requirements.lock` and `playground/requirements-linux.txt`)
+
+| Package / Asset | Version | Licence | Source URL | Purpose in Repository |
+|---|---|---|---|---|
+| Python (stdlib) | 3.11 | PSF-2.0 | https://www.python.org/ | Project execution runtime |
+| alembic | 1.20.1 | MIT | https://pypi.org/project/alembic/1.20.1/ | Database migration dependency for Optuna |
+| cmaes | 0.13.1 | MIT | https://pypi.org/project/cmaes/0.13.1/ | CMA-ES algorithm implementation for Optuna falsification |
+| colorama | 0.4.6 | BSD-3-Clause | https://pypi.org/project/colorama/0.4.6/ | Cross-platform colored terminal text support |
+| colorlog | 6.12.0 | MIT | https://pypi.org/project/colorlog/6.12.0/ | Formatted logging dependency for Optuna |
+| fastapi | >=0.110.0 | MIT | https://pypi.org/project/fastapi/ | Interactive playground service API endpoint |
+| httpx | >=0.27.0 | BSD-3-Clause | https://pypi.org/project/httpx/ | Async HTTP client for playground test fixtures |
+| iniconfig | 2.3.1 | MIT | https://pypi.org/project/iniconfig/2.3.1/ | Pytest configuration parser |
+| Mako | 1.4.3 | MIT | https://pypi.org/project/Mako/1.4.3/ | Templating dependency for Alembic |
+| MarkupSafe | 3.0.4 | BSD-3-Clause | https://pypi.org/project/MarkupSafe/3.0.4/ | Fast string escape dependency for Mako |
+| numpy | 2.4.2 | BSD-3-Clause | https://pypi.org/project/numpy/2.4.2/ | Numerical calculations, RNG streams, statistical arrays |
+| optuna | 5.0.0 | MIT | https://pypi.org/project/optuna/5.0.0/ | Black-box parameter falsification search framework |
+| packaging | 26.3 | Apache-2.0 or BSD-2-Clause | https://pypi.org/project/packaging/26.3/ | Core packaging utilities for pytest |
+| pluggy | 1.7.0 | MIT | https://pypi.org/project/pluggy/1.7.0/ | Plugin manager for pytest |
+| pybullet | 3.2.7 | zlib/libpng | https://pypi.org/project/pybullet/3.2.7/ | Physics simulation environment for task evaluation |
+| pydantic | >=2.6.0 | MIT | https://pypi.org/project/pydantic/ | Request/response data validation in playground server |
+| Pygments | 2.21.0 | BSD-2-Clause | https://pypi.org/project/Pygments/2.21.0/ | Syntax highlighter dependency for pytest |
+| pytest | 9.2.0 | MIT | https://pypi.org/project/pytest/9.2.0/ | Test suite execution runner |
+| pytest-asyncio | >=1.4.0 | Apache-2.0 | https://pypi.org/project/pytest-asyncio/ | Async test support plugin for playground endpoints |
+| python-dotenv | >=1.0.0 | BSD-3-Clause | https://pypi.org/project/python-dotenv/ | Safe local environment variable loading |
+| PyYAML | 6.0.3 | MIT | https://pypi.org/project/PyYAML/6.0.3/ | Configuration file parsing (`configs/*.yaml`) |
+| scipy | 1.17.1 | BSD-3-Clause | https://pypi.org/project/scipy/1.17.1/ | Exact Clopper-Pearson beta distribution quantile bounds |
+| SQLAlchemy | 2.1.6 | MIT | https://pypi.org/project/SQLAlchemy/2.1.6/ | Relational database abstraction for Optuna storage |
+| sse-starlette | >=2.0.0 | BSD-3-Clause | https://pypi.org/project/sse-starlette/ | Server-Sent Events streaming in playground service |
+| tqdm | 4.70.1 | MIT / MPL-2.0 | https://pypi.org/project/tqdm/4.70.1/ | Progress bar visualization for long-running routines |
+| typing_extensions | 4.16.0 | PSF-2.0 | https://pypi.org/project/typing-extensions/4.16.0/ | Backported typing hints for Python standard library |
+| uvicorn | >=0.28.0 | BSD-3-Clause | https://pypi.org/project/uvicorn/ | ASGI web server running local playground endpoints |
+
+## Remote AI Provider APIs (Not Vendored)
+
+| API Service | Provider | Terms / Licence | Purpose |
 |---|---|---|---|
-| Python 3.11 (stdlib) | PSF | https://www.python.org/ | Project interpreter (AGENTS.md) |
-| numpy 2.4.2 | BSD-3-Clause (plus bundled 0BSD/MIT/Zlib/CC0-1.0 parts, per its SPDX expression) | https://pypi.org/project/numpy/2.4.2/ | RNG + array math in `certify/stats.py` (ceiling simulation); scenario sampling later |
-| scipy 1.17.1 | BSD-3-Clause (PyPI: OSI Approved BSD License; text in package) | https://pypi.org/project/scipy/1.17.1/ | Exact beta CIs (`scipy.stats.beta`) backing `cp_lower`/`cp_upper` |
-| PyYAML 6.0.3 | MIT | https://pypi.org/project/PyYAML/6.0.3/ | Reading `configs/*.yaml` (error budget, run manifests) |
-| pybullet 3.2.7 | zlib/libpng | https://pypi.org/project/pybullet/3.2.7/ | Headless physics for T1 (Linux wheels cp36–cp311 only; Windows builds the sdist from source) |
-| pytest 9.2.0 (+ iniconfig, packaging, pluggy, pygments) | MIT / Apache-2.0-or-BSD-2-Clause / MIT / BSD-2-Clause | https://pypi.org/project/pytest/9.2.0/ | Test runner and its shipped dependencies |
-| Meta Model API (`muse-spark-1.3`, SAM 3.1) — remote service, not vendored | Commercial API terms [VERIFY] | https://api.meta.ai/v1 | Code/repair generation, vision judge |
-| optuna 5.0.0 | MIT | https://pypi.org/project/optuna/5.0.0/ | Black-box optimization framework for falsification search |
-| cmaes 0.13.1 | MIT | https://pypi.org/project/cmaes/0.13.1/ | CMA-ES sampler implementation for Optuna |
-| alembic 1.20.1 | MIT | https://pypi.org/project/alembic/1.20.1/ | Optuna storage migration dependency |
-| sqlalchemy 2.1.6 | MIT | https://pypi.org/project/SQLAlchemy/2.1.6/ | Optuna storage dependency |
-| colorlog 6.12.0 | MIT | https://pypi.org/project/colorlog/6.12.0/ | Optuna logging dependency |
-| tqdm 4.70.1 | MIT / MPL-2.0 | https://pypi.org/project/tqdm/4.70.1/ | Optuna progress bar dependency |
-| Mako 1.4.3 | MIT | https://pypi.org/project/Mako/1.4.3/ | Alembic template dependency |
-| MarkupSafe 3.0.4 | BSD-3-Clause | https://pypi.org/project/MarkupSafe/3.0.4/ | Mako dependency |
-| typing-extensions 4.16.0 | PSF-2.0 | https://pypi.org/project/typing-extensions/4.16.0/ | Typing extensions dependency |
-| python-dotenv 1.2.4 | BSD-3-Clause | https://pypi.org/project/python-dotenv/ | Environment variable loading from .env for API keys |
-| fastapi 0.162.0 | MIT | https://pypi.org/project/fastapi/ | Playground local service endpoint |
-| httpx 0.28.1 | BSD-3-Clause | https://pypi.org/project/httpx/ | HTTP client for playground test fixtures |
-| pytest-asyncio 1.4.1 | Apache-2.0 | https://pypi.org/project/pytest-asyncio/ | Async test runner plugin |
+| Meta Model API (`muse-spark-1.3`, SAM 3.1) | Meta AI | Meta Model Terms / Developer Hackathon License | Policy code synthesis, targeted repair, visual segmentation |
 
-No URDF, mesh, texture, font, or dataset assets vendored yet (Phase 02 will add
-PyBullet + robot models here with licence and URL).
-
+## Asset Licensing & Simulation Geometry
+- **No external URDFs, meshes, textures, or datasets are vendored.**
+- All simulation objects (gripper fingers, payload cube, placement receptacle pad) are procedurally generated in PyBullet using standard primitive geometric shapes (`createCollisionShape`, `createMultiBody`).
+- All 1,277 tracked frame images and diagnostic SVGs were synthesized and rendered directly by ClosedLoop simulation and dashboard tooling during the event. Zero copyrighted media is included.

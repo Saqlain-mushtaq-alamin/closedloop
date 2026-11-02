@@ -1,7 +1,9 @@
 # ClosedLoop: Falsify, Repair, Certify
 
 **Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026) • Indie Developer Track ("Push the Frontier")**  
-*All code, experiments, tests, and documentation were built during the hackathon window (Oct 26 – Nov 4, 2026). No prior private code was reused.*
+*Built during the event (Oct 28 to Nov 4, 2026) by a solo developer; early commits used the placeholder git identity closedloop-dev. No prior code was reused.*
+
+
 
 ---
 
@@ -73,8 +75,22 @@ All numbers below are produced directly by `make report` from append-only logs (
 - **Headline State Bound:** $p_L = 0.9623$ (certified in simulation under distribution D at cell level target $p \ge 0.90$).
 - **Headline Camera Corrected Bound:** $p_L = 0.9563$ (corrected for vision judge false-positive and false-negative error bounds from rendered camera footage).
 - **Certified Cell Fraction:** 8/16 cells certified (50.0% of operational space; payload mass $\le 6.25$ kg).
+- **Autonomous Repair vs Generation Alone (H1):** Supported (+0.1875 gap, 95% CI [0.10, 0.2875] for B1 over B0) for one starting program.
+- **Minimal Counterexamples (H2):** Negative (acceptance B2 = 0.10 vs B1 = 0.25, difference -0.15) for one starting program.
+- **Visual Filmstrips (H3):** Null (acceptance B3 = 0.05 vs B2 = 0.10, difference -0.05) for one starting program.
 - **Distribution Shift Refusal (H4):** On reference distribution D, bound is 0.6186; on shifted distribution D' (heavier payloads / lower friction), bound drops to 0.2017 (drop of 0.4169), honestly refusing certification at target $p \ge 0.90$.
 - **Vision Judge Calibration:** True positive rate 1.0 (lower bound 0.9825), false positive rate 0.005 (worst-bucket upper bound 0.1048), certifiable ceiling target 0.9435.
+
+---
+
+### ⚠️ Limitations (Plan §16)
+1. **Simulation Only:** All evaluations and certificates are established strictly within the PyBullet 3.2.5 simulation environment. A non-zero sim-to-real gap exists due to contact compliance, sensor noise, and actuator latency; no claim of real-world transfer or physical safety is made.
+2. **Judge Error Assumption & Frame Reuse:** The camera judge bound correction relies on the assumption that vision judge errors are non-differential across the evaluation envelope. The calibration and certification pipeline reuses fixed 5-frame event boundaries, which may miss transient mid-trajectory slips.
+3. **Distribution-Specific Certificate:** Guarantees apply strictly to test scenarios drawn i.i.d. from distribution D. Under distribution shift (as demonstrated in Hypothesis H4), guarantees void and the pipeline refuses certification.
+4. **H2 Negative and H3 Null:** For the starting program evaluated, minimal counterexample feedback (Arm B2, acceptance rate 0.10) underperformed random failure feedback (Arm B1, acceptance rate 0.25, difference -0.15; negative result), and SAM 3.1 visual filmstrip feedback (Arm B3, acceptance rate 0.05, difference -0.05; null result) yielded no measurable benefit over minimal counterexamples alone.
+5. **Single Starting Program:** Hypotheses H1–H3 were evaluated on one initial synthesized controller program (`bec73dec...`). Results reflect this program family and may vary across alternative architectures.
+6. **Friction Insensitivity:** Grasp slip failures in the hero task were governed predominantly by payload mass relative to commanded normal force; friction variation across $[0.10, 1.00]$ exhibited no measurable effect on slip boundaries.
+7. **Partial Envelope Certified:** For program v1, only 8 of 16 operational cells (50.0%) certified under target $p \ge 0.90$; payloads with mass $8.5 \le m \le 11.5$ kg consistently failed standard clamping forces and remained uncertified.
 
 ---
 
@@ -85,3 +101,4 @@ ClosedLoop takes robot programs written by an LLM (`muse-spark-1.3`) and answers
 3. **Certification:** Quantify reliability bounds across operational regions ("success probability at least p, with 95% confidence, certified in simulation under distribution D"), corrected for noisy rendered camera footage evaluation.
 
 To my knowledge, I did not find this exact combination (falsifier-driven repair + certificate corrected for a rendered camera footage judge) elsewhere in published benchmarks.
+

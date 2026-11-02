@@ -32,7 +32,8 @@ When an LLM writes code to control a robot, conventional pipelines celebrate aft
 - **Demo Video Link:** `https://<video-host-url>/closedloop-demo-2m45s.mp4` (Total duration 2:45, strictly ≤ 3:00, publicly viewable without requiring an account or login).
 
 ### Contributor List
-- **Solo Developer:** Indie Track submission by a single participant. All contributions and git commits originated during the hackathon window.
+- **Solo Developer:** Indie Track submission by a single participant; early commits used placeholder git identity `closedloop-dev`. All code, models, and assets were built during the hackathon window (Oct 28 – Nov 4, 2026).
+
 
 ---
 
@@ -49,11 +50,11 @@ All results below are produced by `make report` from append-only logs (`runs/*/e
 | **Distribution Shift Shifted D'** | **0.2017** | Empirical pass rate 26.0% ($n=150$) | `runs/shift-full-01` |
 | **Shift Refusal Drop** | **0.4169** | Bound drop triggers honest certificate refusal | `runs/shift-full-01` |
 | **Vision Judge True Positive Rate ($a$)** | **1.0000** ($a_U = 0.9825$) | 300 success calibration episodes | `runs/judge-g2-03` |
-| **Vision Judge False Positive Rate ($b$)** | **0.0050** ($b_U = 0.1048$) | 400 failure calibration episodes | `runs/judge-g2-03` |
-| **Repair Acceptance: Arm B1 (Random)** | **0.25** | 20 trajectories, equal episode/token budget | `runs/h2h3-full-03` |
-| **Repair Acceptance: Arm B2 (Minimal CE)**| **0.65** | 20 trajectories, coordinate minimization | `runs/h2h3-full-03` |
-| **Repair Acceptance: Arm B3 (CE + SAM)**  | **0.80** | 20 trajectories, 5-frame SAM 3.1 filmstrip | `runs/h2h3-full-03` |
-| **Damage Rate Across Arms** | **0.00%** | Zero regressions admitted by 4-stage gate | `runs/h2h3-full-03` |
+| **Repair Acceptance: Arm B1 (Random)** | **0.25** | 20 trajectories, equal episode/token budget (for one starting program) | `runs/h2h3-full-03` |
+| **Repair Acceptance: Arm B2 (Minimal CE)**| **0.10** | 20 trajectories, coordinate minimization (for one starting program) | `runs/h2h3-full-03` |
+| **Repair Acceptance: Arm B3 (CE + SAM)**  | **0.05** | 20 trajectories, 5-frame SAM 3.1 filmstrip (for one starting program) | `runs/h2h3-full-03` |
+| **Damage Rate B2** | **0.05** | 1 regression in 20 trajectories (B1: 0.00, B3: 0.00) | `runs/h2h3-full-03` |
+
 
 ---
 

@@ -160,18 +160,23 @@ def run_certification(
     M = int(cert_cfg["M"])
     budgets = compute_error_budgets(delta=delta, K=K, B=B, M=M)
 
-    # Output directory
+    # Output directory (T3 Guard: refuse existing dir or non-empty log)
     out_dir = Path(runs_dir) / run_id
     if out_dir.exists():
-        if (out_dir / "manifest.json").exists():
-            raise FileExistsError(f"Run dir already completed: {out_dir}")
-    else:
-        out_dir.mkdir(parents=True)
+        raise FileExistsError(f"Run directory already exists: {out_dir}")
     log_path = out_dir / "episodes.jsonl"
+    if log_path.exists() and log_path.stat().st_size > 0:
+        raise ValueError(f"episodes.jsonl already exists and is non-empty: {log_path}")
 
-    # Persistent ledger for certification stream (Major finding 9, Rule H9)
+    # Persistent ledger for certification stream (T3 Guard: refuse missing or reset ledger)
     ledger_path = ROOT / runs_dir / ".certification_ledger.json"
+    if not ledger_path.exists():
+        raise FileNotFoundError(f"Certification ledger missing at {ledger_path}")
     ledger = CertificationLedger(path=ledger_path)
+    if len(ledger.claimed) == 0:
+        raise ValueError("Certification ledger is empty or has been reset")
+
+    out_dir.mkdir(parents=True)
 
     timeout_s = float(cert_cfg["timeout_s"])
     memory_mb = int(cert_cfg["memory_mb"])

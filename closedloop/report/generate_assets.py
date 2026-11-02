@@ -27,7 +27,14 @@ def _compute_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _write_lf(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(content)
+
+
 def _read_manifest(run_id: str) -> dict[str, Any]:
+
     p = ROOT / "runs" / run_id / "manifest.json"
     if not p.exists():
         raise FileNotFoundError(f"Manifest not found for run {run_id}: {p}")
@@ -369,7 +376,7 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
         area_fraction=price_data["state_area_fraction"],
     )
     p_hm_state = out_dir / "heatmap_state.svg"
-    p_hm_state.write_text(svg_state, encoding="utf-8")
+    _write_lf(p_hm_state, svg_state)
     assets_map["heatmap_state"] = {
         "type": "heatmap_state",
         "path": _rel_path(p_hm_state),
@@ -389,7 +396,7 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
         area_fraction=price_data["camera_area_fraction"],
     )
     p_hm_cam = out_dir / "heatmap_camera.svg"
-    p_hm_cam.write_text(svg_cam, encoding="utf-8")
+    _write_lf(p_hm_cam, svg_cam)
     assets_map["heatmap_camera"] = {
         "type": "heatmap_camera",
         "path": _rel_path(p_hm_cam),
@@ -403,7 +410,7 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     # Asset 3: Price of Footage Plot
     svg_price = generate_price_plot_svg(price_data)
     p_price = out_dir / "price_plot.svg"
-    p_price.write_text(svg_price, encoding="utf-8")
+    _write_lf(p_price, svg_price)
     assets_map["price_plot"] = {
         "type": "price_plot",
         "path": _rel_path(p_price),
@@ -417,7 +424,7 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     # Asset 4: Shift Test Figure (H4)
     svg_shift = generate_shift_figure_svg(shift_data)
     p_shift = out_dir / "shift_figure.svg"
-    p_shift.write_text(svg_shift, encoding="utf-8")
+    _write_lf(p_shift, svg_shift)
     assets_map["shift_figure"] = {
         "type": "shift_figure",
         "path": _rel_path(p_shift),
@@ -432,7 +439,7 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     inspect_json = json.loads((ROOT / "runs" / "judge-g2-03" / "inspection" / "inspect_frame_00.json").read_text(encoding="utf-8"))
     svg_filmstrip = generate_filmstrip_svg(inspect_json)
     p_filmstrip = out_dir / "filmstrip_sam.svg"
-    p_filmstrip.write_text(svg_filmstrip, encoding="utf-8")
+    _write_lf(p_filmstrip, svg_filmstrip)
     assets_map["filmstrip_sam"] = {
         "type": "filmstrip_sam",
         "path": _rel_path(p_filmstrip),
@@ -446,7 +453,8 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     # Asset 6: Rollout Clip
     svg_rollout = generate_rollout_clip_svg()
     p_rollout = out_dir / "rollout_clip.svg"
-    p_rollout.write_text(svg_rollout, encoding="utf-8")
+    _write_lf(p_rollout, svg_rollout)
+
     assets_map["rollout_clip"] = {
         "type": "rollout_clip",
         "path": _rel_path(p_rollout),
@@ -518,13 +526,19 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
             "camera_cell_allocation": 0.0025,
         },
     }
+    manifest_file = out_dir / "manifest.json"
+    with open(manifest_file, "w", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+
     summary_file = out_dir / "report_summary.json"
-    summary_file.write_text(json.dumps(report_summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    with open(summary_file, "w", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(report_summary, indent=2, sort_keys=True) + "\n")
 
     from closedloop.report.build_ui_data import build_ui_data
     build_ui_data()
 
     return manifest
+
 
 
 def verify_phase_12_gate() -> None:

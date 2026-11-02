@@ -1,0 +1,277 @@
+{
+  "cells": {
+    "cell_00": {
+      "friction_bounds": [
+        0.1,
+        0.325
+      ],
+      "mass_bounds": [
+        1.0,
+        3.625
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_01": {
+      "friction_bounds": [
+        0.325,
+        0.55
+      ],
+      "mass_bounds": [
+        1.0,
+        3.625
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_02": {
+      "friction_bounds": [
+        0.55,
+        0.775
+      ],
+      "mass_bounds": [
+        1.0,
+        3.625
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_03": {
+      "friction_bounds": [
+        0.775,
+        1.0
+      ],
+      "mass_bounds": [
+        1.0,
+        3.625
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_04": {
+      "friction_bounds": [
+        0.1,
+        0.325
+      ],
+      "mass_bounds": [
+        3.625,
+        6.25
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_05": {
+      "friction_bounds": [
+        0.325,
+        0.55
+      ],
+      "mass_bounds": [
+        3.625,
+        6.25
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_06": {
+      "friction_bounds": [
+        0.55,
+        0.775
+      ],
+      "mass_bounds": [
+        3.625,
+        6.25
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_07": {
+      "friction_bounds": [
+        0.775,
+        1.0
+      ],
+      "mass_bounds": [
+        3.625,
+        6.25
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_08": {
+      "friction_bounds": [
+        0.1,
+        0.325
+      ],
+      "mass_bounds": [
+        6.25,
+        8.875
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_09": {
+      "friction_bounds": [
+        0.325,
+        0.55
+      ],
+      "mass_bounds": [
+        6.25,
+        8.875
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_10": {
+      "friction_bounds": [
+        0.55,
+        0.775
+      ],
+      "mass_bounds": [
+        6.25,
+        8.875
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_11": {
+      "friction_bounds": [
+        0.775,
+        1.0
+      ],
+      "mass_bounds": [
+        6.25,
+        8.875
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_12": {
+      "friction_bounds": [
+        0.1,
+        0.325
+      ],
+      "mass_bounds": [
+        8.875,
+        11.5
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_13": {
+      "friction_bounds": [
+        0.325,
+        0.55
+      ],
+      "mass_bounds": [
+        8.875,
+        11.5
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_14": {
+      "friction_bounds": [
+        0.55,
+        0.775
+      ],
+      "mass_bounds": [
+        8.875,
+        11.5
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    },
+    "cell_15": {
+      "friction_bounds": [
+        0.775,
+        1.0
+      ],
+      "mass_bounds": [
+        8.875,
+        11.5
+      ],
+      "state": {
+        "certified": true,
+        "k_pass": 150,
+        "lower_bound": 0.9623,
+        "n_runs": 150
+      }
+    }
+  },
+  "certified_area_fraction": 1.0,
+  "certified_cells_count": 16,
+  "claim": "certified in simulation under distribution D",
+  "created_at": "2026-11-02T18:48:48.342532+00:00",
+  "headline": {
+    "state": {
+      "certified": true,
+      "k_pass": 59,
+      "lower_bound": 0.9505,
+      "n_runs": 59
+    }
+  },
+  "program_id": "5f74f7762ee1f378",
+  "program_sha256": "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1",
+  "provenance_note": "v2 was created after seeing v1's certificate; v2's certificate is valid because v2 was fixed before its own data was drawn.",
+  "run_id": "cert3-full-01",
+  "source_v1_run": "cert-mint-03"
+}

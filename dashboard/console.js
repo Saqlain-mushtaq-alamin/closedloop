@@ -1686,7 +1686,7 @@
     const ceMarg = document.getElementById('tt-ce-margin');
     if (ceMarg) ceMarg.textContent = '-0.126';
 
-    // 4. WHERE IS IT SAFE: Envelope descriptions
+    // 4. CERTIFIED ENVELOPE: Envelope descriptions
     const safeDesc = document.getElementById('tt-safe-desc');
     if (safeDesc) {
       safeDesc.innerHTML = 'Certified in simulation under distribution D: For initial program (v1), reliable operation is certified only for masses up to <strong>8.0 kg</strong>. Under heavy loads (8.5 to 14.0 kg), gravitational force causes grasp slip. Repaired candidate (v2) upgraded to 300N clamping force with dwell phase, certified across all 16 operating envelope cells up to 14.0 kg.';
@@ -1694,13 +1694,14 @@
 
     const envV1 = document.getElementById('tt-envelope-v1-summary');
     if (envV1) {
-      envV1.innerHTML = 'Certified safe region: mass &le; 8.0 kg. Failing region: 8.5 to 14.0 kg across all poses.';
+      envV1.innerHTML = 'Certified region (simulation, under distribution D): mass &le; 8.0 kg. Failing region: 8.5 to 14.0 kg across all poses.';
     }
 
     const envV2 = document.getElementById('tt-envelope-v2-summary');
     if (envV2) {
-      envV2.innerHTML = 'Certified safe region: 1.0 to 14.0 kg across all 16 operating envelope cells.';
+      envV2.innerHTML = 'Certified region (simulation, under distribution D): 1.0 to 14.0 kg across all 16 operating envelope cells.';
     }
+
 
     // 5. TIME TO TRUST: Recomputed from manifests
     const ttt = cData.time_to_trust;

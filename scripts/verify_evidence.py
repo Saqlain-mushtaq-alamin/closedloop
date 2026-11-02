@@ -66,6 +66,44 @@ def verify_evidence(runs_dir: Path | str | None = None) -> tuple[int, int]:
     total = 0
     mismatches: list[str] = []
 
+    # Load quarantined invalid runs (Phase 12b Audit Remediation)
+    inv_file = rdir / "INVALID_RUNS.json"
+    invalid_runs: set[str] = set()
+    if inv_file.exists():
+        try:
+            inv_data = json.loads(inv_file.read_text(encoding="utf-8"))
+            invalid_runs = set(inv_data.keys())
+        except Exception:
+            invalid_runs = set()
+
+    # Rule H12 & Rule H9 integrity scan: verify all valid runs have planned==logged and unique seed pairs
+    for rd in sorted(rdir.iterdir()):
+        if not rd.is_dir() or rd.name in invalid_runs or rd.name.startswith("."):
+            continue
+        mf_path = rd / "manifest.json"
+        ep_path = rd / "episodes.jsonl"
+        if not mf_path.exists() or not ep_path.exists():
+            continue
+
+        mf = json.loads(mf_path.read_text(encoding="utf-8"))
+        planned = mf.get("episodes_planned")
+        lines = [line for line in ep_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        logged = len(lines)
+        if planned is not None and planned != logged:
+            total += 1
+            mismatches.append(f"Run {rd.name} planned!=logged: planned={planned}, logged={logged}")
+
+        seen_pairs: set[tuple[Any, Any]] = set()
+        for idx, line in enumerate(lines, start=1):
+            ep = json.loads(line)
+            if ep.get("stream") == "certification":
+                pair = (ep.get("seed"), ep.get("program_id", ""))
+                if pair in seen_pairs:
+                    total += 1
+                    mismatches.append(f"Run {rd.name} has duplicate certification seed-program pair {pair} at line {idx}")
+                    break
+                seen_pairs.add(pair)
+
     # 1. cert-full-01
     c1_dir = rdir / "cert-full-01"
     if not (c1_dir / "episodes.jsonl").exists() or not (c1_dir / "cert_summary.json").exists():
@@ -138,16 +176,21 @@ def verify_evidence(runs_dir: Path | str | None = None) -> tuple[int, int]:
         else:
             mismatches.append(f"cert-full-01 {cid} camera: {recomp_c} != {exp_c}")
 
-    # 2. cert2-full-01
-    c2_dir = rdir / "cert2-full-01"
-    if c2_dir.exists():
+    # 2. v2 certification (cert3-full-01 or cert2-full-01 if not quarantined)
+    c2_run_id = None
+    for cand_id in ["cert3-full-01", "cert2-full-01"]:
+        if (rdir / cand_id).exists() and cand_id not in invalid_runs:
+            c2_run_id = cand_id
+            break
+
+    if c2_run_id is not None:
+        c2_dir = rdir / c2_run_id
         c2_summary = json.loads((c2_dir / "cert_summary.json").read_text(encoding="utf-8"))
-        c2_manifest = json.loads((c2_dir / "manifest.json").read_text(encoding="utf-8"))
-        c2_created = c2_manifest["created_at"]
+        # Unfiltered read: NO created_at filter (Rule H10, Rule H12)
         c2_episodes = [
             json.loads(line)
             for line in (c2_dir / "episodes.jsonl").read_text(encoding="utf-8").splitlines()
-            if line.strip() and json.loads(line).get("created_at") == c2_created
+            if line.strip()
         ]
 
         c2_hl_k = 0
@@ -174,7 +217,7 @@ def verify_evidence(runs_dir: Path | str | None = None) -> tuple[int, int]:
         if math.isclose(recomp_c2_hl, exp_c2_hl, abs_tol=1e-4):
             matched += 1
         else:
-            mismatches.append(f"cert2-full-01 headline: {recomp_c2_hl} != {exp_c2_hl}")
+            mismatches.append(f"{c2_run_id} headline: {recomp_c2_hl} != {exp_c2_hl}")
 
         # Check c2 16 cells (state)
         for c in range(16):
@@ -187,11 +230,12 @@ def verify_evidence(runs_dir: Path | str | None = None) -> tuple[int, int]:
             if math.isclose(recomp_s2, exp_s2, abs_tol=1e-4):
                 matched += 1
             else:
-                mismatches.append(f"cert2-full-01 {cid} state: {recomp_s2} != {exp_s2}")
+                mismatches.append(f"{c2_run_id} {cid} state: {recomp_s2} != {exp_s2}")
 
     # 3. judge-g2-03
     jg_dir = rdir / "judge-g2-03"
-    if jg_dir.exists():
+    if jg_dir.exists() and "judge-g2-03" not in invalid_runs:
+
         jg_report = json.loads((jg_dir / "calibration_report.json").read_text(encoding="utf-8"))
         jg_episodes = [
             json.loads(line)

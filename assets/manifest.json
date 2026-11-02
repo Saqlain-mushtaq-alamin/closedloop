@@ -6,7 +6,7 @@
       "git_sha": "17e38303f29e93e0c04d02aa06ed057648430a6a",
       "path": "assets/filmstrip_sam.svg",
       "run_id": "judge-g2-03",
-      "sha256": "de00707a3e20a98f06926331e57dd7eaea07652ccf697881e6865e1fec927916",
+      "sha256": "36fc029933ca4f8fd2d1fedba9464acb873c937f9ff664fc73708daa57e40285",
       "type": "filmstrip_sam"
     },
     "heatmap_camera": {
@@ -15,7 +15,7 @@
       "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
       "path": "assets/heatmap_camera.svg",
       "run_id": "cert-full-01",
-      "sha256": "3521ed8dd47ca72d576fa2f5ca18672a96c47966d3c4f2e1beb7245407eec704",
+      "sha256": "cb83dac9d1e4c08ee67ec2c542b26207530a8705f42075a70a817c0b695f7578",
       "type": "heatmap_camera"
     },
     "heatmap_state": {
@@ -24,7 +24,7 @@
       "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
       "path": "assets/heatmap_state.svg",
       "run_id": "cert-full-01",
-      "sha256": "c779665877fb0efb5f911770c56182fba1d9d79df4428f46ab11dc4cc24a50bb",
+      "sha256": "321598b9b36805003a812fcab81bb819a1f8442ede7aafd909791befceed87dd",
       "type": "heatmap_state"
     },
     "price_plot": {
@@ -33,7 +33,7 @@
       "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
       "path": "assets/price_plot.svg",
       "run_id": "cert-full-01",
-      "sha256": "1d7c21b51f04a988a5a5ea0f28a8dfe8a6f8350a981a4394ffcac5ef8e7ef8da",
+      "sha256": "0bf1335a3dc396d449a14951929b0613b3c197b9cee2cadc17ea128fef4002f0",
       "type": "price_plot"
     },
     "rollout_clip": {
@@ -42,7 +42,7 @@
       "git_sha": "c85b8a9662d7c305b0ef8694827d73970cf09924",
       "path": "assets/rollout_clip.svg",
       "run_id": "cert-full-01",
-      "sha256": "c96c6e215d56ceebf572cc4804c41c79337903c48a6c2ac2bf0f97028cae50ea",
+      "sha256": "feba1745f205feda43d8a162bfd6b7e8a9f3b6f3d760eea586206b022f5bad76",
       "type": "rollout_clip"
     },
     "sam_inspect_frame": {
@@ -60,7 +60,7 @@
       "git_sha": "6c3b89ffae7d74b86b67698ba4ffa8b257640082",
       "path": "assets/shift_figure.svg",
       "run_id": "shift-full-01",
-      "sha256": "f09176baa185b040891ebd8d01a9ec7e1f6b3046a2896c2bb80fe440075cdcae",
+      "sha256": "77458026d5f71aabb2081069d540114b11793f3625fabca725d7694a6e3a6b9e",
       "type": "shift_figure"
     }
   },

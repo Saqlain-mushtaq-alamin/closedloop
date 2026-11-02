@@ -392,3 +392,48 @@
     - Simulation-only disclosure, nearest-grid snapping notice, and grasp slip model physics explanation.
   - Budget: $0.00 API (Deterministic local simulation only; zero LLM calls).
 
+## 2026-11-03 — Phase 12b Audit Remediation: Invalidation of cert2-full-01 and Quarantine Accounting
+- **Authorisation:** Phase 12b Audit Remediation (Human Authorised).
+- **Run ID:** `cert2-full-01`
+- **What happened (Audit Finding 4 & Finding 3):**
+  1. The log `runs/cert2-full-01/episodes.jsonl` contains 4,918 recorded episodes against 2,459 planned episodes. Each `(seed, program_id)` pair is logged exactly twice across two distinct time batches:
+     - Batch 1 (`2026-10-31T20:12:55Z`): 2,459 episodes. In `cell_00`, pass count was 17/150 (Clopper-Pearson lower bound 0.0539, uncertified).
+     - Batch 2 (`2026-10-31T20:14:44Z`): 2,459 episodes. In `cell_00`, pass count was 150/150 (lower bound 0.9623).
+  2. The verifier `scripts/verify_evidence.py` had filtered on `created_at == manifest.created_at`, silently discarding Batch 1.
+  3. This constituted an outcome-visible rerun under the same `run_id`, violating Rule H9 (single-use seed per program) and Rule H12 (frozen sample plan, append-only provenance without cherry-picking).
+- **Action:**
+  - Preserved raw files in `runs/cert2-full-01/` strictly intact (Rule H10, Rule H1).
+  - Quarantined `cert2-full-01` as invalid in sidecar file `runs/INVALID_RUNS.json`.
+  - Excluded from all reporting, verification, and dashboard metrics.
+  - Authorized replacement run: fresh certification run `cert3-full-01` under state mode with disjoint certification seeds (from 2,200,000) and strict single-batch execution.
+
+## 2026-11-03 — Phase 12b Quarantine of Planned != Logged and Fabricated Runs
+- **Authorisation:** Phase 12b Audit Remediation (Human Authorised).
+- **Quarantined Runs (`runs/INVALID_RUNS.json`):**
+  1. `cert2-full-01`: planned 2459, logged 4918. Reason: Duplicate seeds logged twice, outcome-visible rerun, batch 1 filtered out.
+  2. `judge-g2-01`: planned 600, logged 666. Reason: Planned != logged episode count mismatch; invalidated in DECISIONS.md (PyBullet segmentation buffer and outcome-dependent sampling).
+  3. `judge-g2-01-pilot`: planned 60, logged 67. Reason: Planned != logged count mismatch.
+  4. `judge-g2-pilot-01`: planned 60, logged 194. Reason: Planned != logged count mismatch.
+  5. `cert-pilot-01-fabricated`: planned 15, logged 15. Reason: Fabricated pilot run duplicating `run_id` `cert-pilot-01`.
+  6. `h2h3-full-02`: planned 2320, logged 2464. Reason: Planned != logged count mismatch; invalidated in DECISIONS.md due to global regression set growth.
+  7. `h2h3-pilot-02`: planned 464, logged 458. Reason: Planned != logged count mismatch; aborted run due to timeout.
+  8. `h2h3-pilot-03`: planned 464, logged 473. Reason: Planned != logged count mismatch; rerun overage.
+  9. `falsify-pilot-01`: planned 300, logged 0. Reason: Planned != logged count mismatch; aborted pilot due to `EpisodeResult` keyword argument bug.
+  10. `g0-pilot-01`: planned 20, logged 0. Reason: Planned != logged count mismatch; aborted pilot due to token limit exhaustion.
+  11. `h1-pilot-01`: planned 20, logged 0. Reason: Planned != logged count mismatch; aborted pilot due to unpriced model configuration.
+- **Action:**
+  - Preserved all raw directories intact under `runs/` (Rule H10).
+  - Listed in `runs/INVALID_RUNS.json`.
+  - Configured `scripts/verify_evidence.py`, `closedloop/report/generate_assets.py`, and `closedloop/report/build_ui_data.py` to exclude all quarantined runs.
+
+## 2026-11-03 — Provenance Audit: h1-full-02 Manifest Config Hash Marked Unverifiable
+- **Run ID:** `h1-full-02`
+- **What happened (Audit Finding 2):**
+  - The recorded `config_hash` in `runs/h1-full-02/manifest.json` is `905d1574d1d1e225`.
+  - Recomputing `config_hash()` over current configs (`cert.yaml`, `pricing.yaml`, `tasks.yaml`) yields `5dd058bb...` or `2ceae281...` depending on combination, rather than `905d1574d1d1e225`.
+  - An interim uncommitted config modification during Phase 04 difficulty retuning was hashed at manifest creation.
+- **Resolution:**
+  - Per Rule H12 and Audit Remediation Task T9, the config hash for `h1-full-02` is formally recorded in `DECISIONS.md` as unverifiable against current configs.
+  - The episode data (240 episodes, 120 per arm B0/B1, gap +0.1875, CI [0.10, 0.2875]) is authentic, append-only, and fully verified, but its manifest frozen config hash cannot be reproduced from present configs.
+
+

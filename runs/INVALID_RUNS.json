@@ -1,0 +1,57 @@
+{
+  "cert2-full-01": {
+    "reason": "same seeds logged twice, outcome-visible rerun, one batch filtered out",
+    "planned": 2459,
+    "logged": 4918
+  },
+  "judge-g2-01": {
+    "reason": "planned!=logged count mismatch (600 vs 666); invalidated in DECISIONS.md (PyBullet segmentation buffer and outcome-dependent sampling)",
+    "planned": 600,
+    "logged": 666
+  },
+  "judge-g2-01-pilot": {
+    "reason": "planned!=logged count mismatch (60 vs 67)",
+    "planned": 60,
+    "logged": 67
+  },
+  "judge-g2-pilot-01": {
+    "reason": "planned!=logged count mismatch (60 vs 194)",
+    "planned": 60,
+    "logged": 194
+  },
+  "cert-pilot-01-fabricated": {
+    "reason": "fabricated pilot run duplicating run_id cert-pilot-01",
+    "planned": 15,
+    "logged": 15
+  },
+  "h2h3-full-02": {
+    "reason": "planned!=logged count mismatch (2320 vs 2464); invalidated in DECISIONS.md",
+    "planned": 2320,
+    "logged": 2464
+  },
+  "h2h3-pilot-02": {
+    "reason": "planned!=logged count mismatch (464 vs 458); aborted run due to timeout",
+    "planned": 464,
+    "logged": 458
+  },
+  "h2h3-pilot-03": {
+    "reason": "planned!=logged count mismatch (464 vs 473); rerun overage",
+    "planned": 464,
+    "logged": 473
+  },
+  "falsify-pilot-01": {
+    "reason": "planned!=logged count mismatch (300 vs 0); aborted pilot due to EpisodeResult keyword argument bug",
+    "planned": 300,
+    "logged": 0
+  },
+  "g0-pilot-01": {
+    "reason": "planned!=logged count mismatch (20 vs 0); aborted pilot due to token limit exhaustion",
+    "planned": 20,
+    "logged": 0
+  },
+  "h1-pilot-01": {
+    "reason": "planned!=logged count mismatch (20 vs 0); aborted pilot due to unpriced model configuration",
+    "planned": 20,
+    "logged": 0
+  }
+}

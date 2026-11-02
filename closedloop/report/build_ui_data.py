@@ -85,10 +85,29 @@ def build_ui_data(
     out_js.parent.mkdir(parents=True, exist_ok=True)
     out_json.parent.mkdir(parents=True, exist_ok=True)
 
+    # Load quarantined invalid runs (Phase 12b Audit Remediation)
+    inv_file = rdir / "INVALID_RUNS.json"
+    invalid_runs: set[str] = set()
+    if inv_file.exists():
+        try:
+            inv_data = json.loads(inv_file.read_text(encoding="utf-8"))
+            invalid_runs = set(inv_data.keys())
+        except Exception:
+            invalid_runs = set()
+
+    # Determine v2 cert run (cert3-full-01 preferred, or cert2-full-01 if valid)
+    v2_run_id: str | None = None
+    for cand in ["cert3-full-01", "cert2-full-01"]:
+        if (rdir / cand).exists() and cand not in invalid_runs:
+            v2_run_id = cand
+            break
+
     # 1. Provenance
-    source_runs = ["cert-full-01", "judge-g2-03", "shift-full-01", "cert-mint-03", "h2h3-full-03"]
-    if (rdir / "cert2-full-01").exists():
-        source_runs.append("cert2-full-01")
+    cand_runs = ["cert-full-01", "judge-g2-03", "shift-full-01", "cert-mint-03", "h2h3-full-03"]
+    if v2_run_id:
+        cand_runs.append(v2_run_id)
+    source_runs = [r for r in cand_runs if r not in invalid_runs]
+
     provenance: dict[str, Any] = {}
     for rid in source_runs:
         m = _read_manifest(rdir, rid)
@@ -108,6 +127,7 @@ def build_ui_data(
     # 2. Cells (from cert-full-01)
     cert_summary_path = rdir / "cert-full-01" / "cert_summary.json"
     cert_summary = json.loads(cert_summary_path.read_text(encoding="utf-8"))
+
     cert_episodes_path = rdir / "cert-full-01" / "episodes.jsonl"
 
     cell_episodes_map: dict[str, list[dict[str, Any]]] = {}
@@ -167,13 +187,13 @@ def build_ui_data(
             "example_episodes": examples,
         })
 
-    # 2b. Cells for v2 (from cert2-full-01 if present)
-    cert2_summary_path = rdir / "cert2-full-01" / "cert_summary.json"
+    # 2b. Cells for v2 (from v2_run_id if present and valid)
     cells_v2_data: list[dict[str, Any]] = []
     delta_cell = 0.05 / 16.0  # per-cell error budget (matching v1 cert)
     target_p_cell = 0.90
-    if cert2_summary_path.exists():
-        cert2_summary = json.loads(cert2_summary_path.read_text(encoding="utf-8"))
+    if v2_run_id is not None and (rdir / v2_run_id / "cert_summary.json").exists():
+        cert2_summary = json.loads((rdir / v2_run_id / "cert_summary.json").read_text(encoding="utf-8"))
+
         for c_idx in range(16):
             c_id = f"cell_{c_idx:02d}"
             c_raw = cert2_summary["cells"].get(c_id, {})
@@ -371,11 +391,11 @@ def build_ui_data(
         }
     ]
 
-    if (rdir / "cert2-full-01").exists():
-        c2_summary = json.loads((rdir / "cert2-full-01" / "cert_summary.json").read_text(encoding="utf-8"))
+    if v2_run_id is not None and (rdir / v2_run_id / "cert_summary.json").exists():
+        c2_summary = json.loads((rdir / v2_run_id / "cert_summary.json").read_text(encoding="utf-8"))
         certificates_data.append({
-            "cert_id": "cert2-full-01",
-            "run_id": "cert2-full-01",
+            "cert_id": v2_run_id,
+            "run_id": v2_run_id,
             "program_id": c2_summary.get("program_id", "5f74f7762ee1f378"),
             "program_sha256": c2_summary.get("program_sha256", "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1"),
             "robot_preset": "certified_default",
@@ -391,9 +411,10 @@ def build_ui_data(
             "target_p_cell": 0.90,
             "sim_code_sha256": sim_code_hash,
             "evidence_platform": "win_amd64",
-            "config_hash": provenance.get("cert2-full-01", {}).get("config_hash", "c07fb1f819a557a6"),
-            "episodes_sha256": provenance.get("cert2-full-01", {}).get("episodes_sha256", ""),
+            "config_hash": provenance.get(v2_run_id, {}).get("config_hash", ""),
+            "episodes_sha256": provenance.get(v2_run_id, {}).get("episodes_sha256", ""),
         })
+
 
     ui_dataset: dict[str, Any] = {
         "version": "1.0.0",
@@ -413,11 +434,14 @@ def build_ui_data(
     json_str = json.dumps(ui_dataset, indent=2, sort_keys=True) + "\n"
     js_str = f"window.DATA = {json_str};\n"
 
-    out_json.write_text(json_str, encoding="utf-8")
-    out_js.write_text(js_str, encoding="utf-8")
+    with open(out_json, "w", encoding="utf-8", newline="\n") as f:
+        f.write(json_str)
+    with open(out_js, "w", encoding="utf-8", newline="\n") as f:
+        f.write(js_str)
 
     print(f"Generated deterministic UI data: {out_js} ({len(js_str)} bytes)")
     return ui_dataset
+
 
 
 if __name__ == "__main__":

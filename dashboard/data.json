@@ -4668,15 +4668,15 @@
       "task_preset": "mixed_bin"
     },
     {
-      "cert_id": "cert2-full-01",
-      "config_hash": "1f2191d4d8e0afb1",
+      "cert_id": "cert3-full-01",
+      "config_hash": "3c069b2fd32ce8c2",
       "delta": 0.05,
-      "episodes_sha256": "7fd5d8ecb500af83f62627de186c25b2689ff760d731fc586ad349a07348e61e",
+      "episodes_sha256": "e10d77c3b88b36ad0686632d2c0707ebb16fceb82176bc45aa04219619467417",
       "evidence_platform": "win_amd64",
       "program_id": "5f74f7762ee1f378",
       "program_sha256": "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1",
       "robot_preset": "certified_default",
-      "run_id": "cert2-full-01",
+      "run_id": "cert3-full-01",
       "sim_code_sha256": "bf28d7d8a1480d480349869c6c0d775861ed5000a86cf44eeae478a1a4ac34c3",
       "target_p_cell": 0.9,
       "task_bounds": {
@@ -4834,12 +4834,12 @@
       "git_sha": "cfe97fa09787d5c45853ce425930d0ae05006dae",
       "run_id": "cert-mint-03"
     },
-    "cert2-full-01": {
-      "config_hash": "1f2191d4d8e0afb1",
-      "episode_count": 4918,
-      "episodes_sha256": "7fd5d8ecb500af83f62627de186c25b2689ff760d731fc586ad349a07348e61e",
-      "git_sha": "3cecc4c4950520e67c8f2f00d74851f35497003b",
-      "run_id": "cert2-full-01"
+    "cert3-full-01": {
+      "config_hash": "3c069b2fd32ce8c2",
+      "episode_count": 2459,
+      "episodes_sha256": "e10d77c3b88b36ad0686632d2c0707ebb16fceb82176bc45aa04219619467417",
+      "git_sha": "02e9b9ea1c9e552b2c7ae5264ec3ece49f8a80b5",
+      "run_id": "cert3-full-01"
     },
     "h2h3-full-03": {
       "config_hash": "890a94b0788df688",

@@ -1,0 +1,65 @@
+# Frozen configuration for Phase 12b v2 certification remediation (run cert3-full-01).
+# Frozen via manifest config_hash (H11, H12).
+# Evaluates candidate v2 produced by Round 2 certificate-guided repair on v1.
+experiment: cert3
+run_id: cert3-full-01
+program_run_id: round2-mint-01
+program_file: runs/round2-mint-01/program_final.py
+program_id: 5f74f7762ee1f378
+program_sha256: 5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1
+mode: state
+
+# Statistical parameters (Plan §11)
+delta: 0.05
+K: 16
+B: 4
+M: 1
+
+# Targets (frozen Oct 28)
+targets:
+  headline_p: 0.95
+  state_cell_p: 0.90
+  camera_cell_p: 0.85
+
+# Sample sizes
+sample_sizes:
+  runs_per_cell: 150
+  headline_runs: 59
+  pilot_runs: 50
+
+# Seeds (strictly in certification stream [2000000, 2999999], Rule H9)
+# Fresh range starting at 2,200,000, strictly disjoint from cert-full-01, cert2-full-01, and shift-full-01
+seeds:
+  cell_seed_base: 2200000
+  headline_seed_base: 2202400
+  pilot_seed_base: 2210000
+
+# Distribution bounds (Tier 2, matching configs/tasks.yaml)
+bounds:
+  x: [-0.15, 0.15]
+  y: [-0.15, 0.15]
+  yaw: [-0.5, 0.5]
+  mass: [1.0, 11.5]
+  friction: [0.1, 1.0]
+
+# Grid definition (4x4 mass x friction)
+grid:
+  x_axis: mass
+  y_axis: friction
+  cells_per_axis: 4
+
+# Calibrated Judge parameters (from runs/judge-g2-03/calibration_report.json)
+judge_calibration:
+  run_id: judge-g2-03
+  freeze_hash: 0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e
+  k_a: 300
+  n_a: 300
+  k_b: 2
+  n_b: 100
+  worst_bucket_fpr_upper: 0.1048
+  tpr_lower: 0.9825
+
+# Execution limits
+timeout_s: 120
+memory_mb: 1024
+budget_cap_usd: 15.0

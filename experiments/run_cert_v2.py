@@ -132,9 +132,13 @@ def run_cert_v2(
     program_id = freeze["program_id"]
     program_sha = freeze["sha256"]
 
-    # 2. Check and claim certification seeds via persistent ledger (Rule H9)
+    # 2. Check and claim certification seeds via persistent ledger (Rule H9, T3 Guard)
     ledger_path = Path(runs_dir) / ".certification_ledger.json"
+    if not ledger_path.exists():
+        raise FileNotFoundError(f"Certification ledger missing at {ledger_path}")
     ledger = CertificationLedger(ledger_path)
+    if len(ledger.claimed) == 0:
+        raise ValueError("Certification ledger is empty or has been reset")
 
     n_per_cell = int(cert_cfg["sample_sizes"]["runs_per_cell"])
     n_headline = int(cert_cfg["sample_sizes"]["headline_runs"])
@@ -150,12 +154,15 @@ def run_cert_v2(
     # Claim in ledger
     ledger.claim(program_id, all_cert_seeds)
 
-    # 3. Setup run directory
+    # 3. Setup run directory (T3 Guard)
     run_dir = Path(runs_dir) / run_id
     if run_dir.exists():
         raise FileExistsError(f"Run dir already exists: {run_dir}")
-    run_dir.mkdir(parents=True)
     log_path = run_dir / "episodes.jsonl"
+    if log_path.exists() and log_path.stat().st_size > 0:
+        raise ValueError(f"episodes.jsonl already exists and is non-empty: {log_path}")
+    run_dir.mkdir(parents=True)
+
 
     delta = float(cert_cfg["delta"])
     K = int(cert_cfg["K"])
@@ -472,6 +479,11 @@ def side_by_side_report(v1_run_id: str = "cert-full-01", v2_run_id: str = "cert2
     v2_cert_count = v2_data.get("certified_cells_count", 0)
     v2_area = v2_data.get("certified_area_fraction", 0.0)
 
+    v2_hl = v2_data.get("headline", {}).get("state", {})
+    v2_hl_pass = v2_hl.get("k_pass", 0)
+    v2_hl_bound = float(v2_hl.get("lower_bound", 0.0))
+    v2_hl_cert = "certified" if v2_hl.get("certified") else "uncertified"
+
     lines = [
         "# Side-by-Side Certification Report: v1 vs v2",
         "",
@@ -481,7 +493,7 @@ def side_by_side_report(v1_run_id: str = "cert-full-01", v2_run_id: str = "cert2
         "",
         "## Summary Metrics",
         f"- **v1 (`{v1_data.get('program_id', 'unknown')}`):** Certified Area Fraction = {v1_area:.4f} ({v1_cert_count}/16 cells), Headline = 35/59 (p_L=0.4778, uncertified)",
-        f"- **v2 (`{v2_data.get('program_id', 'unknown')}`):** Certified Area Fraction = {v2_area:.4f} ({v2_cert_count}/16 cells), Headline = {v2_data.get('headline', {}).get('state', {}).get('k_pass', 0)}/59 (p_L={v2_data.get('headline', {}).get('state', {}).get('lower_bound', 0.0):.4f}, certified)",
+        f"- **v2 (`{v2_data.get('program_id', 'unknown')}`):** Certified Area Fraction = {v2_area:.4f} ({v2_cert_count}/16 cells), Headline = {v2_hl_pass}/59 (p_L={v2_hl_bound:.4f}, {v2_hl_cert})",
         "",
         "## Per-Cell Comparison Table (State Lower Bound p_L at delta=0.003125)",
         "| Cell ID | Mass Range (kg) | Friction Range | v1 Pass Rate | v1 p_L | v1 Cert | v2 Pass Rate | v2 p_L | v2 Cert |",
@@ -522,13 +534,62 @@ def side_by_side_report(v1_run_id: str = "cert-full-01", v2_run_id: str = "cert2
     return report_text
 
 
+def run_pilot_50(config_path: str = "configs/cert3.yaml") -> bool:
+    """Run 50-episode pilot on v2 before full certification launch (Task T4)."""
+    from closedloop.data.sampler import CertificationLedger, sample
+    from closedloop.exec.pilot import execute_episode
+
+    cfg_file = ROOT / config_path
+    cert_cfg = yaml.safe_load(cfg_file.read_text(encoding="utf-8"))
+    mint_run_id = cert_cfg.get("program_run_id", "round2-mint-01")
+    mint_dir = ROOT / "runs" / mint_run_id
+    freeze = validate_v2_freeze(mint_dir)
+    policy_code = (mint_dir / freeze["source_file"]).read_text(encoding="utf-8")
+
+    pilot_seed_base = int(cert_cfg["seeds"].get("pilot_seed_base", 2210000))
+    n_pilot = int(cert_cfg["sample_sizes"].get("pilot_runs", 50))
+    bounds = cert_cfg["bounds"]
+
+    scenarios = sample("certification", n=n_pilot, seed=pilot_seed_base, bounds=bounds)
+    print(f"Running {n_pilot}-episode pilot on v2 (seeds {pilot_seed_base}..{pilot_seed_base+n_pilot-1})...")
+
+    # Claim pilot seeds in ledger
+    ledger_path = ROOT / "runs" / ".certification_ledger.json"
+    if not ledger_path.exists():
+        raise FileNotFoundError(f"Certification ledger missing at {ledger_path}")
+    ledger = CertificationLedger(ledger_path)
+    ledger.claim(freeze["program_id"], list(range(pilot_seed_base, pilot_seed_base + n_pilot)))
+
+    infra_errors = []
+    for idx, sc in enumerate(scenarios):
+        sd = int(sc["seed"])
+        kind, payload = execute_episode(
+            sc, sd, policy_code, repo_root=str(ROOT),
+            timeout_s=120, memory_mb=1024,
+        )
+        if kind != "sim":
+            infra_errors.append((sd, kind, payload))
+            print(f"[Pilot ERROR] Seed {sd} failed with infra error: {kind}: {payload}")
+
+    if infra_errors:
+        raise RuntimeError(f"Pilot failed with {len(infra_errors)} infrastructure errors!")
+
+    print(f"Pilot SUCCESS: {n_pilot}/{n_pilot} episodes completed with 0 infrastructure errors.")
+    return True
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Certify candidate v2.")
-    parser.add_argument("--run-id", default="cert2-full-01")
+    parser.add_argument("--run-id", default="cert3-full-01")
+    parser.add_argument("--config", default="configs/cert3.yaml")
+    parser.add_argument("--pilot", action="store_true", help="Run 50-episode pre-flight pilot")
     parser.add_argument("--check-judge", action="store_true", help="Run 200-rollout frozen judge consistency check")
     args = parser.parse_args()
 
-    sum_res = run_cert_v2(run_id=args.run_id)
+    if args.pilot:
+        run_pilot_50(config_path=args.config)
+
+    sum_res = run_cert_v2(run_id=args.run_id, cert2_config_path=args.config)
 
     if args.check_judge:
         v2_path = ROOT / "runs" / "round2-mint-01" / "program_final.py"
@@ -545,4 +606,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
