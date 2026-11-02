@@ -229,6 +229,37 @@
     }
   }
 
+  // Context-specific syntax & validation help
+  function getErrorHelpTip(errMsg) {
+    if (errMsg.indexOf("invalid decimal literal") !== -1) {
+      return "Numbers must be pure digits without unit letters (e.g. <code>close_gripper(300)</code>, NOT <code>close_gripper(300N)</code>).";
+    }
+    if (errMsg.indexOf("unmatched ')'") !== -1 || errMsg.indexOf("was never closed") !== -1) {
+      return "Parenthesis mismatch: check that each opening <code>(</code> has a matching <code>)</code> and remove any extra <code>)</code>.";
+    }
+    if (errMsg.indexOf("indent") !== -1 || errMsg.indexOf("IndentationError") !== -1) {
+      return "Indentation error: all statements inside <code>def policy(env, rng):</code> must be indented by exactly 4 spaces.";
+    }
+    return "Check your Python syntax or click a preset template above to restore a working policy.";
+  }
+
+  // Clear previous error messages when user modifies code or loads a template
+  function clearErrors() {
+    var ptext = getElement("pg-progress-text");
+    if (ptext && (ptext.innerHTML.indexOf("Validation Error") !== -1 || ptext.innerHTML.indexOf("Error:") !== -1)) {
+      ptext.textContent = "Ready to run simulation.";
+    }
+    var resHeadline = getElement("pg-results-headline");
+    if (resHeadline && resHeadline.textContent.indexOf("Rejected") !== -1) {
+      resHeadline.textContent = "Simulation Ready";
+      resHeadline.style.color = "var(--text-strong)";
+    }
+    var frameEmpty = getElement("pg-frame-empty");
+    if (frameEmpty && frameEmpty.textContent.indexOf("Execution rejected") !== -1) {
+      frameEmpty.textContent = "Click 'Run Simulation' to execute episode batch.";
+    }
+  }
+
   // Refresh live badge pill & message
   function updateBadge() {
     populatePresetDropdowns();
@@ -536,10 +567,17 @@
       if (!resp.ok) {
         var errData = await resp.json().catch(function () { return { detail: resp.statusText }; });
         var errMsg = errData.detail || errData.error || "Execution failed";
+        var tip = getErrorHelpTip(errMsg);
         var ptext = getElement("pg-progress-text");
         if (ptext) {
-          ptext.innerHTML = '<span class="text-bad font-semibold">Validation Error:</span> ' + errMsg +
-            '<br><span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: Numbers must be pure digits without unit letters (e.g. <code>close_gripper(300)</code>, NOT <code>close_gripper(300N)</code>). Click a template button above to reset.</span>';
+          ptext.innerHTML =
+            '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
+              '<div>' +
+                '<span class="text-bad font-semibold">Validation Error:</span> ' + errMsg + '<br>' +
+                '<span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: ' + tip + '</span>' +
+              '</div>' +
+              '<button type="button" class="btn-sm" onclick="window.ClosedLoopPlayground && window.ClosedLoopPlayground.loadTemplate(\'v2_certified\')" style="align-self:center;">Reset to Valid Template</button>' +
+            '</div>';
         }
         var resHeadlineErr = getElement("pg-results-headline");
         if (resHeadlineErr) {
@@ -624,6 +662,7 @@
           } else if (evType === "error") {
             var errMsg = evData.message || "Execution rejected";
             var errLine = evData.line ? " (Line " + evData.line + ")" : "";
+            var tip = getErrorHelpTip(errMsg);
 
             var resHeadlineErr = getElement("pg-results-headline");
             if (resHeadlineErr) {
@@ -634,9 +673,13 @@
             var ptext = getElement("pg-progress-text");
             if (ptext) {
               ptext.innerHTML =
-                '<span class="text-bad font-semibold">Validation Error' + errLine + ':</span> ' +
-                errMsg +
-                '<br><span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: Numbers must be pure digits without unit letters (e.g. <code>close_gripper(300)</code>, NOT <code>close_gripper(300N)</code>). Click a template button above to reset.</span>';
+                '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
+                  '<div>' +
+                    '<span class="text-bad font-semibold">Validation Error' + errLine + ':</span> ' + errMsg + '<br>' +
+                    '<span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: ' + tip + '</span>' +
+                  '</div>' +
+                  '<button type="button" class="btn-sm" onclick="window.ClosedLoopPlayground && window.ClosedLoopPlayground.loadTemplate(\'v2_certified\')" style="align-self:center;">Reset to Valid Template</button>' +
+                '</div>';
             }
 
             var pbar = getElement("pg-progress-fill");
@@ -710,6 +753,7 @@
       b.classList.toggle("active", b.getAttribute("data-template") === key);
     });
 
+    clearErrors();
     updateBadge();
     if (typeof window.jumpPlaygroundStep === "function") {
       window.jumpPlaygroundStep(2);
@@ -918,6 +962,7 @@
         editor.value = TEMPLATES.v2_certified;
       }
       editor.addEventListener("input", function () {
+        clearErrors();
         updateBadge();
         // Clear active template indicator on custom edit
         document.querySelectorAll(".pg-template-btn").forEach(function (b) {
@@ -990,9 +1035,11 @@
     runSimulation: runSimulation,
     loadRecordedRepair: loadRecordedRepair,
     runAcceptanceGates: runAcceptanceGates,
+    clearErrors: clearErrors,
     TEMPLATES: TEMPLATES,
     computeHash: computeHash,
   };
+  root.ClosedLoopPlayground = root.Playground;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initPlayground);
