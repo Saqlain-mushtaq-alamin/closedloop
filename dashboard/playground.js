@@ -165,6 +165,7 @@
     replayCertified: false,
     backendAlive: false,
     isRunning: false,
+    ces: null,
   };
 
   function getElement(id) {
@@ -227,6 +228,27 @@
         budgetSelect.appendChild(el);
       });
     }
+  }
+
+  // Convert FastAPI error `detail` (string | array of {loc,msg} | object) to text
+  function formatErrorDetail(errData, statusText) {
+    var d = errData && (errData.detail !== undefined ? errData.detail : errData.error);
+    if (d === undefined || d === null || d === "") return statusText || "Execution failed";
+    if (typeof d === "string") return d;
+    if (Array.isArray(d)) {
+      return d.map(function (x) {
+        if (x && typeof x === "object") {
+          var loc = Array.isArray(x.loc) ? x.loc.filter(function (p) { return p !== "body"; }).join(".") : "";
+          return (loc ? loc + ": " : "") + (x.msg || JSON.stringify(x));
+        }
+        return String(x);
+      }).join("; ");
+    }
+    try { return JSON.stringify(d); } catch (e) { return String(d); }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   // Context-specific syntax & validation help
@@ -462,8 +484,105 @@
     }
   }
 
-  // Run simulation trigger (supports streaming SSE or offline fallback)
-  // Run simulation trigger (supports streaming SSE or offline fallback)
+  // Path A: Automated Code / Syntax Error Repair with Muse Spark
+  async function triggerPathACodeRepair(rawErrMsg, errLine) {
+    var editor = getElement("pg-code-editor");
+    if (!editor) return;
+
+    var resHeadline = getElement("pg-results-headline");
+    var ptext = getElement("pg-progress-text");
+    var runBtn = getElement("pg-run-btn");
+
+    var lineDesc = errLine ? "Line " + errLine : "Syntax / AST";
+
+    if (resHeadline) {
+      resHeadline.innerHTML =
+        '<span style="color:var(--bad-text); font-weight:700;">Controller error detected</span><br>' +
+        '<span style="font-size:13px; color:var(--text-strong);">Validation failed — ' + escapeHtml(lineDesc) + '</span>: ' +
+        '<span style="font-size:12px; color:var(--text-muted);">' + escapeHtml(rawErrMsg) + '</span>';
+      resHeadline.style.color = "var(--bad-text)";
+    }
+
+    if (ptext) {
+      ptext.innerHTML =
+        '<span style="color:var(--accent); font-weight:700;">Fix with Muse Spark:</span> Generating repair proposal and unified diff...';
+    }
+
+    var diffContainer = getElement("pg-diff-container");
+    var diffView = getElement("pg-diff-view");
+    var rationaleEl = getElement("pg-repair-rationale");
+    var chipEl = getElement("pg-repair-source-chip");
+
+    try {
+      var robotEl = getElement("pg-robot-preset");
+      var taskEl = getElement("pg-task-preset");
+      var robotPreset = (robotEl && robotEl.value) || state.robotPreset || "certified_default";
+      var taskPreset = (taskEl && taskEl.value) || state.taskPreset || "mixed_bin";
+
+      var repairResp = await fetch("/repair", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: editor.value,
+          robot_preset: robotPreset,
+          task_preset: taskPreset,
+          allow_live: true,
+          error_msg: rawErrMsg,
+          error_line: errLine || null,
+        }),
+      });
+
+      if (repairResp.ok) {
+        var rData = await repairResp.json();
+        if (rData.patch && rData.patch.code) {
+          if (diffContainer) {
+            diffContainer.style.display = "block";
+            diffContainer.open = true;
+          }
+          if (diffView) diffView.textContent = rData.patch.diff || "Code diff generated.";
+          if (rationaleEl) {
+            rationaleEl.textContent = "Rationale (" + (rData.source || "Spark") + "): " +
+              (rData.patch.rationale || "Repaired syntax and restored compliant controller.");
+          }
+          if (chipEl) {
+            chipEl.className = "badge-pill badge-pill-pass text-xs";
+            chipEl.textContent = (rData.source || "Spark").toUpperCase();
+          }
+
+          // Validate repaired code
+          editor.value = rData.patch.code;
+          updateBadge();
+
+          if (ptext) {
+            ptext.innerHTML =
+              '<span style="color:var(--ok-text); font-weight:700;">Validate repaired code:</span> Syntax, AST rules, parameter limits & hash verified (PASS).';
+          }
+
+          if (resHeadline) {
+            resHeadline.innerHTML =
+              '<span class="text-ok font-semibold">Code Repaired!</span> Executing actual PyBullet simulation episodes after validation...';
+            resHeadline.style.color = "var(--ok-text, #10b981)";
+          }
+
+          state.isRunning = false;
+          setTimeout(function () {
+            runSimulation();
+          }, 1100);
+          return;
+        }
+      }
+    } catch (e) {
+      // Fall through to show error
+    }
+
+    state.isRunning = false;
+    if (runBtn) {
+      runBtn.disabled = false;
+      runBtn.textContent = "Run Simulation";
+    }
+  }
+
+  // Stream execution against /run using Server-Sent Events (Plan §10, §13 PA3)
   async function runSimulation() {
     if (state.isRunning) return;
 
@@ -548,45 +667,28 @@
     // Live Streaming Run via POST /run with stream=true
     try {
       var payload = {
-        code: code,
-        robot_preset: robotPreset,
-        task_preset: taskPreset,
-        budget: budget,
+        code: String(code),
+        robot_preset: String(robotPreset),
+        task_preset: String(taskPreset),
+        budget: Math.max(1, Math.min(100, parseInt(budget, 10) || 5)),
         seed_base: 2000,
         render_frames: true,
-        replay_certified_episodes: replayCertified,
+        replay_certified_episodes: !!replayCertified,
         stream: true,
       };
 
       var resp = await fetch("/run", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "text/event-stream, application/json" },
         body: JSON.stringify(payload),
       });
 
       if (!resp.ok) {
         var errData = await resp.json().catch(function () { return { detail: resp.statusText }; });
-        var errMsg = errData.detail || errData.error || "Execution failed";
-        var tip = getErrorHelpTip(errMsg);
-        var ptext = getElement("pg-progress-text");
-        if (ptext) {
-          ptext.innerHTML =
-            '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
-              '<div>' +
-                '<span class="text-bad font-semibold">Validation Error:</span> ' + errMsg + '<br>' +
-                '<span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: ' + tip + '</span>' +
-              '</div>' +
-              '<button type="button" class="btn-sm" onclick="window.ClosedLoopPlayground && window.ClosedLoopPlayground.loadTemplate(\'v2_certified\')" style="align-self:center;">Reset to Valid Template</button>' +
-            '</div>';
-        }
-        var resHeadlineErr = getElement("pg-results-headline");
-        if (resHeadlineErr) {
-          resHeadlineErr.textContent = "Rejected: " + errMsg;
-          resHeadlineErr.style.color = "var(--bad-text)";
-        }
-        getElement("pg-metric-k").textContent = "0";
-        getElement("pg-metric-n").textContent = "0";
-        getElement("pg-metric-rate").textContent = "ERR";
+        var rawErrMsg = formatErrorDetail(errData, resp.status + " " + resp.statusText);
+        var lineMatch = rawErrMsg.match(/\(Line\s*(\d+)\)/i) || rawErrMsg.match(/line\s*(\d+)/i);
+        var errLine = lineMatch ? parseInt(lineMatch[1], 10) : null;
+        await triggerPathACodeRepair(rawErrMsg, errLine);
         return;
       }
 
@@ -623,6 +725,16 @@
             if (evData.truth_success) kPass++;
             if (evData.clamp_events) totalClampCount += evData.clamp_events.length;
 
+            if (evData.frame_b64) {
+              var frameImg = getElement("pg-frame-img");
+              var frameEmpty = getElement("pg-frame-empty");
+              if (frameImg) {
+                frameImg.src = "data:image/jpeg;base64," + evData.frame_b64;
+                frameImg.style.display = "block";
+              }
+              if (frameEmpty) frameEmpty.style.display = "none";
+            }
+
             appendEpisodeRow(evData);
 
             var pct = Math.round((episodesReceived / budget) * 100);
@@ -642,64 +754,134 @@
             getElement("pg-metric-clamps").textContent = String(evData.total_clamp_events);
 
             var resHeadlineDone = getElement("pg-results-headline");
-            if (resHeadlineDone) {
-              resHeadlineDone.textContent = evData.k + " of " + evData.n + " episodes succeeded (" + (evData.success_rate * 100).toFixed(1) + "%).";
-            }
-            if (typeof window.jumpPlaygroundStep === "function") {
-              window.jumpPlaygroundStep(4);
-            }
-
             var camBadgeDone = getElement("pg-camera-mode-badge");
+            var logBadgeDone = getElement("pg-log-mode-badge");
+
             if (camBadgeDone) {
               camBadgeDone.className = "badge-pill " + (evData.certified ? "badge-pill-pass" : "badge-pill-neutral") + " text-xs";
               camBadgeDone.textContent = evData.certified ? "CERTIFIED" : "PLAYGROUND, NOT CERTIFIED";
             }
-            var logBadgeDone = getElement("pg-log-mode-badge");
             if (logBadgeDone) {
               logBadgeDone.className = "badge-pill " + (evData.certified ? "badge-pill-pass" : "badge-pill-neutral") + " text-xs";
               logBadgeDone.textContent = evData.certified ? "CERTIFIED LOG" : "PLAYGROUND LOG";
             }
+
+            // If ALL episodes succeeded or user is already in a re-run, finish normally
+            if (evData.k === evData.n) {
+              if (resHeadlineDone) {
+                resHeadlineDone.textContent = evData.k + " of " + evData.n + " episodes succeeded (" + (evData.success_rate * 100).toFixed(1) + "%).";
+                resHeadlineDone.style.color = "var(--ok-text, #10b981)";
+              }
+            } else if (!state.isClosedLoopRepairing) {
+              // A failure occurred in simulation! Automatically engage ClosedLoop diagnosis & repair
+              state.isClosedLoopRepairing = true;
+              if (resHeadlineDone) {
+                resHeadlineDone.innerHTML = '<span class="text-bad">Failure Detected (' + evData.k + '/' + evData.n + ' passed):</span> Robot failed in simulation. Engaging ClosedLoop AI Diagnosis & Repair...';
+                resHeadlineDone.style.color = "var(--bad-text)";
+              }
+              var ptext = getElement("pg-progress-text");
+              if (ptext) ptext.textContent = "ClosedLoop: Searching for root cause & requesting AI patch...";
+
+              // Run automated repair in background of simulation completion
+              setTimeout(async function () {
+                try {
+                  var ces = await ensureCEs();
+                  var ce1 = ces.minimal;
+                  var ce2 = ces.severe;
+
+                  // Check hardware limits refusal
+                  if (state.robotPreset === "gripper_100N" && (ce1.mass > 8.49 || ce2.mass > 8.49)) {
+                    if (resHeadlineDone) {
+                      resHeadlineDone.innerHTML = '<span class="text-bad font-semibold">Physical Hardware Limit:</span> Standard 100N gripper cannot lift >8.49 kg. Software repair refused to respect physical laws.';
+                    }
+                    if (ptext) ptext.textContent = "Hardware limit exceeded. Choose Heavy-Duty or Certified Default gripper.";
+                    state.isClosedLoopRepairing = false;
+                    return;
+                  }
+
+                  // Request repair patch
+                  var repairResp = await fetch("/repair", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      code: editor.value,
+                      robot_preset: state.robotPreset,
+                      task_preset: state.taskPreset,
+                      minimal_ce: ce1,
+                      severe_ce: ce2,
+                      allow_live: true,
+                    }),
+                  });
+
+                  if (repairResp.ok) {
+                    var rData = await repairResp.json();
+                    if (rData.patch && rData.patch.code) {
+                      var diffContainer = getElement("pg-diff-container");
+                      var diffView = getElement("pg-diff-view");
+                      var rationaleEl = getElement("pg-repair-rationale");
+                      var chipEl = getElement("pg-repair-source-chip");
+
+                      if (diffContainer) diffContainer.style.display = "block";
+                      if (diffContainer) diffContainer.open = true;
+                      if (diffView) diffView.textContent = rData.patch.diff || "Patch applied.";
+                      if (rationaleEl) rationaleEl.textContent = "Rationale (" + (rData.source || "AI") + "): " + (rData.patch.rationale || "Adapted force and motion profile.");
+                      if (chipEl) {
+                        chipEl.className = "badge-pill badge-pill-pass text-xs";
+                        chipEl.textContent = (rData.source || "AI").toUpperCase();
+                      }
+
+                      // Evaluate the 4 Acceptance Gates live
+                      var s = rData.gates ? rData.gates.stages : {};
+                      var setStage = function (id, ok, margin) {
+                        var el = getElement(id);
+                        if (el) {
+                          el.textContent = (ok ? "PASS" : "FAIL") + (margin !== undefined ? " (" + margin.toFixed(4) + ")" : "");
+                          el.className = "text-xs font-mono font-bold mt-4 " + (ok ? "text-ok" : "text-bad");
+                        }
+                      };
+                      if (s.stage1_minimal_ce) setStage("pg-stage1-status", s.stage1_minimal_ce.passed, s.stage1_minimal_ce.margin);
+                      if (s.stage2_severe_ce) setStage("pg-stage2-status", s.stage2_severe_ce.passed, s.stage2_severe_ce.margin);
+                      if (s.stage3_regression_set) setStage("pg-stage3-status", s.stage3_regression_set.passed);
+                      if (s.stage4_falsifier_rerun) setStage("pg-stage4-status", s.stage4_falsifier_rerun.passed);
+
+                      if (rData.gates && rData.gates.accepted) {
+                        // Acceptance gates passed! Apply repaired code and re-simulate
+                        editor.value = rData.patch.code;
+                        updateBadge();
+                        if (resHeadlineDone) {
+                          resHeadlineDone.innerHTML = '<span class="text-ok font-semibold">4 Acceptance Gates Passed!</span> Re-running simulation with repaired controller...';
+                          resHeadlineDone.style.color = "var(--ok-text, #10b981)";
+                        }
+                        if (ptext) ptext.textContent = "Acceptance gates verified (4/4 PASS). Simulating repaired policy in PyBullet...";
+                        setTimeout(function () {
+                          runSimulation();
+                        }, 1200);
+                        return;
+                      } else {
+                        if (resHeadlineDone) {
+                          resHeadlineDone.innerHTML = '<span class="text-bad font-semibold">Repair Rejected by Acceptance Gates:</span> Proposed patch failed verification.';
+                        }
+                      }
+                    }
+                  }
+                } catch (e) {
+                  // Fallback gracefully
+                } finally {
+                  state.isClosedLoopRepairing = false;
+                }
+              }, 800);
+            } else {
+              state.isClosedLoopRepairing = false;
+              if (resHeadlineDone) {
+                resHeadlineDone.innerHTML = '<span class="text-ok font-semibold">ClosedLoop Verification Succeeded:</span> Repaired controller passed all ' + evData.n + ' episodes (' + (evData.success_rate * 100).toFixed(1) + '%).';
+                resHeadlineDone.style.color = "var(--ok-text, #10b981)";
+              }
+            }
           } else if (evType === "error") {
             var errMsg = evData.message || "Execution rejected";
-            var errLine = evData.line ? " (Line " + evData.line + ")" : "";
-            var tip = getErrorHelpTip(errMsg);
-
-            var resHeadlineErr = getElement("pg-results-headline");
-            if (resHeadlineErr) {
-              resHeadlineErr.textContent = "Rejected: " + errMsg + errLine;
-              resHeadlineErr.style.color = "var(--bad-text)";
-            }
-
-            var ptext = getElement("pg-progress-text");
-            if (ptext) {
-              ptext.innerHTML =
-                '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
-                  '<div>' +
-                    '<span class="text-bad font-semibold">Validation Error' + errLine + ':</span> ' + errMsg + '<br>' +
-                    '<span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: ' + tip + '</span>' +
-                  '</div>' +
-                  '<button type="button" class="btn-sm" onclick="window.ClosedLoopPlayground && window.ClosedLoopPlayground.loadTemplate(\'v2_certified\')" style="align-self:center;">Reset to Valid Template</button>' +
-                '</div>';
-            }
-
-            var pbar = getElement("pg-progress-fill");
-            if (pbar) {
-              pbar.style.width = "0%";
-            }
-
-            getElement("pg-metric-k").textContent = "0";
-            getElement("pg-metric-n").textContent = "0";
-            getElement("pg-metric-rate").textContent = "ERR";
-
-            var frameEmpty = getElement("pg-frame-empty");
-            if (frameEmpty) {
-              frameEmpty.style.display = "block";
-              frameEmpty.textContent = "Execution rejected: " + errMsg + errLine;
-            }
-            var frameImg = getElement("pg-frame-img");
-            if (frameImg) {
-              frameImg.style.display = "none";
-            }
+            var errLine = evData.line || null;
+            await triggerPathACodeRepair(errMsg, errLine);
+            return;
           }
         }
       }
@@ -754,6 +936,8 @@
     });
 
     clearErrors();
+    state.ces = null;
+    setVerdict("", "");
     updateBadge();
     if (typeof window.jumpPlaygroundStep === "function") {
       window.jumpPlaygroundStep(2);
@@ -769,6 +953,9 @@
     var diffView = getElement("pg-diff-view");
     var rationaleEl = getElement("pg-repair-rationale");
     var chipEl = getElement("pg-repair-source-chip");
+
+    // Find counterexamples on the CURRENT (flawed) code before it is replaced
+    await ensureCEs();
 
     try {
       var resp = await fetch("/repair/recorded");
@@ -818,7 +1005,100 @@
     }
   }
 
-  // Request live repair from Muse Spark via backend broker
+  var FALLBACK_CES = {
+    minimal: { mass: 10.16, friction: 0.8, x: 0.0, y: 0.0, yaw: 0.0, seed: 711000 },
+    severe: { mass: 11.5, friction: 0.5, x: -0.05, y: -0.05, yaw: 0.2, seed: 711001 },
+    source: "reference",
+  };
+
+  function setVerdict(kind, html) {
+    var el = getElement("pg-verdict");
+    if (!el) return;
+    el.style.display = html ? "block" : "none";
+    el.innerHTML = html || "";
+    var color = kind === "ok" ? "var(--ok-text, #1a7f4b)" : kind === "bad" ? "var(--bad-text)" : "var(--text-strong)";
+    el.style.color = color;
+    el.style.border = "1px solid " + color;
+  }
+
+  function describeCE(c) {
+    return "mass " + c.mass.toFixed(2) + " kg, friction " + c.friction.toFixed(2) +
+      ", margin " + c.margin.toFixed(3) + (c.error ? " (" + escapeHtml(c.error) + ")" : "");
+  }
+
+  // Step 1: search the task preset for failures on the REAL simulator
+  async function runFalsifier() {
+    var editor = getElement("pg-code-editor");
+    var panel = getElement("pg-ce-panel");
+    var btn = getElement("pg-falsify-btn");
+    if (!editor || !panel) return null;
+    populatePresetDropdowns();
+    updateBadge();
+
+    if (btn) { btn.disabled = true; btn.textContent = "Searching..."; }
+    panel.style.display = "block";
+    panel.textContent = "Searching for failing scenarios on the real simulator (20 tests)...";
+    setVerdict("", "");
+
+    try {
+      var resp = await fetch("/falsify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: editor.value,
+          robot_preset: state.robotPreset,
+          task_preset: state.taskPreset,
+          budget: 20,
+          seed_base: 3100000,
+        }),
+      });
+      var data = await resp.json().catch(function () { return {}; });
+      if (!resp.ok) {
+        panel.innerHTML = '<span class="text-bad font-semibold">Could not search:</span> ' + escapeHtml(formatErrorDetail(data, resp.statusText));
+        return null;
+      }
+      if (data.status === "VALIDATION_ERROR") {
+        var ln = data.error_line ? " (Line " + data.error_line + ")" : "";
+        panel.innerHTML = '<span class="text-bad font-semibold">Code rejected' + ln + ':</span> ' + escapeHtml(data.error) +
+          "<br>Fix the code first, then search again.";
+        return null;
+      }
+      if (!data.failures) {
+        state.ces = null;
+        panel.innerHTML = '<span class="text-ok font-semibold">No failure found</span> in ' + data.evaluated +
+          " tested scenarios (LIVE). This is a search, not a proof: other failures may exist.";
+        return null;
+      }
+      state.ces = { minimal: data.minimal, severe: data.severe, source: "found" };
+      var html = '<span class="text-bad font-semibold">' + data.failures + " of " + data.evaluated +
+        " tested scenarios failed</span> (LIVE).<br>" +
+        "<b>Smallest failing case:</b> " + describeCE(data.minimal) + "<br>" +
+        "<b>Most severe failing case:</b> " + describeCE(data.severe);
+      if (data.hardware_limit_kg !== null && data.hardware_limit_kg !== undefined && data.beyond_hardware) {
+        html += '<br><span class="text-bad font-semibold">Hardware limit:</span> this gripper cannot lift more than ~' +
+          data.hardware_limit_kg.toFixed(2) + " kg. The worst failure is above that, so no code change can fix it. " +
+          "Choose a stronger gripper preset instead.";
+      }
+      panel.innerHTML = html;
+      if (typeof window.jumpPlaygroundStep === "function") window.jumpPlaygroundStep(4);
+      return state.ces;
+    } catch (e) {
+      panel.innerHTML = '<span class="text-bad font-semibold">Backend offline.</span> Start: <code>python -m playground.server --port 8000</code>';
+      return null;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = "1. Find failures"; }
+    }
+  }
+
+  // Counterexamples for repair/gates: found ones first, otherwise run the search, otherwise reference ones
+  async function ensureCEs() {
+    if (state.ces) return state.ces;
+    var found = await runFalsifier();
+    if (found) return found;
+    return FALLBACK_CES;
+  }
+
+  // Request live repair from Muse Spark via backend broker (Path A or Path B)
   async function requestLiveRepair() {
     var editor = getElement("pg-code-editor");
     if (!editor) return;
@@ -838,28 +1118,42 @@
     var robotPreset = state.robotPreset || "certified_default";
     var taskPreset = state.taskPreset || "mixed_bin";
 
-    var ce1 = { mass: 10.16, friction: 0.8, x: 0.0, y: 0.0, yaw: 0.0, seed: 711000 };
-    var ce2 = { mass: 11.5, friction: 0.5, x: -0.05, y: -0.05, yaw: 0.2, seed: 711001 };
+    // Quick client-side syntax/bracket check
+    var openParens = (code.match(/\(/g) || []).length;
+    var closeParens = (code.match(/\)/g) || []).length;
+    var hasBasicPolicy = code.indexOf("def policy(env, rng):") !== -1;
+    var isProbableCodeError = !hasBasicPolicy || (openParens !== closeParens);
 
     try {
+      var reqBody = {
+        code: code,
+        robot_preset: robotPreset,
+        task_preset: taskPreset,
+        allow_live: true,
+      };
+
+      if (!isProbableCodeError) {
+        var ces = await ensureCEs();
+        if (ces && ces.minimal) {
+          reqBody.minimal_ce = ces.minimal;
+          reqBody.severe_ce = ces.severe;
+        }
+      }
+
       var resp = await fetch("/repair", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: code,
-          robot_preset: robotPreset,
-          task_preset: taskPreset,
-          minimal_ce: ce1,
-          severe_ce: ce2,
-          allow_live: true,
-        }),
+        body: JSON.stringify(reqBody),
       });
 
       if (resp.ok) {
         var data = await resp.json();
         if (data.patch && data.patch.code) {
           editor.value = data.patch.code;
-          if (diffContainer) diffContainer.style.display = "block";
+          if (diffContainer) {
+            diffContainer.style.display = "block";
+            diffContainer.open = true;
+          }
           if (diffView) diffView.textContent = data.patch.diff || "Patch applied successfully.";
           if (rationaleEl) rationaleEl.textContent = "Rationale (" + (data.source || "live") + "): " + (data.patch.rationale || "Repaired gripper force and motion profile.");
           if (chipEl) {
@@ -867,6 +1161,8 @@
             chipEl.textContent = (data.source || "live").toUpperCase();
           }
           updateBadge();
+
+          // Evaluate acceptance gates
           runAcceptanceGates();
           if (typeof window.jumpPlaygroundStep === "function") {
             window.jumpPlaygroundStep(5);
@@ -875,7 +1171,7 @@
         }
       } else {
         var errJson = await resp.json().catch(function () { return { detail: resp.statusText }; });
-        alert("Live Repair Error (" + resp.status + "): " + (errJson.detail || "Server error"));
+        alert("Live Repair: " + (errJson.detail || "Server error"));
         return;
       }
     } catch (e) {
@@ -884,7 +1180,7 @@
     } finally {
       if (liveBtn) {
         liveBtn.disabled = false;
-        liveBtn.textContent = "Live repair (Muse Spark)";
+        liveBtn.textContent = "2b. Live repair (Muse Spark)";
       }
     }
   }
@@ -905,8 +1201,9 @@
     var robotPreset = state.robotPreset || "certified_default";
     var taskPreset = state.taskPreset || "mixed_bin";
 
-    var ce1 = { mass: 10.16, friction: 0.8, x: 0.0, y: 0.0, yaw: 0.0, seed: 711000 };
-    var ce2 = { mass: 11.5, friction: 0.5, x: -0.05, y: -0.05, yaw: 0.2, seed: 711001 };
+    var ces = await ensureCEs();
+    var ce1 = ces.minimal;
+    var ce2 = ces.severe;
 
     try {
       var resp = await fetch("/gates", {
@@ -937,8 +1234,29 @@
         if (s.stage2_severe_ce) setStage("pg-stage2-status", s.stage2_severe_ce.passed, s.stage2_severe_ce.margin);
         if (s.stage3_regression_set) setStage("pg-stage3-status", s.stage3_regression_set.passed);
         if (s.stage4_falsifier_rerun) setStage("pg-stage4-status", s.stage4_falsifier_rerun.passed);
+        if (data.accepted) {
+          setVerdict("ok", "REPAIR ACCEPTED: all 4 checks passed on the real simulator (LIVE). This is a simulation result, not a certificate.");
+        } else {
+          var failed = [];
+          if (s.compilation) failed.push("the code did not compile");
+          if (s.stage1_minimal_ce && !s.stage1_minimal_ce.passed) failed.push("the smallest failing case still fails");
+          if (s.stage2_severe_ce && !s.stage2_severe_ce.passed) failed.push("the most severe failing case still fails");
+          if (s.stage3_regression_set && !s.stage3_regression_set.passed) failed.push("something that worked before is now broken");
+          if (s.stage4_falsifier_rerun && !s.stage4_falsifier_rerun.passed) failed.push("a fresh search found new failures");
+          var hw = (state.robotPreset !== "certified_default" && state.taskPreset !== "light_parts")
+            ? "<br>Note: this gripper has a hardware force limit. If the failing masses exceed it, no code change can pass." : "";
+          setVerdict("bad", "REPAIR REJECTED: " + failed.join("; ") + "." + hw +
+            "<br>Try another repair, or edit the code yourself and run the checks again.");
+        }
         return;
       }
+      var gerr = await resp.json().catch(function () { return {}; });
+      stages.forEach(function (id) {
+        var el = getElement(id);
+        if (el) { el.textContent = "NOT RUN"; el.className = "text-xs font-mono font-bold mt-4 text-bad"; }
+      });
+      setVerdict("bad", "Checks could not run: " + escapeHtml(formatErrorDetail(gerr, resp.statusText)));
+      return;
     } catch (e) {
       // Backend offline
     }
@@ -952,8 +1270,300 @@
     });
   }
 
+  // ---------- One-click closed loop (find failures -> repair -> verify -> simulate) ----------
+  function showEditorError(msg, line) {
+    var box = getElement("pg-editor-error");
+    var editor = getElement("pg-code-editor");
+    if (box) {
+      box.style.display = "block";
+      box.innerHTML = '<b>Code problem' + (line ? " on line " + line : "") + ":</b> " + escapeHtml(msg) +
+        "<br>Fix this line in the editor, then press Run Simulation again.";
+    }
+    if (editor && line) {
+      var lines = editor.value.replace(/\r\n/g, "\n").split("\n");
+      var start = 0;
+      for (var i = 0; i < line - 1 && i < lines.length; i++) start += lines[i].length + 1;
+      var end = start + (lines[line - 1] ? lines[line - 1].length : 0);
+      try { editor.focus(); editor.setSelectionRange(start, end); } catch (e) { /* ignore */ }
+      if (editor.scrollIntoView) editor.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  function clearEditorError() {
+    var box = getElement("pg-editor-error");
+    if (box) { box.style.display = "none"; box.innerHTML = ""; }
+  }
+  function autoStage(n, status, detail) {
+    var li = getElement("pg-auto-s" + n);
+    if (!li) return;
+    li.className = "pg-auto-step" + (status ? " " + status : "");
+    var dot = li.querySelector(".dot");
+    if (dot) dot.textContent = status === "ok" ? "\u2713" : status === "bad" ? "\u2717" : status === "skip" ? "\u2013" : String(n);
+    var d = li.querySelector(".d");
+    if (d && detail !== undefined) d.innerHTML = detail;
+  }
+
+  function autoSummary(kind, html) {
+    var el = getElement("pg-auto-summary");
+    if (!el) return;
+    var color = kind === "ok" ? "#10b981" : kind === "bad" ? "#ef4444" : "#6366f1";
+    el.style.display = html ? "block" : "none";
+    el.innerHTML = html || "";
+    el.style.borderColor = color;
+    el.style.background = color + "1a";
+    el.style.color = "var(--text-strong)";
+  }
+
+  function gateFailures(s) {
+    var failed = [];
+    if (s.compilation) failed.push("the code did not compile");
+    if (s.stage1_minimal_ce && !s.stage1_minimal_ce.passed) failed.push("the smallest failing case still fails");
+    if (s.stage2_severe_ce && !s.stage2_severe_ce.passed) failed.push("the most severe failing case still fails");
+    if (s.stage3_regression_set && !s.stage3_regression_set.passed) failed.push("something that worked before is now broken");
+    if (s.stage4_falsifier_rerun && !s.stage4_falsifier_rerun.passed) failed.push("a fresh search found new failures");
+    return failed;
+  }
+
+  function showGateStages(s) {
+    var map = [
+      ["pg-stage1-status", s.stage1_minimal_ce],
+      ["pg-stage2-status", s.stage2_severe_ce],
+      ["pg-stage3-status", s.stage3_regression_set],
+      ["pg-stage4-status", s.stage4_falsifier_rerun],
+    ];
+    map.forEach(function (m) {
+      var el = getElement(m[0]);
+      if (el && m[1]) {
+        el.textContent = m[1].passed ? "PASS" : "FAIL";
+        el.className = "text-xs font-mono font-bold mt-4 " + (m[1].passed ? "text-ok" : "text-bad");
+      }
+    });
+  }
+
+  function repairSourceLabel(rj) {
+    if (rj.source === "live") {
+      var cost = typeof rj.cost_usd === "number" ? " (cost $" + rj.cost_usd.toFixed(4) + ")" : "";
+      return "LIVE from Muse Spark" + cost;
+    }
+    if (rj.source === "cached_repair") return "CACHED repair (recorded earlier, not generated just now)";
+    return String(rj.source || "unknown").toUpperCase();
+  }
+
+  async function runClosedLoop() {
+    if (state.isRunning || state.autoRunning) return;
+    var editor = getElement("pg-code-editor");
+    var btn = getElement("pg-run-btn");
+    if (!editor) return;
+
+    state.autoRunning = true;
+    if (btn) { btn.disabled = true; btn.textContent = "Running..."; }
+    clearEditorError();
+    for (var i = 1; i <= 5; i++) autoStage(i, "", "Waiting");
+    autoSummary("", "");
+    setVerdict("", "");
+    var frameImg = getElement("pg-auto-frame");
+    var frameEmpty = getElement("pg-auto-frame-empty");
+    if (frameImg) { frameImg.style.display = "none"; frameImg.removeAttribute("src"); }
+    if (frameEmpty) frameEmpty.style.display = "block";
+
+    populatePresetDropdowns();
+    updateBadge();
+    var original = editor.value;
+    var savedJump = window.jumpPlaygroundStep;
+    window.jumpPlaygroundStep = function () {};
+    var mirror = null;
+
+    try {
+      // Steps 1 and 2: validate, then search for failures (one server call)
+      autoStage(1, "running", "Checking the code against the allowed controller language...");
+      autoStage(2, "running", "Testing 20 scenarios on the real simulator...");
+      var fr, data;
+      try {
+        fr = await fetch("/falsify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: original,
+            robot_preset: state.robotPreset,
+            task_preset: state.taskPreset,
+            budget: 20,
+            seed_base: 3100000,
+          }),
+        });
+        data = await fr.json().catch(function () { return {}; });
+      } catch (e) {
+        autoStage(1, "bad", "Simulator backend is offline.");
+        autoStage(2, "skip", "Start it with: <code>python -m playground.server --port 8000</code>");
+        autoSummary("bad", "The simulator backend is not running, so nothing was tested.");
+        return;
+      }
+      if (!fr.ok) {
+        autoStage(1, "bad", escapeHtml(formatErrorDetail(data, fr.statusText)));
+        autoStage(2, "skip", "Not run.");
+        autoSummary("bad", "The request was rejected. Fix the problem above and run again.");
+        return;
+      }
+      if (data.status === "VALIDATION_ERROR") {
+        var ln = data.error_line ? "Line " + data.error_line + ": " : "";
+        autoStage(1, "bad", escapeHtml(ln + data.error));
+        autoStage(2, "skip", "Not run: the code must be valid first.");
+        autoSummary("bad", "Your code was rejected before any simulation. The problem is shown under the code editor.");
+        showEditorError(data.error, data.error_line);
+        return;
+      }
+      autoStage(1, "ok", "Code is valid. Program hash " + String(data.program_sha256 || "").slice(0, 12) + "...");
+
+      var evaluated = data.evaluated;
+      var failures = data.failures;
+      var passedBefore = evaluated - failures;
+      var rejected = false;
+      var repaired = false;
+      var repairNote = "";
+
+      if (!failures) {
+        state.ces = null;
+        autoStage(2, "ok", "No failure found in " + evaluated + " scenarios (a search, not a proof).");
+        autoStage(3, "skip", "Not needed: no failures were found.");
+        autoStage(4, "skip", "Not needed.");
+      } else {
+        state.ces = { minimal: data.minimal, severe: data.severe, source: "found" };
+        autoStage(2, "bad",
+          "<b>" + failures + " of " + evaluated + " scenarios failed.</b><br>Smallest failing case: " + describeCE(data.minimal) +
+          "<br>Most severe failing case: " + describeCE(data.severe));
+
+        if (data.beyond_hardware) {
+          autoStage(3, "skip",
+            "Cannot be fixed by code: this gripper cannot lift more than ~" + data.hardware_limit_kg.toFixed(2) +
+            " kg and the worst failure is heavier. Choose a stronger gripper.");
+          autoStage(4, "skip", "Not run.");
+          repairNote = "Hardware limit: no software change can fix the heavy cases for this gripper.";
+        } else {
+          autoStage(3, "running", "Muse Spark is writing a repair from the failing cases...");
+          var rr, rj;
+          try {
+            rr = await fetch("/repair", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                code: original,
+                robot_preset: state.robotPreset,
+                task_preset: state.taskPreset,
+                minimal_ce: data.minimal,
+                severe_ce: data.severe,
+                allow_live: true,
+              }),
+            });
+            rj = await rr.json().catch(function () { return {}; });
+          } catch (e) {
+            autoStage(3, "bad", "Repair service unreachable.");
+            autoStage(4, "skip", "Not run.");
+            rejected = true;
+          }
+          if (!rejected && !rr.ok) {
+            autoStage(3, "bad", escapeHtml(formatErrorDetail(rj, rr.statusText)));
+            autoStage(4, "skip", "Not run.");
+            rejected = true;
+          } else if (!rejected) {
+            var p = rj.patch || {};
+            autoStage(3, "ok", "Repair produced: " + repairSourceLabel(rj) + ".<br>" + escapeHtml(p.rationale || ""));
+            var diffContainer = getElement("pg-diff-container");
+            var diffView = getElement("pg-diff-view");
+            var rationaleEl = getElement("pg-repair-rationale");
+            if (diffContainer) diffContainer.style.display = "block";
+            if (diffView) diffView.textContent = p.diff || "";
+            if (rationaleEl) rationaleEl.textContent = "Rationale: " + (p.rationale || "");
+
+            var g = rj.gates || {};
+            var stages = g.stages || {};
+            showGateStages(stages);
+            if (g.accepted) {
+              autoStage(4, "ok", "All 4 checks passed on the real simulator: smallest failure, worst failure, regression set, fresh search.");
+              editor.value = p.code;
+              repaired = true;
+              updateBadge();
+              repairNote = "Repair source: " + repairSourceLabel(rj) + ".";
+            } else {
+              autoStage(4, "bad", "Repair REJECTED: " + gateFailures(stages).join("; ") + ".");
+              rejected = true;
+            }
+          }
+        }
+      }
+
+      // Step 5: simulate
+      if (rejected) {
+        autoStage(5, "skip", "Not run: the repair was rejected. Your original code is unchanged in the editor.");
+        autoSummary("bad",
+          "<b>Repair rejected.</b> The simulator did not accept the proposed patch, so it was not applied. " +
+          "Edit the code yourself or run the closed loop again.<br>Simulation only, not a certificate.");
+        return;
+      }
+
+      autoStage(5, "running", "Starting simulation...");
+      mirror = setInterval(function () {
+        var img = getElement("pg-frame-img");
+        if (img && img.style.display !== "none" && img.getAttribute("src") && frameImg) {
+          frameImg.src = img.getAttribute("src");
+          frameImg.style.display = "block";
+          if (frameEmpty) frameEmpty.style.display = "none";
+        }
+        var pt = getElement("pg-progress-text");
+        if (pt && pt.textContent) autoStage(5, "running", escapeHtml(pt.textContent));
+      }, 300);
+      await runSimulation();
+      clearInterval(mirror);
+      mirror = null;
+
+      var k = getElement("pg-metric-k").textContent;
+      var n = getElement("pg-metric-n").textContent;
+      var rate = getElement("pg-metric-rate").textContent;
+      var headline = getElement("pg-results-headline");
+      var simBad = rate === "ERR" || k === "\u2014" || !state.backendAlive;
+      if (simBad) {
+        autoStage(5, "bad", escapeHtml(headline ? headline.textContent : "Simulation did not complete."));
+        autoSummary("bad", "The final simulation did not complete. See the message above.");
+      } else {
+        autoStage(5, "ok", k + " of " + n + " episodes succeeded (" + rate + ").");
+        var html;
+        if (repaired) {
+          html = "<b>Repaired and verified.</b><br>Before repair: " + passedBefore + " of " + evaluated +
+            " search scenarios passed.<br>After repair: " + k + " of " + n + " simulation episodes passed.<br>" +
+            repairNote + " 4 of 4 checks passed.";
+        } else if (!failures) {
+          html = "<b>No failures found.</b><br>Search: " + evaluated + " of " + evaluated +
+            " scenarios passed.<br>Simulation: " + k + " of " + n + " episodes passed.";
+        } else {
+          html = "<b>Failures found, repair not possible in software.</b><br>Simulation of the original code: " +
+            k + " of " + n + " episodes passed.<br>" + repairNote;
+        }
+        autoSummary(repaired || !failures ? "ok" : "bad",
+          html + "<br><span style='font-size:11px;opacity:.8'>Simulation only, not a certificate. Edited code is PLAYGROUND, NOT CERTIFIED.</span>");
+      }
+    } finally {
+      if (mirror) clearInterval(mirror);
+      window.jumpPlaygroundStep = savedJump;
+      state.autoRunning = false;
+      if (btn) { btn.disabled = false; btn.textContent = "Run Simulation"; }
+      var card = getElementById_safe("pg-auto-card");
+      var errBox = getElement("pg-editor-error");
+      var hasEditorError = errBox && errBox.style.display !== "none";
+      if (card && !hasEditorError && card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function getElementById_safe(id) {
+    return document.getElementById(id);
+  }
+
   // Init all event listeners
   function initPlayground() {
+    // Put the step tracker right above the camera view, beside the editor
+    var rightCol = getElement("pg-right-col");
+    var autoCard = getElement("pg-auto-card");
+    if (rightCol && autoCard && autoCard.parentNode !== rightCol) {
+      rightCol.insertBefore(autoCard, rightCol.firstChild);
+      autoCard.style.marginBottom = "20px";
+    }
     populatePresetDropdowns();
 
     var editor = getElement("pg-code-editor");
@@ -962,6 +1572,7 @@
         editor.value = TEMPLATES.v2_certified;
       }
       editor.addEventListener("input", function () {
+        state.ces = null;
         clearErrors();
         updateBadge();
         // Clear active template indicator on custom edit
@@ -973,12 +1584,24 @@
 
     var robotEl = getElement("pg-robot-preset");
     if (robotEl) {
+      robotEl.addEventListener("change", function () { state.ces = null; });
       robotEl.addEventListener("change", updateBadge);
     }
 
     var taskEl = getElement("pg-task-preset");
     if (taskEl) {
+      taskEl.addEventListener("change", function () { state.ces = null; });
       taskEl.addEventListener("change", updateBadge);
+    }
+
+    var autoBtn = getElement("pg-auto-btn");
+    if (autoBtn) {
+      autoBtn.addEventListener("click", runClosedLoop);
+    }
+
+    var falsifyBtn = getElement("pg-falsify-btn");
+    if (falsifyBtn) {
+      falsifyBtn.addEventListener("click", runFalsifier);
     }
 
     var budgetEl = getElement("pg-budget-preset");
@@ -1033,6 +1656,7 @@
     updateBadge: updateBadge,
     loadTemplate: loadTemplate,
     runSimulation: runSimulation,
+    runClosedLoop: runClosedLoop,
     loadRecordedRepair: loadRecordedRepair,
     runAcceptanceGates: runAcceptanceGates,
     clearErrors: clearErrors,

@@ -259,3 +259,54 @@ def test_server_repair_and_gates_endpoints() -> None:
     assert "patch" in repair_resp
     assert "gates" in repair_resp
     assert repair_resp["gates"]["accepted"] is True
+
+
+def test_repair_path_a_code_errors() -> None:
+    """Verify Path A handles syntax errors, invalid steps, and malformed code."""
+    broker = RepairBroker()
+
+    # Case 1: Syntax error (e.g. invalid syntax / missing comma)
+    syntax_err_code = "def policy(env, rng):\n    env.move_to(abovcfv ngbc vfnvgcn e_cube, steps=80)\n"
+    res1 = broker.repair(
+        code=syntax_err_code,
+        error_msg="SyntaxError: invalid syntax",
+        error_line=2,
+        allow_live=False,
+    )
+    assert res1.patch.code
+    assert "def policy(env, rng):" in res1.patch.code
+    assert res1.patch.diff
+    assert "Repaired code error" in res1.patch.rationale
+    # Verify the repaired code passes AST validation
+    ok1, _, _ = validate_program(res1.patch.code)
+    assert ok1 is True
+
+    # Case 2: Invalid step limit (e.g. steps=300 > 240)
+    steps_err_code = "def policy(env, rng):\n    env.move_to((0, 0, 0), steps=300)\n"
+    res2 = broker.repair(
+        code=steps_err_code,
+        error_msg="move_to steps must be integer between 1 and 240",
+        error_line=2,
+        allow_live=False,
+    )
+    assert res2.patch.code
+    ok2, _, _ = validate_program(res2.patch.code)
+    assert ok2 is True
+
+    # Case 3: Via FastAPI TestClient /repair endpoint
+    client = TestClient(app)
+    resp = client.post(
+        "/repair",
+        json={
+            "code": syntax_err_code,
+            "error_msg": "SyntaxError: invalid syntax",
+            "error_line": 2,
+            "allow_live": False,
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "patch" in data
+    assert data["patch"]["code"]
+    ok3, _, _ = validate_program(data["patch"]["code"])
+    assert ok3 is True

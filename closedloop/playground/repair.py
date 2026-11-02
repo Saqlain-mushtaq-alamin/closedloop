@@ -441,8 +441,51 @@ Respond strictly with a JSON object:
     return prompt
 
 
+def _safe_code_for_diff(c: str) -> str:
+    """Return canonical AST code if valid, or raw newline-normalized text if syntax is broken."""
+    try:
+        return canonicalise_program(c)
+    except Exception:
+        return c.replace("\r\n", "\n")
+
+
+def build_syntax_repair_prompt(
+    code: str,
+    error_msg: str,
+    error_line: int | None,
+    robot_preset: dict[str, Any],
+) -> str:
+    """Build a prompt for Muse Spark to repair code/syntax/validation errors (Path A)."""
+    max_force = float(robot_preset.get("force_limit_n") or 300.0)
+    line_desc = f" at line {error_line}" if error_line else ""
+    return f"""You are repairing a Python robot program that failed AST validation and cannot execute.
+
+Error Details:
+Validation Failure{line_desc}: {error_msg}
+
+Available Primitives:
+- move_to(pos: tuple[float, float, float], steps: int = 60): Move gripper to Cartesian position. Steps must be an integer between 1 and 240.
+- open_gripper(): Open gripper fingers. Takes no arguments.
+- close_gripper(force: float): Close gripper with force in Newtons (up to {max_force}N, numbers only without unit suffix, e.g. 300 not 300N).
+- get_object_pos(name: str) -> tuple[float, float, float]: Returns Cartesian coordinates of 'cube' or 'pad'.
+- get_object_pose(name: str): Returns (pos, orientation) of 'cube' or 'pad'.
+
+Current Code with Error:
+```python
+{code}
+```
+
+Instructions:
+1. Fix the syntax error, typo, unmatched brackets/parentheses, or invalid parameters so policy(env, rng) is valid Python.
+2. Adhere strictly to the AST allow-list (only def policy(env, rng), no imports, no loops, numbers under 1000, steps between 1 and 240).
+3. Preserve the intended robot manipulation logic (approach, grasp, lift, place, release).
+
+Respond strictly with a JSON object:
+{{"code": "<repaired python code>", "rationale": "<explanation of syntax or parameter fix>"}}"""
+
+
 class RepairBroker:
-    """Tier 2 Repair Broker with budget caps, caching, AST validation, and fallback."""
+    """Tier 2 Repair Broker supporting Path A (Code Errors) and Path B (Robot Failures)."""
 
     def __init__(self, api_key: str | None = None, budget_cap: float = 0.05) -> None:
         self.api_key = api_key
@@ -456,7 +499,6 @@ class RepairBroker:
         robot_preset: dict[str, Any],
     ) -> RepairPatch:
         """Parse JSON response, validate AST, and enforce hardware force limits."""
-        # Find JSON object
         text = raw_response.strip()
         start = text.find("{")
         end = text.rfind("}")
@@ -488,28 +530,51 @@ class RepairBroker:
                         )
 
         sha = hash_program(canonical)
-        diff = compute_unified_diff(canonicalise_program(baseline_code), canonical)
+        diff = compute_unified_diff(_safe_code_for_diff(baseline_code), canonical)
 
         return RepairPatch(code=canonical, sha256=sha, diff=diff, rationale=rationale)
 
     def repair(
         self,
         code: str,
-        minimal_ce: dict[str, Any],
-        severe_ce: dict[str, Any],
-        robot_preset: dict[str, Any],
-        task_preset: dict[str, Any],
+        minimal_ce: dict[str, Any] | None = None,
+        severe_ce: dict[str, Any] | None = None,
+        robot_preset: dict[str, Any] | None = None,
+        task_preset: dict[str, Any] | None = None,
         allow_live: bool = True,
+        error_msg: str | None = None,
+        error_line: int | None = None,
     ) -> RepairResult:
+        """Generate a repair patch for Path A (Code Errors) or Path B (Robot Failures)."""
+        robot_preset = robot_preset or {}
+        task_preset = task_preset or {}
+        minimal_ce = minimal_ce or {"mass": 10.16, "friction": 0.8, "x": 0.0, "y": 0.0, "yaw": 0.0, "seed": 711000}
+        severe_ce = severe_ce or {"mass": 11.5, "friction": 0.5, "x": -0.05, "y": -0.05, "yaw": 0.2, "seed": 711001}
 
-        """Generate a repair patch or fall back to recorded repair."""
+        # Check if code has syntax / AST validation errors (Path A)
+        ok, val_err, val_line = validate_program(code)
+        is_code_error = not ok
+        active_err_msg = error_msg or val_err or "SyntaxError or validation failure"
+        active_err_line = error_line or val_line
+
         # Check if live call is requested and feasible
         if allow_live and self.budget_cap > 0.0:
             try:
                 from closedloop.llm.client import LLMClient
                 from closedloop.llm.cost import CostMeter
 
-                prompt = build_sanitized_repair_prompt(code, minimal_ce, severe_ce, robot_preset)
+                if is_code_error:
+                    # Path A: Code / Syntax Error Repair
+                    prompt = build_syntax_repair_prompt(
+                        code=code,
+                        error_msg=active_err_msg,
+                        error_line=active_err_line,
+                        robot_preset=robot_preset,
+                    )
+                else:
+                    # Path B: Physical Robot Failure Repair
+                    prompt = build_sanitized_repair_prompt(code, minimal_ce, severe_ce, robot_preset)
+
                 meter = CostMeter(cap_usd=self.budget_cap)
                 client = LLMClient(meter=meter, api_key=self.api_key)
 
@@ -557,12 +622,17 @@ class RepairBroker:
             task_preset=task_preset,
         )
 
-        diff = compute_unified_diff(canonicalise_program(code), rec_item.repaired_code)
+        diff = compute_unified_diff(_safe_code_for_diff(code), rec_item.repaired_code)
+        rationale = (
+            f"Repaired code error: {active_err_msg} (Line {active_err_line}). Restored compliant policy."
+            if is_code_error
+            else rec_item.rationale
+        )
         patch = RepairPatch(
             code=rec_item.repaired_code,
             sha256=rec_item.repaired_sha256,
             diff=diff,
-            rationale=rec_item.rationale,
+            rationale=rationale,
         )
 
         return RepairResult(

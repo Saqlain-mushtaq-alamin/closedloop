@@ -74,7 +74,12 @@ def validate_program(code: str) -> tuple[bool, str | None, int | None]:
         msg = e.msg
         if "invalid decimal literal" in msg:
             msg += " (use numbers only without unit suffixes, e.g. close_gripper(300), not close_gripper(300N))"
-        return False, f"SyntaxError: {msg}", e.lineno or 1
+        src_lines = code.replace("\r\n", "\n").split("\n")
+        err_line = e.lineno or 1
+        snippet = src_lines[err_line - 1].strip() if 0 < err_line <= len(src_lines) else ""
+        if snippet:
+            msg += f" -> near: `{snippet[:80]}`"
+        return False, f"SyntaxError: {msg}", err_line
     except Exception as e:
         return False, f"Parse error: {str(e)}", 1
 
@@ -234,6 +239,35 @@ def validate_program(code: str) -> tuple[bool, str | None, int | None]:
                     return False, f"String literal '{val}' is only allowed as an argument to env.get_object_pos or env.get_object_pose", lineno
             elif isinstance(val, bytes):
                 return False, "Byte literals are forbidden", lineno
+
+    # Static check: every variable must be assigned before use
+    defined: set[str] = {"env", "rng"}
+
+    def visit(node: ast.AST) -> tuple[str, int] | None:
+        if isinstance(node, ast.Assign):
+            err = visit(node.value)
+            if err:
+                return err
+            for tgt in node.targets:
+                for n in ast.walk(tgt):
+                    if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store):
+                        defined.add(n.id)
+            return None
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
+            if node.id not in defined:
+                return f"Name '{node.id}' is used but never defined (typo? define it before use)", node.lineno
+            return None
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.arguments):
+                continue
+            err = visit(child)
+            if err:
+                return err
+        return None
+
+    name_err = visit(top)
+    if name_err:
+        return False, name_err[0], name_err[1]
 
     # Ensure canonical form parses identically
     try:

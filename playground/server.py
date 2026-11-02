@@ -43,6 +43,8 @@ from closedloop.playground.repair import (
     RepairBroker,
 )
 from closedloop.playground.runner import run_playground_job, stream_playground_job
+from closedloop.playground.falsify import falsify_program
+from closedloop.playground.lang import validate_program, canonicalise_program
 from closedloop.sim.env import T1Env
 import pybullet as p
 
@@ -76,28 +78,38 @@ class RunRequest(BaseModel):
     code: str
     robot_preset: str = Field(default="certified_default")
     task_preset: str = Field(default="mixed_bin")
-    budget: int = Field(default=5, ge=1, le=20)
+    budget: int = Field(default=5, ge=1, le=100)
     seed_base: int = Field(default=1000)
     render_frames: bool = Field(default=False)
     replay_certified_episodes: bool = Field(default=False)
     stream: bool = Field(default=False)
 
 
+class FalsifyRequest(BaseModel):
+    code: str
+    robot_preset: str = Field(default="certified_default")
+    task_preset: str = Field(default="mixed_bin")
+    budget: int = Field(default=20, ge=1, le=40)
+    seed_base: int = Field(default=3100000, ge=3000000, le=3999000)
+
+
 class GatesRequest(BaseModel):
     code: str
     robot_preset: str = Field(default="certified_default")
     task_preset: str = Field(default="mixed_bin")
-    minimal_ce: dict[str, Any]
-    severe_ce: dict[str, Any]
+    minimal_ce: dict[str, Any] = Field(default_factory=dict)
+    severe_ce: dict[str, Any] = Field(default_factory=dict)
 
 
 class RepairRequest(BaseModel):
     code: str
     robot_preset: str = Field(default="certified_default")
     task_preset: str = Field(default="mixed_bin")
-    minimal_ce: dict[str, Any]
-    severe_ce: dict[str, Any]
+    minimal_ce: dict[str, Any] = Field(default_factory=dict)
+    severe_ce: dict[str, Any] = Field(default_factory=dict)
     allow_live: bool = Field(default=False)
+    error_msg: str | None = None
+    error_line: int | None = None
 
 
 @app.get("/presets")
@@ -147,6 +159,18 @@ async def run_simulation(req: RunRequest):
     return result.to_dict()
 
 
+@app.post("/falsify")
+def falsify(req: FalsifyRequest) -> dict[str, Any]:
+    """Search the task preset for failing scenarios on the real simulator."""
+    if req.robot_preset not in ROBOT_PRESETS:
+        raise HTTPException(status_code=400, detail=f"Unknown robot preset '{req.robot_preset}'")
+    if req.task_preset not in TASK_PRESETS:
+        raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
+    return falsify_program(
+        req.code, req.robot_preset, req.task_preset, req.budget, req.seed_base
+    )
+
+
 @app.get("/repair/recorded")
 def get_recorded_repairs() -> dict[str, Any]:
     """Return catalog of validated historical repair items (Plan §10, §13 PA4)."""
@@ -181,6 +205,10 @@ def run_gates(req: GatesRequest) -> dict[str, Any]:
     if not task:
         raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
 
+    ok, canon_or_err, line = validate_program(req.code)
+    if not ok:
+        raise HTTPException(status_code=400, detail=f"{canon_or_err} (Line {line})")
+
     res = evaluate_acceptance_gates(
         code=req.code,
         minimal_ce=req.minimal_ce,
@@ -206,6 +234,7 @@ def repair_program(req: RepairRequest) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
 
     has_key = bool(os.environ.get("MODEL_API_KEY") or os.environ.get("META_API_KEY"))
+    ok, canon_or_err, line = validate_program(req.code)
     allow_live = req.allow_live or has_key
 
     broker = RepairBroker()
@@ -216,6 +245,8 @@ def repair_program(req: RepairRequest) -> dict[str, Any]:
         robot_preset=robot,
         task_preset=task,
         allow_live=allow_live,
+        error_msg=req.error_msg or (canon_or_err if not ok else None),
+        error_line=req.error_line or (line if not ok else None),
     )
 
     return {

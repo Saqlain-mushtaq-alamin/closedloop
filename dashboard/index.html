@@ -1944,7 +1944,8 @@
                 <button type="button" class="pg-template-btn" data-template="custom">Custom Policy</button>
               </div>
             </div>
-            <textarea id="pg-code-editor" class="pg-editor-wrap" spellcheck="false" placeholder="def policy(env, rng): ..."></textarea>
+<textarea id="pg-code-editor" class="pg-editor-wrap" autocomplete="off" spellcheck="false" placeholder="def policy(env, rng): ..."></textarea>
+            <div id="pg-editor-error" style="display:none; margin-top:10px; padding:10px 12px; border-radius:8px; border:1px solid #ef4444; background:rgba(239,68,68,.1); color:var(--text-strong); font-size:12.5px;"></div>
             <div class="row-between mt-12 text-xs text-dim">
               <span>Only robot commands and simple arithmetic are allowed. Anything else is rejected with a line number.</span>
               <span>Change any number. The certificate status above updates instantly.</span>
@@ -1991,7 +1992,7 @@
         </div>
 
         <!-- Right: Camera View, Results, Repair Checks & Details -->
-        <div>
+        <div id="pg-right-col">
           <!-- Camera View Card -->
           <div id="pg-card-camera" class="card-panel mb-20">
             <div class="row-between mb-8">
@@ -2043,11 +2044,15 @@
               Load the repair Muse Spark produced, then run four checks on it right now.
             </div>
 
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
-              <button type="button" id="pg-load-repair-btn" class="btn-action">Load recorded repair</button>
-              <button type="button" id="pg-live-repair-btn" class="btn-action btn-primary font-bold">Live repair (Muse Spark)</button>
-              <button type="button" id="pg-run-gates-btn" class="btn-action font-bold">Run the 4 checks</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+              <button type="button" id="pg-falsify-btn" class="btn-action font-bold">1. Find failures</button>
+              <button type="button" id="pg-load-repair-btn" class="btn-action">2a. Load recorded repair</button>
+              <button type="button" id="pg-live-repair-btn" class="btn-action btn-primary font-bold">2b. Live repair (Muse Spark)</button>
+              <button type="button" id="pg-run-gates-btn" class="btn-action font-bold">3. Run the 4 checks</button>
             </div>
+
+            <div id="pg-ce-panel" class="text-xs mb-14" style="display:none; padding:12px; border-radius:var(--radius-sm); background:var(--bg-inset);"></div>
+            <div id="pg-verdict" class="text-sm font-bold mb-14" style="display:none; padding:12px; border-radius:var(--radius-sm);"></div>
 
             <div class="pg-stages-grid">
               <div class="pg-stage-item">
