@@ -1245,6 +1245,60 @@
     .pg-diff-wrap { white-space: pre; overflow-x: auto; }
     #pg-run-gates-btn { background: var(--bg-darkest) !important; border: none !important; }
 
+    /* Test Setup Controls & Selects */
+    .control-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .form-select, .pg-select-input {
+      width: 100%;
+      padding: 10px 14px;
+      min-height: 42px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--inset-sm);
+      color: var(--text-strong);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%2364748b' height='20' viewBox='0 0 24 24' width='20'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .form-select:hover, .pg-select-input:hover {
+      border-color: var(--border-strong);
+    }
+    .form-select:focus, .pg-select-input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--inset-sm), 0 0 0 2px var(--accent-soft);
+    }
+    .form-select option, .pg-select-input option {
+      background: var(--bg-card);
+      color: var(--text-strong);
+      padding: 8px 12px;
+    }
+    #pg-robot-desc, #pg-task-desc {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-top: 5px;
+      line-height: 1.45;
+      background: var(--bg-inset);
+      box-shadow: var(--inset-xs);
+    }
+
     /* ClosedLoop UI Redesign Spec v2 Enhancements */
     .site-header {
       position: sticky;
@@ -1931,6 +1985,7 @@
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
               <button type="button" id="pg-load-repair-btn" class="btn-action">Load recorded repair</button>
+              <button type="button" id="pg-live-repair-btn" class="btn-action btn-primary font-bold">Live repair (Muse Spark)</button>
               <button type="button" id="pg-run-gates-btn" class="btn-action font-bold">Run the 4 checks</button>
             </div>
 

@@ -29,6 +29,13 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import dotenv
+dotenv.load_dotenv(ROOT / ".env")
+if "MODEL_API_KEY" not in os.environ and "META_API_KEY" in os.environ:
+    os.environ["MODEL_API_KEY"] = os.environ["META_API_KEY"]
+if os.environ.get("MODEL_API_KEY"):
+    os.environ.setdefault("TIER2_ENABLED", "1")
+
 from closedloop.playground.presets import ROBOT_PRESETS, TASK_PRESETS
 from closedloop.playground.repair import (
     RecordedRepairCatalog,
@@ -198,6 +205,9 @@ def repair_program(req: RepairRequest) -> dict[str, Any]:
     if not task:
         raise HTTPException(status_code=400, detail=f"Unknown task preset '{req.task_preset}'")
 
+    has_key = bool(os.environ.get("MODEL_API_KEY") or os.environ.get("META_API_KEY"))
+    allow_live = req.allow_live or has_key
+
     broker = RepairBroker()
     res = broker.repair(
         code=req.code,
@@ -205,7 +215,7 @@ def repair_program(req: RepairRequest) -> dict[str, Any]:
         severe_ce=req.severe_ce,
         robot_preset=robot,
         task_preset=task,
-        allow_live=req.allow_live,
+        allow_live=allow_live,
     )
 
     return {
@@ -231,7 +241,8 @@ def repair_program(req: RepairRequest) -> dict[str, Any]:
 def health() -> dict[str, Any]:
     """Health check endpoint driving mode fallback (Plan §10)."""
     enabled = os.environ.get("PLAYGROUND_ENABLED", "1") == "1"
-    tier2 = os.environ.get("TIER2_ENABLED", "0") == "1"
+    has_key = bool(os.environ.get("MODEL_API_KEY") or os.environ.get("META_API_KEY"))
+    tier2 = os.environ.get("TIER2_ENABLED", "1" if has_key else "0") == "1"
     return {
         "status": "ok" if enabled else "disabled",
         "enabled": enabled,
