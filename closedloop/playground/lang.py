@@ -71,7 +71,10 @@ def validate_program(code: str) -> tuple[bool, str | None, int | None]:
     try:
         tree = ast.parse(code.replace("\r\n", "\n"))
     except SyntaxError as e:
-        return False, f"SyntaxError: {e.msg}", e.lineno or 1
+        msg = e.msg
+        if "invalid decimal literal" in msg:
+            msg += " (use numbers only without unit suffixes, e.g. close_gripper(300), not close_gripper(300N))"
+        return False, f"SyntaxError: {msg}", e.lineno or 1
     except Exception as e:
         return False, f"Parse error: {str(e)}", 1
 

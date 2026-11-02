@@ -535,10 +535,20 @@
 
       if (!resp.ok) {
         var errData = await resp.json().catch(function () { return { detail: resp.statusText }; });
+        var errMsg = errData.detail || errData.error || "Execution failed";
         var ptext = getElement("pg-progress-text");
         if (ptext) {
-          ptext.innerHTML = '<span class="text-bad font-semibold">Validation Error:</span> ' + (errData.detail || errData.error || "Execution failed");
+          ptext.innerHTML = '<span class="text-bad font-semibold">Validation Error:</span> ' + errMsg +
+            '<br><span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: Numbers must be pure digits without unit letters (e.g. <code>close_gripper(300)</code>, NOT <code>close_gripper(300N)</code>). Click a template button above to reset.</span>';
         }
+        var resHeadlineErr = getElement("pg-results-headline");
+        if (resHeadlineErr) {
+          resHeadlineErr.textContent = "Rejected: " + errMsg;
+          resHeadlineErr.style.color = "var(--bad-text)";
+        }
+        getElement("pg-metric-k").textContent = "0";
+        getElement("pg-metric-n").textContent = "0";
+        getElement("pg-metric-rate").textContent = "ERR";
         return;
       }
 
@@ -612,8 +622,41 @@
               logBadgeDone.textContent = evData.certified ? "CERTIFIED LOG" : "PLAYGROUND LOG";
             }
           } else if (evType === "error") {
-            getElement("pg-progress-text").innerHTML =
-              '<span class="text-bad font-semibold">Error:</span> ' + (evData.message || "Failed");
+            var errMsg = evData.message || "Execution rejected";
+            var errLine = evData.line ? " (Line " + evData.line + ")" : "";
+
+            var resHeadlineErr = getElement("pg-results-headline");
+            if (resHeadlineErr) {
+              resHeadlineErr.textContent = "Rejected: " + errMsg + errLine;
+              resHeadlineErr.style.color = "var(--bad-text)";
+            }
+
+            var ptext = getElement("pg-progress-text");
+            if (ptext) {
+              ptext.innerHTML =
+                '<span class="text-bad font-semibold">Validation Error' + errLine + ':</span> ' +
+                errMsg +
+                '<br><span style="font-size:12px; color:var(--text-muted); margin-top:4px; display:inline-block;">Tip: Numbers must be pure digits without unit letters (e.g. <code>close_gripper(300)</code>, NOT <code>close_gripper(300N)</code>). Click a template button above to reset.</span>';
+            }
+
+            var pbar = getElement("pg-progress-fill");
+            if (pbar) {
+              pbar.style.width = "0%";
+            }
+
+            getElement("pg-metric-k").textContent = "0";
+            getElement("pg-metric-n").textContent = "0";
+            getElement("pg-metric-rate").textContent = "ERR";
+
+            var frameEmpty = getElement("pg-frame-empty");
+            if (frameEmpty) {
+              frameEmpty.style.display = "block";
+              frameEmpty.textContent = "Execution rejected: " + errMsg + errLine;
+            }
+            var frameImg = getElement("pg-frame-img");
+            if (frameImg) {
+              frameImg.style.display = "none";
+            }
           }
         }
       }
