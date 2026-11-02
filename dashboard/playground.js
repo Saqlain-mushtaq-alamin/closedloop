@@ -363,8 +363,8 @@
 
     state.backendAlive = false;
     if (svcBadge) {
-      svcBadge.className = "badge-pill badge-pill-neutral";
-      svcBadge.textContent = "Mode: Tier 0 Hash Lab (Offline)";
+      svcBadge.className = "badge-pill badge-pill-fail";
+      svcBadge.textContent = "Offline (HTTP 404): Simulator Server Not Running";
     }
     return false;
   }
@@ -481,78 +481,36 @@
 
     var isLive = await checkBackend();
     if (!isLive) {
-      // Offline simulation execution
-      var isV2 = code.indexOf("close_gripper(300)") !== -1;
-      var isClamped100 = robotPreset === "gripper_100N";
-
-      var offlineEpisodes = [
-        { index: 1, seed: 1001, mass: 2.50, friction: 0.60, truth_success: true, margin: 0.0450, steps: 520, clamp_events: [] },
-        { index: 2, seed: 1002, mass: 4.80, friction: 0.45, truth_success: true, margin: 0.0380, steps: 540, clamp_events: [] },
-        { index: 3, seed: 1003, mass: 7.20, friction: 0.70, truth_success: true, margin: 0.0210, steps: 560, clamp_events: [] },
-        { index: 4, seed: 1004, mass: 9.50, friction: 0.50, truth_success: isV2 && !isClamped100, margin: (isV2 && !isClamped100) ? 0.0180 : -0.0650, steps: 580, clamp_events: isClamped100 ? [{ step: 200, limit: 100 }] : [] },
-        { index: 5, seed: 1005, mass: 11.13, friction: 0.85, truth_success: isV2 && !isClamped100, margin: (isV2 && !isClamped100) ? 0.0120 : -0.1260, steps: 600, clamp_events: isClamped100 ? [{ step: 210, limit: 100 }] : [] },
-        { index: 6, seed: 1006, mass: 3.10, friction: 0.75, truth_success: true, margin: 0.0420, steps: 510, clamp_events: [] },
-        { index: 7, seed: 1007, mass: 5.50, friction: 0.40, truth_success: true, margin: 0.0310, steps: 550, clamp_events: [] },
-        { index: 8, seed: 1008, mass: 8.40, friction: 0.65, truth_success: isV2 && !isClamped100, margin: (isV2 && !isClamped100) ? 0.0220 : -0.0410, steps: 570, clamp_events: isClamped100 ? [{ step: 190, limit: 100 }] : [] },
-        { index: 9, seed: 1009, mass: 10.20, friction: 0.55, truth_success: isV2 && !isClamped100, margin: (isV2 && !isClamped100) ? 0.0150 : -0.0880, steps: 590, clamp_events: isClamped100 ? [{ step: 205, limit: 100 }] : [] },
-        { index: 10, seed: 1010, mass: 11.50, friction: 0.90, truth_success: isV2 && !isClamped100, margin: (isV2 && !isClamped100) ? 0.0110 : -0.1450, steps: 610, clamp_events: isClamped100 ? [{ step: 215, limit: 100 }] : [] },
-      ].slice(0, budget);
-
-      var epIdx = 0;
-      var kPass = 0;
-      var totalClamps = 0;
-
-      var epTimer = setInterval(function () {
-        if (epIdx < offlineEpisodes.length) {
-          var ep = offlineEpisodes[epIdx];
-          if (ep.truth_success) kPass++;
-          if (ep.clamp_events.length > 0) totalClamps += ep.clamp_events.length;
-          appendEpisodeRow(ep);
-          epIdx++;
-          var pct = Math.round((epIdx / offlineEpisodes.length) * 100);
-          var pbar = getElement("pg-progress-fill");
-          if (pbar) pbar.style.width = pct + "%";
-          var ptext = getElement("pg-progress-text");
-          if (ptext) ptext.textContent = "Running episode " + epIdx + " of " + offlineEpisodes.length + "...";
-          getElement("pg-metric-k").textContent = String(kPass);
-          getElement("pg-metric-n").textContent = String(epIdx);
-          getElement("pg-metric-rate").textContent = ((kPass / epIdx) * 100).toFixed(1) + "%";
-          getElement("pg-metric-clamps").textContent = String(totalClamps);
-
-          var frameImg = getElement("pg-frame-img");
-          var frameEmpty = getElement("pg-frame-empty");
-          if (frameImg) {
-            frameImg.src = ep.truth_success ? "theatre/session_00/frames/replay_frame_4.png" : "theatre/session_00/frames/fail_frame_3.png";
-            frameImg.style.display = "block";
-          }
-          if (frameEmpty) frameEmpty.style.display = "none";
-        } else {
-          clearInterval(epTimer);
-          state.isRunning = false;
-          if (runBtn) {
-            runBtn.disabled = false;
-            runBtn.textContent = "Run Simulation";
-          }
-          var ptext = getElement("pg-progress-text");
-          if (ptext) {
-            ptext.textContent = "Run complete: " + kPass + "/" + offlineEpisodes.length + " successes (" + ((kPass / offlineEpisodes.length) * 100).toFixed(1) + "%).";
-          }
-          if (resHeadline) {
-            resHeadline.textContent = kPass + " of " + offlineEpisodes.length + " episodes succeeded (" + ((kPass / offlineEpisodes.length) * 100).toFixed(1) + "%).";
-          }
-          if (camBadge) {
-            camBadge.className = "badge-pill badge-pill-pass text-xs";
-            camBadge.textContent = "OFFLINE REPLAY";
-          }
-          if (logBadge) {
-            logBadge.className = "badge-pill badge-pill-pass text-xs";
-            logBadge.textContent = "RECORDED LOG";
-          }
-          if (typeof window.jumpPlaygroundStep === "function") {
-            window.jumpPlaygroundStep(4);
-          }
-        }
-      }, 180);
+      state.isRunning = false;
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.textContent = "Run Simulation";
+      }
+      if (resHeadline) {
+        resHeadline.textContent = "Error: Simulator Backend Offline (HTTP 404)";
+        resHeadline.style.color = "var(--bad-text)";
+      }
+      var ptext = getElement("pg-progress-text");
+      if (ptext) {
+        ptext.innerHTML = '<span style="color:var(--bad-text); font-weight:700;">Backend Offline (HTTP 404):</span> Live simulation requires the PyBullet FastAPI backend.<br><strong>To fix:</strong> Run <code style="padding:2px 6px; background:var(--bg-inset); border-radius:4px; font-weight:700;">python -m playground.server --port 8000</code> in your terminal.<br><span style="font-size:11px; color:var(--text-dim);">(Do not run <code>python -m http.server</code> as it only serves static files and cannot execute simulations).</span>';
+      }
+      if (camBadge) {
+        camBadge.className = "badge-pill badge-pill-fail text-xs";
+        camBadge.textContent = "BACKEND 404";
+      }
+      if (logBadge) {
+        logBadge.className = "badge-pill badge-pill-fail text-xs";
+        logBadge.textContent = "SIMULATOR OFFLINE";
+      }
+      var frameEmpty = getElement("pg-frame-empty");
+      if (frameEmpty) {
+        frameEmpty.style.display = "block";
+        frameEmpty.textContent = "Simulator backend offline (HTTP 404). Run python -m playground.server --port 8000";
+      }
+      var frameImg = getElement("pg-frame-img");
+      if (frameImg) {
+        frameImg.style.display = "none";
+      }
       return;
     }
 
@@ -828,17 +786,20 @@
           }
           return;
         }
+      } else {
+        var errJson = await resp.json().catch(function () { return { detail: resp.statusText }; });
+        alert("Live Repair Error (" + resp.status + "): " + (errJson.detail || "Server error"));
+        return;
       }
     } catch (e) {
-      // Fallback to recorded repair
+      alert("Live Repair Offline (HTTP 404): Simulator backend is not running.\nStart the server with: python -m playground.server --port 8000");
+      return;
     } finally {
       if (liveBtn) {
         liveBtn.disabled = false;
         liveBtn.textContent = "Live repair (Muse Spark)";
       }
     }
-
-    loadRecordedRepair();
   }
 
   // Evaluate candidate code against the 4 acceptance stages
@@ -892,26 +853,16 @@
         return;
       }
     } catch (e) {
-      // Offline fallback evaluation
+      // Backend offline
     }
 
-    // Offline heuristic: code with 300N force without 100N clamp passes all stages
-    var commands300 = code.indexOf("close_gripper(300)") !== -1;
-    var is100Clamped = robotPreset === "gripper_100N";
-    var passesHeavy = commands300 && !is100Clamped;
-
-    var setOffline = function (id, ok) {
+    stages.forEach(function (id) {
       var el = getElement(id);
       if (el) {
-        el.textContent = ok ? "PASS" : "FAIL";
-        el.className = "text-xs font-mono font-bold mt-4 " + (ok ? "text-ok" : "text-bad");
+        el.textContent = "OFFLINE (404)";
+        el.className = "text-xs font-mono font-bold mt-4 text-bad";
       }
-    };
-
-    setOffline("pg-stage1-status", passesHeavy);
-    setOffline("pg-stage2-status", passesHeavy);
-    setOffline("pg-stage3-status", true);
-    setOffline("pg-stage4-status", passesHeavy);
+    });
   }
 
   // Init all event listeners
