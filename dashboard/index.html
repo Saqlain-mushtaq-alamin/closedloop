@@ -2027,23 +2027,23 @@
           <div class="overview-map-card">
             <div class="overview-map-title-row">
               <span class="overview-map-title">Which conditions are covered (mass &times; friction grid, in simulation)</span>
-              <span class="overview-grid-live-tag">150 trials / cell &middot; 2,400 total</span>
+              <span id="overview-grid-live-tag" class="overview-grid-live-tag"></span>
             </div>
             
             <div class="overview-map-stats-row">
               <div class="overview-map-stat-col">
                 <div class="overview-stat-header">
                   <span class="overview-map-stat-lbl">Original controller</span>
-                  <span id="overview-v1-stat" class="overview-map-stat-val">8 of 16 (50%)</span>
+                  <span id="overview-v1-stat" class="overview-map-stat-val"></span>
                 </div>
-                <div class="overview-env-badge overview-env-badge--warn">ODD envelope: 1.0 – 6.25 kg</div>
+                <div id="overview-v1-env-badge" class="overview-env-badge overview-env-badge--warn"></div>
               </div>
               <div class="overview-map-stat-col">
                 <div class="overview-stat-header">
                   <span class="overview-map-stat-lbl">After repair (Muse Spark)</span>
-                  <span id="overview-v2-stat" class="overview-map-stat-val text-ok">16 of 16 (100%)</span>
+                  <span id="overview-v2-stat" class="overview-map-stat-val text-ok"></span>
                 </div>
-                <div class="overview-env-badge overview-env-badge--ok">ODD envelope: 1.0 – 11.50 kg</div>
+                <div id="overview-v2-env-badge" class="overview-env-badge overview-env-badge--ok"></div>
               </div>
             </div>
 
@@ -2051,82 +2051,40 @@
               <!-- Grid 1: Original Controller -->
               <div class="overview-grid-block">
                 <div class="overview-axis-header">
-                  <span>Friction &mu;: 1.0 &darr; 0.1</span>
-                  <span>Original (v1)</span>
+                  <span>Lateral Friction</span>
+                  <span>Original Controller</span>
                 </div>
-                <div id="overview-grid-v1" class="overview-grid-16" onclick="switchTab('evidence')">
-                  <!-- Row 0: μ = 0.78 - 1.00 -->
-                  <div class="overview-cell certified" title="Cell 3 (Mass: 1.0–3.6 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 7 (Mass: 3.6–6.2 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell uncertified" title="Cell 11 (Mass: 6.2–8.9 kg, Friction: μ=0.78–1.00)&#10;Status: Below target&#10;Statistical bound p_L = 77.3%&#10;Passed: 129/150 (86%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">77%</span></div>
-                  <div class="overview-cell failed" title="Cell 15 (Mass: 8.9–11.5 kg, Friction: μ=0.78–1.00)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
-                  <!-- Row 1: μ = 0.55 - 0.78 -->
-                  <div class="overview-cell certified" title="Cell 2 (Mass: 1.0–3.6 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 6 (Mass: 3.6–6.2 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell uncertified" title="Cell 10 (Mass: 6.2–8.9 kg, Friction: μ=0.55–0.78)&#10;Status: Below target&#10;Statistical bound p_L = 75.1%&#10;Passed: 127/150 (85%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">75%</span></div>
-                  <div class="overview-cell failed" title="Cell 14 (Mass: 8.9–11.5 kg, Friction: μ=0.55–0.78)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
-                  <!-- Row 2: μ = 0.33 - 0.55 -->
-                  <div class="overview-cell certified" title="Cell 1 (Mass: 1.0–3.6 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 5 (Mass: 3.6–6.2 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell uncertified" title="Cell 9 (Mass: 6.2–8.9 kg, Friction: μ=0.33–0.55)&#10;Status: Below target&#10;Statistical bound p_L = 77.3%&#10;Passed: 130/150 (87%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">77%</span></div>
-                  <div class="overview-cell failed" title="Cell 13 (Mass: 8.9–11.5 kg, Friction: μ=0.33–0.55)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
-                  <!-- Row 3: μ = 0.10 - 0.33 -->
-                  <div class="overview-cell certified" title="Cell 0 (Mass: 1.0–3.6 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 4 (Mass: 3.6–6.2 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell uncertified" title="Cell 8 (Mass: 6.2–8.9 kg, Friction: μ=0.10–0.33)&#10;Status: Below target&#10;Statistical bound p_L = 80.7%&#10;Passed: 134/150 (89%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">81%</span></div>
-                  <div class="overview-cell failed" title="Cell 12 (Mass: 8.9–11.5 kg, Friction: μ=0.10–0.33)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
-                </div>
+                <div id="overview-grid-v1" class="overview-grid-16" onclick="switchTab('evidence')"></div>
                 <div class="overview-axis-labels">
-                  <span>1.0 kg (light)</span>
-                  <span>6.2 kg</span>
-                  <span>11.5 kg (heavy)</span>
+                  <span>Min Mass</span>
+                  <span>Mid Mass</span>
+                  <span>Max Mass</span>
                 </div>
               </div>
 
               <!-- Grid 2: After Repair -->
               <div class="overview-grid-block">
                 <div class="overview-axis-header">
-                  <span>Friction &mu;: 1.0 &darr; 0.1</span>
-                  <span class="text-ok font-semibold">Repaired (v2)</span>
+                  <span>Lateral Friction</span>
+                  <span class="text-ok font-semibold">Repaired Controller</span>
                 </div>
-                <div id="overview-grid-v2" class="overview-grid-16" onclick="switchTab('evidence')">
-                  <!-- Row 0: μ = 0.78 - 1.00 -->
-                  <div class="overview-cell certified" title="Cell 3 (Mass: 1.0–3.6 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 7 (Mass: 3.6–6.2 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 11 (Mass: 6.2–8.9 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 15 (Mass: 8.9–11.5 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <!-- Row 1: μ = 0.55 - 0.78 -->
-                  <div class="overview-cell certified" title="Cell 2 (Mass: 1.0–3.6 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 6 (Mass: 3.6–6.2 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 10 (Mass: 6.2–8.9 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 14 (Mass: 8.9–11.5 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <!-- Row 2: μ = 0.33 - 0.55 -->
-                  <div class="overview-cell certified" title="Cell 1 (Mass: 1.0–3.6 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 5 (Mass: 3.6–6.2 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 9 (Mass: 6.2–8.9 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 13 (Mass: 8.9–11.5 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <!-- Row 3: μ = 0.10 - 0.33 -->
-                  <div class="overview-cell certified" title="Cell 0 (Mass: 1.0–3.6 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 4 (Mass: 3.6–6.2 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 8 (Mass: 6.2–8.9 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                  <div class="overview-cell certified" title="Cell 12 (Mass: 8.9–11.5 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
-                </div>
+                <div id="overview-grid-v2" class="overview-grid-16" onclick="switchTab('evidence')"></div>
                 <div class="overview-axis-labels">
-                  <span>1.0 kg (light)</span>
-                  <span>6.2 kg</span>
-                  <span>11.5 kg (heavy)</span>
+                  <span>Min Mass</span>
+                  <span>Mid Mass</span>
+                  <span>Max Mass</span>
                 </div>
               </div>
             </div>
 
             <div class="overview-map-legend">
-              <span title="Statistical lower bound p_L ≥ 0.90 (Clopper-Pearson 95% confidence)"><span class="legend-swatch legend-swatch--ok"></span> <strong>Certified:</strong> p<sub>L</sub> &ge; 0.90 (96.2%)</span>
-              <span title="Statistical lower bound 0 < p_L < 0.90 (slips on heavy mass)"><span class="legend-swatch legend-swatch--warn"></span> <strong>Below target:</strong> p<sub>L</sub> &lt; 0.90 (75–81%)</span>
-              <span title="Statistical lower bound 0.00 (0 / 150 grasps completed)"><span class="legend-swatch legend-swatch--bad"></span> <strong>Fails:</strong> 0% grasp</span>
+              <span title="Statistical lower bound at or above target"><span class="legend-swatch legend-swatch--ok"></span> <strong>Certified:</strong> p<sub>L</sub> &ge; target</span>
+              <span title="Statistical lower bound below target"><span class="legend-swatch legend-swatch--warn"></span> <strong>Below target:</strong> uncertified region</span>
+              <span title="Zero grasps completed"><span class="legend-swatch legend-swatch--bad"></span> <strong>Fails:</strong> slip failure</span>
             </div>
 
             <div class="overview-map-footer-note">
-              <span>&bull; Numbers show Clopper-Pearson 95% confidence lower bound (p<sub>L</sub>) per condition cell</span>
+              <span>&bull; Cells display exact Clopper-Pearson confidence lower bound (p<sub>L</sub>) per condition</span>
               <a href="#" onclick="switchTab('evidence'); return false;" class="overview-explore-link">Inspect all traces in Evidence &rarr;</a>
             </div>
           </div>
@@ -2136,17 +2094,17 @@
       <!-- 3 Steps Section (from screenshot) -->
       <div class="overview-steps-row">
         <div class="overview-step-col">
-          <div class="overview-step-num">01</div>
+          <div class="overview-step-num">1</div>
           <div class="overview-step-title">Find failures</div>
           <div class="overview-step-desc">A search looks for the smallest change in weight or friction that makes the robot drop the cube.</div>
         </div>
         <div class="overview-step-col">
-          <div class="overview-step-num">02</div>
+          <div class="overview-step-num">2</div>
           <div class="overview-step-title">Repair</div>
           <div class="overview-step-desc">Muse Spark rewrites the controller using that failing case. The fix must pass four checks.</div>
         </div>
         <div class="overview-step-col">
-          <div class="overview-step-num">03</div>
+          <div class="overview-step-num">3</div>
           <div class="overview-step-title">Verify</div>
           <div class="overview-step-desc">The fix is re-tested on fresh scenarios, and statistical bounds show where it holds.</div>
         </div>
@@ -2346,8 +2304,8 @@
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
               <button type="button" id="pg-falsify-btn" class="btn-action font-bold">1. Find failures</button>
-              <button type="button" id="pg-load-repair-btn" class="btn-action">2a. Load recorded repair</button>
-              <button type="button" id="pg-live-repair-btn" class="btn-action btn-primary font-bold">2b. Live repair (Muse Spark)</button>
+              <button type="button" id="pg-load-repair-btn" class="btn-action">2. Load recorded repair</button>
+              <button type="button" id="pg-live-repair-btn" class="btn-action btn-primary font-bold">2. Live repair (Muse Spark)</button>
               <button type="button" id="pg-run-gates-btn" class="btn-action font-bold">3. Run the 4 checks</button>
             </div>
 

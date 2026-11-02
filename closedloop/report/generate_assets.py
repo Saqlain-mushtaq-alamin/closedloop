@@ -485,13 +485,78 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
         "assets": assets_map,
     }
 
-    manifest_file = out_dir / "manifest.json"
-    manifest_file.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Report summary metrics strictly derived from logs (Rule H11, V12)
+    calib_report = json.loads((ROOT / "runs" / "judge-g2-03" / "calibration_report.json").read_text(encoding="utf-8"))
+    repair_results = json.loads((ROOT / "runs" / "h2h3-full-03" / "repair_results.json").read_text(encoding="utf-8"))
+
+    report_summary = {
+        "state_headline_bound": float(price_data["cell_details"]["cell_00"]["state_bound"]),
+        "camera_headline_bound": float(price_data["cell_details"]["cell_00"]["camera_bound"]),
+        "certified_cells_count": int(price_data["cells_state_certified"]),
+        "total_cells_count": int(price_data["cells_evaluated"]),
+        "certified_fraction": float(price_data["state_area_fraction"]),
+        "shift_in_bound": float(shift_data["d_recomputed_bound"]),
+        "shift_out_bound": float(shift_data["dp_recertified_bound"]),
+        "shift_bound_drop": float(shift_data["bound_difference"]),
+        "judge_tpr": float(calib_report["tpr"]),
+        "judge_tpr_lower": float(calib_report["tpr_lower"]),
+        "judge_fpr": float(calib_report["fpr"]),
+        "worst_bucket_fpr_upper": float(calib_report["worst_bucket_fpr_upper"]),
+        "repair_acceptance_rates": {
+            "B1": float(repair_results["scores"]["B1"]["acceptance_rate"]),
+            "B2": float(repair_results["scores"]["B2"]["acceptance_rate"]),
+            "B3": float(repair_results["scores"]["B3"]["acceptance_rate"]),
+        },
+        "error_budget": {
+            "delta": 0.05,
+            "K": 16,
+            "B": 4,
+            "M": 1,
+            "state_cell_allocation": 0.003125,
+            "camera_tpr_allocation": 0.005,
+            "camera_fpr_per_bucket_allocation": 0.00125,
+            "camera_cell_allocation": 0.0025,
+        },
+    }
+    summary_file = out_dir / "report_summary.json"
+    summary_file.write_text(json.dumps(report_summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     from closedloop.report.build_ui_data import build_ui_data
     build_ui_data()
 
     return manifest
+
+
+def verify_phase_11_gate() -> None:
+    """Verify Phase 11 Gate: demo script, README, technical report, and provenance."""
+    script_path = ROOT / "demo" / "SCRIPT.md"
+    readme_path = ROOT / "README.md"
+    report_path = ROOT / "docs" / "REPORT.md"
+    summary_path = ROOT / "assets" / "report_summary.json"
+
+    assert script_path.exists(), "demo/SCRIPT.md missing"
+    assert readme_path.exists(), "README.md missing"
+    assert report_path.exists(), "docs/REPORT.md missing"
+    assert summary_path.exists(), "assets/report_summary.json missing"
+
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    readme_text = readme_path.read_text(encoding="utf-8")
+    report_text = report_path.read_text(encoding="utf-8")
+
+    state_bound_str = f"{summary['state_headline_bound']:.4f}"
+    camera_bound_str = f"{summary['camera_headline_bound']:.4f}"
+    shift_in_str = f"{summary['shift_in_bound']:.4f}"
+
+    assert state_bound_str in readme_text or state_bound_str in report_text, f"State bound {state_bound_str} missing"
+    assert camera_bound_str in readme_text or camera_bound_str in report_text, f"Camera bound {camera_bound_str} missing"
+    assert shift_in_str in report_text, f"Shift bound {shift_in_str} missing in report"
+
+    print("PHASE 11 GATE VERIFIED: DEMO SCRIPT, README & REPORT PROVENANCE")
+    print(f"Verified Headline State Bound: {state_bound_str}")
+    print(f"Verified Headline Camera Bound: {camera_bound_str}")
+    print(f"Certified Cells: {summary['certified_cells_count']}/{summary['total_cells_count']}")
+    print(f"Shift Refusal Drop: {summary['shift_bound_drop']:.4f}")
+    print("PHASE 11: PASS")
 
 
 def verify_phase_10_gate() -> None:

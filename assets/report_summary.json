@@ -1,0 +1,29 @@
+{
+  "camera_headline_bound": 0.9563,
+  "certified_cells_count": 8,
+  "certified_fraction": 0.5,
+  "error_budget": {
+    "B": 4,
+    "K": 16,
+    "M": 1,
+    "camera_cell_allocation": 0.0025,
+    "camera_fpr_per_bucket_allocation": 0.00125,
+    "camera_tpr_allocation": 0.005,
+    "delta": 0.05,
+    "state_cell_allocation": 0.003125
+  },
+  "judge_fpr": 0.005,
+  "judge_tpr": 1.0,
+  "judge_tpr_lower": 0.9825,
+  "repair_acceptance_rates": {
+    "B1": 0.25,
+    "B2": 0.1,
+    "B3": 0.05
+  },
+  "shift_bound_drop": 0.41688042310666673,
+  "shift_in_bound": 0.6186190995074636,
+  "shift_out_bound": 0.20173867640079693,
+  "state_headline_bound": 0.9623,
+  "total_cells_count": 16,
+  "worst_bucket_fpr_upper": 0.1048
+}

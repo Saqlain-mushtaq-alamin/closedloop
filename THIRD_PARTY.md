@@ -22,6 +22,9 @@ Licences below verified against each package's PyPI metadata, not guessed.
 | MarkupSafe 3.0.4 | BSD-3-Clause | https://pypi.org/project/MarkupSafe/3.0.4/ | Mako dependency |
 | typing-extensions 4.16.0 | PSF-2.0 | https://pypi.org/project/typing-extensions/4.16.0/ | Typing extensions dependency |
 | python-dotenv 1.2.4 | BSD-3-Clause | https://pypi.org/project/python-dotenv/ | Environment variable loading from .env for API keys |
+| fastapi 0.162.0 | MIT | https://pypi.org/project/fastapi/ | Playground local service endpoint |
+| httpx 0.28.1 | BSD-3-Clause | https://pypi.org/project/httpx/ | HTTP client for playground test fixtures |
+| pytest-asyncio 1.4.1 | Apache-2.0 | https://pypi.org/project/pytest-asyncio/ | Async test runner plugin |
 
 No URDF, mesh, texture, font, or dataset assets vendored yet (Phase 02 will add
 PyBullet + robot models here with licence and URL).
