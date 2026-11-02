@@ -149,6 +149,8 @@
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     button, input, select { font: inherit; color: inherit; }
@@ -323,7 +325,7 @@
     /* =========================================================
        Layout
        ========================================================= */
-    .container { max-width: var(--content-max); margin: 0 auto; padding: 32px var(--gutter) 0; }
+    .container { max-width: var(--content-max); width: 100%; margin: 0 auto; padding: 32px var(--gutter) 0; flex: 1 0 auto; }
 
     .summary-grid {
       display: grid;
@@ -1072,7 +1074,7 @@
     /* =========================================================
        Footer
        ========================================================= */
-    .site-footer { max-width: var(--content-max); margin: 48px auto 0; padding: 0 var(--gutter) 40px; }
+    .site-footer { max-width: var(--content-max); width: 100%; margin: 56px auto 0; padding: 0 var(--gutter) 24px; margin-top: auto; }
     .footer-inner {
       border-top: 1px solid var(--border-subtle);
       padding-top: 20px;
@@ -1423,136 +1425,347 @@
       font-weight: 700;
     }
 
-    /* Overview Hero */
+    /* Overview Hero (Aligned with Design & Screenshot) */
     .overview-hero {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
-      gap: 32px;
+      gap: 48px;
       align-items: center;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
+      padding-top: 16px;
     }
     @media (max-width: 960px) {
-      .overview-hero { grid-template-columns: 1fr; }
+      .overview-hero { grid-template-columns: 1fr; gap: 36px; }
     }
     .overview-meta-tag {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
     }
     .overview-h1 {
-      font-size: 32px;
+      font-size: 42px;
       font-weight: 850;
-      line-height: 1.2;
-      letter-spacing: -0.025em;
+      line-height: 1.15;
+      letter-spacing: -0.035em;
       color: var(--text-strong);
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+      .overview-h1 { font-size: 32px; }
     }
     .overview-lead {
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--text-muted);
-      margin-bottom: 22px;
+      margin-bottom: 28px;
+      max-width: 520px;
     }
     .overview-cta-row {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 24px;
     }
-    .overview-steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    @media (max-width: 650px) {
-      .overview-steps-grid { grid-template-columns: 1fr; }
-    }
-    .overview-step-card {
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
-      box-shadow: var(--raise-sm);
-      padding: 14px 16px;
-    }
-    .overview-step-num {
-      font-size: 11px;
-      font-weight: 750;
-      color: var(--accent);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .overview-step-title {
-      font-size: 13.5px;
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--text-strong);
-      margin-bottom: 4px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
-    .overview-step-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.45;
+    .btn-hero-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      background: var(--bg-card);
+      color: var(--text-strong);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+      box-shadow: var(--raise-xs);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-hero-secondary:hover {
+      color: var(--accent);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
     }
 
-    /* Before / After safe-zone visual in hero */
+    /* Safe-zone visual card (Matches Screenshot) */
+    /* Safe-zone visual card (Matches Screenshot with rich data) */
     .overview-map-card {
       background: var(--bg-card);
-      border-radius: var(--radius);
-      box-shadow: var(--raise);
-      padding: 24px;
+      border-radius: 28px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15), var(--raise-sm);
+      border: 1px solid var(--border-subtle);
+      padding: 26px 30px;
     }
-    .overview-map-header {
-      margin-bottom: 18px;
+    .overview-map-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
     .overview-map-title {
-      font-size: 14.5px;
+      font-size: 11.5px;
       font-weight: 700;
-      color: var(--text-strong);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
     }
-    .overview-map-sub {
-      font-size: 12px;
+    .overview-grid-live-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--bg-hover);
       color: var(--text-dim);
-      margin-top: 2px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.02em;
     }
-    .overview-grids-wrap {
+    .overview-map-stats-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      align-items: center;
+      gap: 24px;
+      margin-bottom: 14px;
     }
-    .overview-grid-col {
+    .overview-map-stat-col {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      align-items: center;
+      gap: 4px;
     }
-    .overview-grid-label {
+    .overview-stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .overview-map-stat-lbl {
       font-size: 12px;
-      font-weight: 650;
+      font-weight: 600;
       color: var(--text-muted);
-      text-align: center;
+    }
+    .overview-map-stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-strong);
+      letter-spacing: -0.01em;
+    }
+    .overview-env-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 2px 7px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .overview-env-badge--warn {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border: 1px solid rgba(209, 138, 0, 0.28);
+    }
+    .overview-env-badge--ok {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border: 1px solid rgba(15, 157, 107, 0.28);
+    }
+    .overview-axis-header {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2px;
+    }
+    .overview-grids-sidebyside {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 12px;
+    }
+    .overview-grid-block {
+      display: flex;
+      flex-direction: column;
     }
     .overview-grid-16 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
-      width: 144px;
-      height: 144px;
-      padding: 8px;
-      background: var(--bg-inset);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--inset-sm);
+      width: 100%;
+      aspect-ratio: 1 / 1;
     }
     .overview-cell {
-      border-radius: 4px;
-      transition: transform 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+      user-select: none;
     }
-    .overview-cell.certified { background: var(--emerald); }
-    .overview-cell.uncertified { background: var(--amber); }
-    .overview-cell.failed { background: var(--rose); }
+    .overview-cell:hover {
+      transform: scale(1.10);
+      z-index: 2;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    }
+    .cell-inner-val {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--mono-stack);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .overview-cell.certified {
+      background: rgba(15, 157, 107, 0.18);
+      color: var(--ok-text);
+      border: 1.5px solid rgba(15, 157, 107, 0.5);
+    }
+    .overview-cell.uncertified {
+      background: rgba(209, 138, 0, 0.18);
+      color: var(--warn-text);
+      border: 1.5px solid rgba(209, 138, 0, 0.5);
+    }
+    .overview-cell.failed {
+      background: rgba(214, 69, 90, 0.18);
+      color: var(--bad-text);
+      border: 1.5px solid rgba(214, 69, 90, 0.5);
+    }
+    :root[data-theme="dark"] .overview-cell.certified {
+      background: rgba(52, 178, 127, 0.22);
+      border-color: rgba(52, 178, 127, 0.55);
+    }
+    :root[data-theme="dark"] .overview-cell.uncertified {
+      background: rgba(216, 161, 58, 0.22);
+      border-color: rgba(216, 161, 58, 0.55);
+    }
+    :root[data-theme="dark"] .overview-cell.failed {
+      background: rgba(229, 100, 111, 0.22);
+      border-color: rgba(229, 100, 111, 0.55);
+    }
+    .overview-axis-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 6px;
+      padding: 0 2px;
+    }
+    .overview-map-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 550;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .legend-swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .legend-swatch--ok {
+      background: rgba(15, 157, 107, 0.35);
+      border: 1.5px solid rgba(15, 157, 107, 0.7);
+    }
+    .legend-swatch--warn {
+      background: rgba(209, 138, 0, 0.35);
+      border: 1.5px solid rgba(209, 138, 0, 0.7);
+    }
+    .legend-swatch--bad {
+      background: rgba(214, 69, 90, 0.35);
+      border: 1.5px solid rgba(214, 69, 90, 0.7);
+    }
+    .overview-map-footer-note {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: var(--text-dim);
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .overview-explore-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .overview-explore-link:hover {
+      text-decoration: underline;
+    }
+
+    /* 3-Step Process Row (Full-width across below hero) */
+    .overview-steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 36px;
+      margin-top: 48px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 768px) {
+      .overview-steps-row { grid-template-columns: 1fr; gap: 24px; }
+    }
+    .overview-step-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .overview-step-num {
+      font-family: var(--mono-stack);
+      font-size: 13px;
+      font-weight: 800;
+      color: #2563eb;
+      margin-bottom: 2px;
+    }
+    .overview-step-title {
+      font-size: 17px;
+      font-weight: 750;
+      color: var(--text-strong);
+      letter-spacing: -0.01em;
+    }
+    .overview-step-desc {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
 
     /* Key results cards */
     .key-results-grid {
@@ -1798,57 +2011,144 @@
       <!-- Hero -->
       <div class="overview-hero">
         <div class="overview-hero-left">
-          <div class="overview-meta-tag">Meta Global AI Developer Hackathon &bull; Indie track</div>
-          <h1 class="overview-h1">AI writes robot code. Know where it can be trusted.</h1>
+          <div class="overview-meta-tag">Meta Global AI Developer Hackathon &middot; Indie track</div>
+          <h1 class="overview-h1">AI writes robot code.<br>Know where it can be<br>trusted.</h1>
           <p class="overview-lead">
             ClosedLoop finds where a robot controller fails, has Meta's Muse Spark repair it, then re-tests the fix and reports exactly which conditions are covered. It also says so when a result no longer applies.
           </p>
           <div class="overview-cta-row">
-            <button type="button" class="btn-action btn-primary font-bold" onclick="switchTab('playground')">Try the playground &rarr;</button>
-            <button type="button" class="btn-action" onclick="switchTab('evidence')">See the results</button>
-            <button type="button" id="btn-download-cert" class="btn-action btn-download" title="ODD means operational design domain: the conditions the controller was certified for">Download certificate (JSON)</button>
-          </div>
-          <div class="overview-steps-grid">
-            <div class="overview-step-card">
-              <div class="overview-step-num">Step 1</div>
-              <div class="overview-step-title">Find failures</div>
-              <div class="overview-step-desc">Stress-tests policies under varied physics distributions to find failing counterexamples.</div>
-            </div>
-            <div class="overview-step-card">
-              <div class="overview-step-num">Step 2</div>
-              <div class="overview-step-title">Repair</div>
-              <div class="overview-step-desc">Muse Spark inspects minimal failing cases and synthesizes targeted controller code repairs.</div>
-            </div>
-            <div class="overview-step-card">
-              <div class="overview-step-num">Step 3</div>
-              <div class="overview-step-title">Verify</div>
-              <div class="overview-step-desc">Exact Clopper-Pearson bounds certify safe operational envelopes in simulation.</div>
-            </div>
+            <button type="button" class="btn-hero-primary font-bold" onclick="switchTab('playground')">Try the playground</button>
+            <button type="button" class="btn-hero-secondary font-bold" onclick="switchTab('evidence')">See the results</button>
+            <button type="button" id="btn-download-cert" style="display:none;" title="ODD means operational design domain: the conditions the controller was certified for">Download certificate (JSON)</button>
           </div>
         </div>
 
         <div class="overview-hero-right">
           <div class="overview-map-card">
-            <div class="overview-map-header">
-              <div class="overview-map-title">Safe-zone coverage before and after repair</div>
-              <div class="overview-map-sub">4x4 parameter cells certified under distribution D in simulation</div>
+            <div class="overview-map-title-row">
+              <span class="overview-map-title">Which conditions are covered (mass &times; friction grid, in simulation)</span>
+              <span class="overview-grid-live-tag">150 trials / cell &middot; 2,400 total</span>
             </div>
-            <div class="overview-grids-wrap">
-              <div class="overview-grid-col">
-                <div class="overview-grid-label">Original Controller</div>
-                <div id="overview-grid-v1" class="overview-grid-16"></div>
+            
+            <div class="overview-map-stats-row">
+              <div class="overview-map-stat-col">
+                <div class="overview-stat-header">
+                  <span class="overview-map-stat-lbl">Original controller</span>
+                  <span id="overview-v1-stat" class="overview-map-stat-val">8 of 16 (50%)</span>
+                </div>
+                <div class="overview-env-badge overview-env-badge--warn">ODD envelope: 1.0 – 6.25 kg</div>
               </div>
-              <div class="overview-grid-col">
-                <div class="overview-grid-label">Repaired Controller</div>
-                <div id="overview-grid-v2" class="overview-grid-16"></div>
+              <div class="overview-map-stat-col">
+                <div class="overview-stat-header">
+                  <span class="overview-map-stat-lbl">After repair (Muse Spark)</span>
+                  <span id="overview-v2-stat" class="overview-map-stat-val text-ok">16 of 16 (100%)</span>
+                </div>
+                <div class="overview-env-badge overview-env-badge--ok">ODD envelope: 1.0 – 11.50 kg</div>
               </div>
             </div>
-            <div class="legend-row" style="margin-top:16px;">
-              <span><span class="legend-dot legend-dot--ok">&bull;</span> Certified</span>
-              <span><span class="legend-dot legend-dot--warn">&bull;</span> Below target</span>
-              <span><span class="legend-dot legend-dot--bad">&bull;</span> Fails</span>
+
+            <div class="overview-grids-sidebyside">
+              <!-- Grid 1: Original Controller -->
+              <div class="overview-grid-block">
+                <div class="overview-axis-header">
+                  <span>Friction &mu;: 1.0 &darr; 0.1</span>
+                  <span>Original (v1)</span>
+                </div>
+                <div id="overview-grid-v1" class="overview-grid-16" onclick="switchTab('evidence')">
+                  <!-- Row 0: μ = 0.78 - 1.00 -->
+                  <div class="overview-cell certified" title="Cell 3 (Mass: 1.0–3.6 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 7 (Mass: 3.6–6.2 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell uncertified" title="Cell 11 (Mass: 6.2–8.9 kg, Friction: μ=0.78–1.00)&#10;Status: Below target&#10;Statistical bound p_L = 77.3%&#10;Passed: 129/150 (86%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">77%</span></div>
+                  <div class="overview-cell failed" title="Cell 15 (Mass: 8.9–11.5 kg, Friction: μ=0.78–1.00)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
+                  <!-- Row 1: μ = 0.55 - 0.78 -->
+                  <div class="overview-cell certified" title="Cell 2 (Mass: 1.0–3.6 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 6 (Mass: 3.6–6.2 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell uncertified" title="Cell 10 (Mass: 6.2–8.9 kg, Friction: μ=0.55–0.78)&#10;Status: Below target&#10;Statistical bound p_L = 75.1%&#10;Passed: 127/150 (85%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">75%</span></div>
+                  <div class="overview-cell failed" title="Cell 14 (Mass: 8.9–11.5 kg, Friction: μ=0.55–0.78)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
+                  <!-- Row 2: μ = 0.33 - 0.55 -->
+                  <div class="overview-cell certified" title="Cell 1 (Mass: 1.0–3.6 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 5 (Mass: 3.6–6.2 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell uncertified" title="Cell 9 (Mass: 6.2–8.9 kg, Friction: μ=0.33–0.55)&#10;Status: Below target&#10;Statistical bound p_L = 77.3%&#10;Passed: 130/150 (87%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">77%</span></div>
+                  <div class="overview-cell failed" title="Cell 13 (Mass: 8.9–11.5 kg, Friction: μ=0.33–0.55)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
+                  <!-- Row 3: μ = 0.10 - 0.33 -->
+                  <div class="overview-cell certified" title="Cell 0 (Mass: 1.0–3.6 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 4 (Mass: 3.6–6.2 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell uncertified" title="Cell 8 (Mass: 6.2–8.9 kg, Friction: μ=0.10–0.33)&#10;Status: Below target&#10;Statistical bound p_L = 80.7%&#10;Passed: 134/150 (89%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">81%</span></div>
+                  <div class="overview-cell failed" title="Cell 12 (Mass: 8.9–11.5 kg, Friction: μ=0.10–0.33)&#10;Status: Fails&#10;Statistical bound p_L = 0.0%&#10;Passed: 0/150 (0%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">0%</span></div>
+                </div>
+                <div class="overview-axis-labels">
+                  <span>1.0 kg (light)</span>
+                  <span>6.2 kg</span>
+                  <span>11.5 kg (heavy)</span>
+                </div>
+              </div>
+
+              <!-- Grid 2: After Repair -->
+              <div class="overview-grid-block">
+                <div class="overview-axis-header">
+                  <span>Friction &mu;: 1.0 &darr; 0.1</span>
+                  <span class="text-ok font-semibold">Repaired (v2)</span>
+                </div>
+                <div id="overview-grid-v2" class="overview-grid-16" onclick="switchTab('evidence')">
+                  <!-- Row 0: μ = 0.78 - 1.00 -->
+                  <div class="overview-cell certified" title="Cell 3 (Mass: 1.0–3.6 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 7 (Mass: 3.6–6.2 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 11 (Mass: 6.2–8.9 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 15 (Mass: 8.9–11.5 kg, Friction: μ=0.78–1.00)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <!-- Row 1: μ = 0.55 - 0.78 -->
+                  <div class="overview-cell certified" title="Cell 2 (Mass: 1.0–3.6 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 6 (Mass: 3.6–6.2 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 10 (Mass: 6.2–8.9 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 14 (Mass: 8.9–11.5 kg, Friction: μ=0.55–0.78)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <!-- Row 2: μ = 0.33 - 0.55 -->
+                  <div class="overview-cell certified" title="Cell 1 (Mass: 1.0–3.6 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 5 (Mass: 3.6–6.2 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 9 (Mass: 6.2–8.9 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 13 (Mass: 8.9–11.5 kg, Friction: μ=0.33–0.55)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <!-- Row 3: μ = 0.10 - 0.33 -->
+                  <div class="overview-cell certified" title="Cell 0 (Mass: 1.0–3.6 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 4 (Mass: 3.6–6.2 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 8 (Mass: 6.2–8.9 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                  <div class="overview-cell certified" title="Cell 12 (Mass: 8.9–11.5 kg, Friction: μ=0.10–0.33)&#10;Status: Certified&#10;Statistical bound p_L = 96.2%&#10;Passed: 150/150 (100%)&#10;Click to inspect in Evidence"><span class="cell-inner-val">96%</span></div>
+                </div>
+                <div class="overview-axis-labels">
+                  <span>1.0 kg (light)</span>
+                  <span>6.2 kg</span>
+                  <span>11.5 kg (heavy)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-map-legend">
+              <span title="Statistical lower bound p_L ≥ 0.90 (Clopper-Pearson 95% confidence)"><span class="legend-swatch legend-swatch--ok"></span> <strong>Certified:</strong> p<sub>L</sub> &ge; 0.90 (96.2%)</span>
+              <span title="Statistical lower bound 0 < p_L < 0.90 (slips on heavy mass)"><span class="legend-swatch legend-swatch--warn"></span> <strong>Below target:</strong> p<sub>L</sub> &lt; 0.90 (75–81%)</span>
+              <span title="Statistical lower bound 0.00 (0 / 150 grasps completed)"><span class="legend-swatch legend-swatch--bad"></span> <strong>Fails:</strong> 0% grasp</span>
+            </div>
+
+            <div class="overview-map-footer-note">
+              <span>&bull; Numbers show Clopper-Pearson 95% confidence lower bound (p<sub>L</sub>) per condition cell</span>
+              <a href="#" onclick="switchTab('evidence'); return false;" class="overview-explore-link">Inspect all traces in Evidence &rarr;</a>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 3 Steps Section (from screenshot) -->
+      <div class="overview-steps-row">
+        <div class="overview-step-col">
+          <div class="overview-step-num">01</div>
+          <div class="overview-step-title">Find failures</div>
+          <div class="overview-step-desc">A search looks for the smallest change in weight or friction that makes the robot drop the cube.</div>
+        </div>
+        <div class="overview-step-col">
+          <div class="overview-step-num">02</div>
+          <div class="overview-step-title">Repair</div>
+          <div class="overview-step-desc">Muse Spark rewrites the controller using that failing case. The fix must pass four checks.</div>
+        </div>
+        <div class="overview-step-col">
+          <div class="overview-step-num">03</div>
+          <div class="overview-step-title">Verify</div>
+          <div class="overview-step-desc">The fix is re-tested on fresh scenarios, and statistical bounds show where it holds.</div>
         </div>
       </div>
 

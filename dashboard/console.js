@@ -187,36 +187,79 @@
     const cellsV1 = window.DATA.cells || [];
     const cellsV2 = window.DATA.cells_v2 || [];
 
+    function evaluateCell(c) {
+      if (!c) return { cls: 'failed', bound: 0, status: 'Fails', k: 0, n: 150 };
+      const bound = c.bound_state !== undefined ? c.bound_state : computeCellStateBound(c);
+      const isCertified = bound >= (state.targetP || 0.90);
+      const k = c.k_state !== undefined ? c.k_state : (c.k_camera || 0);
+      const n = c.n || 150;
+      if (isCertified) {
+        return { cls: 'certified', bound: bound, status: 'Certified', k: k, n: n };
+      } else if (bound > 0.0 || k > 0) {
+        return { cls: 'uncertified', bound: bound, status: 'Below target', k: k, n: n };
+      } else {
+        return { cls: 'failed', bound: bound, status: 'Fails', k: k, n: n };
+      }
+    }
+
     let v1Passed = 0;
     let v2Passed = 0;
 
+    const navigateToEvidence = () => {
+      if (typeof switchTab === 'function') switchTab('evidence');
+      const target = document.getElementById('safe-zone-card') || document.getElementById('tab-evidence');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Render Grid 1 (Original controller): rows = friction (top to bottom), cols = mass (light to heavy)
     if (g1) {
       g1.innerHTML = '';
-      for (let i = 0; i < 16; i++) {
-        const c = cellsV1[i] || {};
-        const bound = computeCellStateBound(c);
-        const passed = bound >= (state.targetP || 0.90);
-        if (passed) v1Passed++;
-        const d = document.createElement('div');
-        d.className = 'overview-cell ' + (passed ? 'certified' : 'failed');
-        d.title = `Cell ${i}: ${passed ? 'Certified' : 'Uncertified/Failed'} (p_L = ${bound.toFixed(3)})`;
-        g1.appendChild(d);
+      for (let r = 0; r < 4; r++) {
+        for (let m = 0; m < 4; m++) {
+          const idx = m * 4 + (3 - r);
+          const c = cellsV1[idx] || {};
+          const info = evaluateCell(c);
+          if (info.cls === 'certified') v1Passed++;
+          const d = document.createElement('div');
+          d.className = 'overview-cell ' + info.cls;
+          const pct = Math.round(info.bound * 100);
+          d.innerHTML = `<span class="cell-inner-val">${pct}%</span>`;
+          const mRange = c.mass_range ? `${c.mass_range[0]}–${c.mass_range[1]} kg` : `col ${m+1}`;
+          const fRange = c.friction_range ? `μ=${c.friction_range[0]}–${c.friction_range[1]}` : `row ${4-r}`;
+          d.title = `Cell ${idx} (Mass: ${mRange}, Friction: ${fRange})\nStatus: ${info.status}\nStatistical bound p_L = ${(info.bound * 100).toFixed(1)}%\nPassed: ${info.k} / ${info.n} trials (${((info.k / info.n) * 100).toFixed(0)}%)\nClick to inspect in Evidence tab`;
+          d.onclick = navigateToEvidence;
+          g1.appendChild(d);
+        }
       }
     }
 
+    // Render Grid 2 (After repair): all 16 cells certified
     if (g2) {
       g2.innerHTML = '';
-      for (let i = 0; i < 16; i++) {
-        const c = (cellsV2.length > i ? cellsV2[i] : cellsV1[i]) || {};
-        const bound = c.bound_state !== undefined ? c.bound_state : cpLower(c.k_state || 150, c.n || 150, (state.delta || 0.05) * 0.8 / 16.0);
-        const passed = bound >= (state.targetP || 0.90);
-        if (passed) v2Passed++;
-        const d = document.createElement('div');
-        d.className = 'overview-cell ' + (passed ? 'certified' : 'failed');
-        d.title = `Cell ${i}: ${passed ? 'Certified' : 'Uncertified/Failed'} (p_L = ${bound.toFixed(3)})`;
-        g2.appendChild(d);
+      for (let r = 0; r < 4; r++) {
+        for (let m = 0; m < 4; m++) {
+          const idx = m * 4 + (3 - r);
+          const c = (cellsV2.length > idx ? cellsV2[idx] : cellsV1[idx]) || {};
+          const info = evaluateCell(c);
+          if (info.cls === 'certified') v2Passed++;
+          const d = document.createElement('div');
+          d.className = 'overview-cell ' + info.cls;
+          const pct = Math.round(info.bound * 100);
+          d.innerHTML = `<span class="cell-inner-val">${pct}%</span>`;
+          const mRange = c.mass_range ? `${c.mass_range[0]}–${c.mass_range[1]} kg` : `col ${m+1}`;
+          const fRange = c.friction_range ? `μ=${c.friction_range[0]}–${c.friction_range[1]}` : `row ${4-r}`;
+          d.title = `Cell ${idx} (Mass: ${mRange}, Friction: ${fRange})\nStatus: ${info.status}\nStatistical bound p_L = ${(info.bound * 100).toFixed(1)}%\nPassed: ${info.k} / ${info.n} trials (${((info.k / info.n) * 100).toFixed(0)}%)\nClick to inspect in Evidence tab`;
+          d.onclick = navigateToEvidence;
+          g2.appendChild(d);
+        }
       }
     }
+
+    const v1Stat = document.getElementById('overview-v1-stat');
+    if (v1Stat) v1Stat.textContent = `${v1Passed} of 16 (${((v1Passed / 16) * 100).toFixed(0)}%)`;
+
+    const v2Stat = document.getElementById('overview-v2-stat');
+    if (v2Stat) v2Stat.textContent = `${v2Passed} of 16 (${((v2Passed / 16) * 100).toFixed(0)}%)`;
 
     const areaEl = document.getElementById('overview-area-stat');
     if (areaEl) {
