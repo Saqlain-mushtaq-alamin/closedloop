@@ -353,7 +353,7 @@
         state.backendAlive = data.status === "ok";
         if (svcBadge) {
           svcBadge.className = "badge-pill badge-pill-pass";
-          svcBadge.textContent = "Backend: Live (FastAPI / " + (data.platform || "local") + ")";
+          svcBadge.textContent = "Live: " + (data.model_name || "Meta Muse Spark 1.3") + " (PyBullet Sim)";
         }
         return true;
       }

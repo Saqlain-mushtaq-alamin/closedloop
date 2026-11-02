@@ -1883,22 +1883,27 @@
 
   // Global helper for opening clip from cell
   window.loadClipForCell = function (cellIdx, success) {
+    if (typeof switchTab === 'function') switchTab('evidence');
+    if (typeof switchEvidenceSub === 'function') switchEvidenceSub('replays');
+
     const selector = document.getElementById('replay-clip-select');
-    if (!selector) return;
+    if (selector) {
+      let targetClip = 'min_ce_final';
+      const idx = parseInt(cellIdx, 10);
+      if (idx < 4) targetClip = 'cert_bin0_pass';
+      else if (idx < 8) targetClip = 'cert_bin1_pass';
+      else if (idx < 12) targetClip = success ? 'cert_bin2_pass' : 'cert_bin2_fail';
+      else targetClip = 'cert_bin3_fail';
 
-    let targetClip = 'min_ce_final';
-    const idx = parseInt(cellIdx, 10);
-    if (idx < 4) targetClip = 'cert_bin0_pass';
-    else if (idx < 8) targetClip = 'cert_bin1_pass';
-    else if (idx < 12) targetClip = success ? 'cert_bin2_pass' : 'cert_bin2_fail';
-    else targetClip = 'cert_bin3_fail';
+      selector.value = targetClip;
+      loadClip(targetClip);
+    }
 
-    selector.value = targetClip;
-    loadClip(targetClip);
-
-    // Scroll to replay section
-    const sec = document.getElementById('section-replay');
-    if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to replay player
+    setTimeout(function () {
+      const sec = document.getElementById('replay-clip-select') || document.getElementById('replay-frame-img');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
   };
 
   // Run when DOM is ready

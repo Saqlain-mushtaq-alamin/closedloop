@@ -252,6 +252,8 @@ def health() -> dict[str, Any]:
         "sim_code_sha256": SIM_CODE_SHA256,
         "pybullet": "3.2.7",
         "platform": f"{platform.system().lower()}-{platform.machine().lower()}",
+        "model": "muse-spark-1.3",
+        "model_name": "Meta Muse Spark 1.3",
     }
 
 
