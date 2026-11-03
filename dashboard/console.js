@@ -327,7 +327,7 @@
     const dpF = shift.dp_bounds?.friction || [0.05, 0.40];
     setText('shift-header-desc', `Testing policy ${prog.program_id || 'bec73dec45a88431'} under heavy payload shift D' (mass ${dpM[0]} to ${dpM[1]} kg, friction ${dpF[0]} to ${dpF[1]}).`);
 
-    setText('shift-honesty-note', `When tested on distribution D', the empirical success rate drops from ${(shift.d_pass_rate * 100).toFixed(1)}% to ${(shift.dp_pass_rate * 100).toFixed(1)}%. The certified lower bound drops to ${shift.dp_bound.toFixed(4)} < ${shift.target_p.toFixed(2)}, correctly refusing to issue a certificate. The system never claims safety outside verified distribution D.`);
+    setText('shift-honesty-note', `When tested on distribution D', the empirical success rate drops from ${(shift.d_pass_rate * 100).toFixed(1)}% to ${(shift.dp_pass_rate * 100).toFixed(1)}%. The certified lower bound drops to ${shift.dp_bound.toFixed(4)} < ${shift.target_p.toFixed(2)}, correctly refusing to issue a certificate. The system never claims reliability outside verified distribution D.`);
 
     // Diff view
     const diffEl = document.getElementById('program-diff-content');
@@ -1570,7 +1570,7 @@
           '<strong style="color:var(--cyan);">' + 'p &ge; ' + pctLower + '%</strong> at 95% confidence (1 - &delta; = 0.95).' +
           '<div style="margin-top:4px; font-size:12px; color:#94a3b8;">' +
           'Notice how 5 manual passes leave a massive 45% margin of statistical uncertainty. ' +
-          'Spot checks cannot prove safe operational envelopes. Formal verification requires systematic parameter-space falsification and certified coverage.' +
+          'Spot checks cannot establish certified operational envelopes. Rigorous assurance requires systematic parameter-space falsification and certified coverage.' +
           '</div></div>';
       } else {
         summaryHtml += '<div style="margin-top:6px; color:#cbd5e1;">' +

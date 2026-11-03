@@ -1,5 +1,7 @@
 {
-  "camera_headline_bound": 0.9563,
+  "camera_headline_bound": 0.40901745544631996,
+  "cell_00_camera_bound": 0.9563,
+  "cell_00_state_bound": 0.9623,
   "certified_cells_count": 8,
   "certified_fraction": 0.5,
   "error_budget": {
@@ -23,7 +25,10 @@
   "shift_bound_drop": 0.41688042310666673,
   "shift_in_bound": 0.6186190995074636,
   "shift_out_bound": 0.20173867640079693,
-  "state_headline_bound": 0.9623,
+  "state_headline_bound": 0.4778222558996564,
   "total_cells_count": 16,
+  "v1_headline_camera_bound": 0.40901745544631996,
+  "v1_headline_state_bound": 0.4778222558996564,
+  "v2_headline_state_bound": 0.9505,
   "worst_bucket_fpr_upper": 0.1048
 }

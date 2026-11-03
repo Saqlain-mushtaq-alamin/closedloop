@@ -14,7 +14,7 @@
 **ClosedLoop: Falsify, Repair, Certify**
 
 ### Elevator Pitch (Short Description — 150 words)
-When an LLM writes code to control a robot, conventional pipelines celebrate after a single passing rollout. But in the physical world, one success says almost nothing about reliability. ClosedLoop actively searches for failure using CMA-ES falsification, shrinks drops and slips to their minimal failing counterexample, and prompts Meta's `muse-spark-1.3` to synthesize targeted patches that pass a 4-stage regression gate. Finally, ClosedLoop evaluates the controller on fresh i.i.d. scenarios under distribution D, computing exact Clopper-Pearson statistical bounds ($p_L = 0.9623$). When ground truth state is unavailable, ClosedLoop inspects rendered camera footage with SAM 3.1 and Spark vision judge, mathematically correcting the certificate for false-positive and false-negative error bounds ($p_L = 0.9563$). Tested on shifted out-of-distribution payloads, the certificate drops to 0.2017 and honestly refuses.
+When an LLM writes code to control a robot, conventional pipelines celebrate after a single passing rollout. But in the physical world, one success says almost nothing about reliability. ClosedLoop actively searches for failure using CMA-ES falsification, shrinks drops and slips to their minimal failing counterexample, and prompts Meta's `muse-spark-1.3` to synthesize targeted patches that pass a 4-stage regression gate. Finally, ClosedLoop evaluates controllers on fresh i.i.d. scenarios under distribution D, computing exact Clopper-Pearson statistical bounds. When ground truth state is unavailable, ClosedLoop inspects rendered camera footage with SAM 3.1 and Spark vision judge, mathematically correcting the certificate for false-positive and false-negative error bounds ($p_L = 0.9563$ best-cell). Tested on shifted out-of-distribution payloads, the certificate drops to 0.2017 and honestly refuses. For initial controller v1, only 8/16 cells certified ($p_L = 0.4778$ full envelope); autonomous repair synthesizes controller v2 which certifies across all 16 cells ($p_L = 0.9505$).
 
 ### Track & Theme Selection
 - **Track:** Indie Developer Track (`[LOCKED]`)
@@ -27,12 +27,12 @@ When an LLM writes code to control a robot, conventional pipelines celebrate aft
 - **AI-Agent Assistance Disclosure:** Software implementation, tests, and documentation were created with AI-agent assistance (Muse Code session, `muse-spark-1.3`) under human developer oversight.
 
 ### URLs & Public Access
-- **Public Git Repository:** `https://github.com/<user>/closedloop` (Publicly accessible, opens without login).
-- **Interactive Live Judge Console:** `https://<user>.github.io/<repo>/dashboard/` (Deployed via GitHub Pages, 100% client-side, zero runtime external API requirements).
-- **Demo Video Link:** `https://<video-host-url>/closedloop-demo-2m45s.mp4` (Total duration 2:45, strictly ≤ 3:00, publicly viewable without requiring an account or login).
+- **Public Git Repository:** `https://github.com/Saqlain-mushtaq-alamin/closedloop` (Publicly accessible, opens without login).
+- **Interactive Live Judge Console:** `https://saqlain-mushtaq-alamin.github.io/closedloop/dashboard/` (Deployed via GitHub Pages, 100% client-side, zero runtime external API requirements).
+- **Demo Video Link:** `https://github.com/Saqlain-mushtaq-alamin/closedloop/releases/download/v1.0.0/closedloop-demo-2m45s.mp4` (Total duration 2:45, strictly ≤ 3:00, publicly downloadable and viewable without requiring an account or login; backed up by local master recording `demo/recordings/take_01_master.mp4`).
 
 ### Contributor List
-- **Solo Developer:** Indie Track submission by a single participant; early commits used placeholder git identity `closedloop-dev`. All code, models, and assets were built during the hackathon window (Oct 28 – Nov 4, 2026).
+- **Solo Developer:** Saqlain Mushtaq Alamin (GitHub: `Saqlain-mushtaq-alamin`). Indie Track submission by a single participant; early commits used placeholder git identity `closedloop-dev`. All code, models, and assets were built during the hackathon window (Oct 28 – Nov 4, 2026).
 
 
 ---
@@ -43,13 +43,18 @@ All results below are produced by `make report` from append-only logs (`runs/*/e
 
 | Evaluation Dimension | Bound / Metric | Verification Standard | Source Run ID |
 |---|---|---|---|
-| **Simulator Ground Truth Bound ($p_L$)** | **0.9623** | 95% Clopper-Pearson CI ($\delta_{cell} = 0.003125$) | `runs/cert-full-01` |
-| **Rendered Camera Footage Bound ($p_L$)** | **0.9563** | Corrected for SAM 3.1 + Spark error rates | `runs/cert-full-01` + `judge-g2-03` |
-| **Operational Envelope Coverage** | **8/16 cells (50.0%)** | Certified at cell target $p \ge 0.90$ (Mass $\le 6.25$ kg) | `runs/cert-full-01` |
+| **V1 Headline State Bound ($p_L$)** | **0.4778** | Full 16-cell envelope ($n=59$, uncertified at $p \ge 0.90$) | `runs/cert-full-01` |
+| **V1 Headline Camera Bound ($p_L$)** | **0.4090** | Corrected for SAM 3.1 + Spark error rates (uncertified) | `runs/cert-full-01` |
+| **V1 Best Cell State Bound (Cell 00)** | **0.9623** | 95% Clopper-Pearson CI ($\delta_{cell} = 0.003125$, Mass $\le 3.625$ kg) | `runs/cert-full-01` |
+| **V1 Best Cell Camera Bound (Cell 00)** | **0.9563** | Corrected for SAM 3.1 + Spark error rates | `runs/cert-full-01` + `judge-g2-03` |
+| **V2 Repaired Policy State Bound ($p_L$)** | **0.9505** | Certified across full operational envelope (16/16 cells) | `runs/cert3-full-01` |
+| **Operational Envelope Coverage (V1)** | **8/16 cells (50.0%)** | Certified at cell target $p \ge 0.90$ (Mass $\le 6.25$ kg) | `runs/cert-full-01` |
+| **Operational Envelope Coverage (V2)** | **16/16 cells (100.0%)** | Certified at cell target $p \ge 0.90$ (300N clamp + dwell) | `runs/cert3-full-01` |
 | **Distribution Shift Reference D** | **0.6186** | Empirical pass rate 68.7% ($n=150$) | `runs/shift-full-01` |
 | **Distribution Shift Shifted D'** | **0.2017** | Empirical pass rate 26.0% ($n=150$) | `runs/shift-full-01` |
 | **Shift Refusal Drop** | **0.4169** | Bound drop triggers honest certificate refusal | `runs/shift-full-01` |
 | **Vision Judge True Positive Rate ($a$)** | **1.0000** ($a_U = 0.9825$) | 300 success calibration episodes | `runs/judge-g2-03` |
+| **Autonomous Repair Gain (H1)** | **+0.0750** | Held-out B1 0.8125 vs B0 0.7375 (95% CI [0.0125, 0.1625]) | `runs/h1-full-02` |
 | **Repair Acceptance: Arm B1 (Random)** | **0.25** | 20 trajectories, equal episode/token budget (for one starting program) | `runs/h2h3-full-03` |
 | **Repair Acceptance: Arm B2 (Minimal CE)**| **0.10** | 20 trajectories, coordinate minimization (for one starting program) | `runs/h2h3-full-03` |
 | **Repair Acceptance: Arm B3 (CE + SAM)**  | **0.05** | 20 trajectories, 5-frame SAM 3.1 filmstrip (for one starting program) | `runs/h2h3-full-03` |
@@ -64,7 +69,7 @@ Evaluators can verify every claim and number locally in under 2 minutes:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<user>/closedloop.git
+git clone https://github.com/Saqlain-mushtaq-alamin/closedloop.git
 cd closedloop
 
 # 2. Check out the verified submission tag
@@ -87,7 +92,7 @@ python -m http.server 8000
 
 ## 4. Limitations & Scientific Boundaries (Plan §16)
 
-1. **Simulation-to-Reality Gap:** All certificates evaluate the PyBullet 3.2.5 physics simulator. Contact physics and sensor noise are approximations. The certificate provides pre-deployment screening under distribution D, not proof of real-world physical safety.
+1. **Simulation-to-Reality Gap:** All certificates evaluate the PyBullet 3.2.7 physics simulator. Contact physics and sensor noise are approximations. The certificate provides pre-deployment screening under distribution D, not proof of real-world physical safety.
 2. **Judge Error Non-Differential Assumption:** Corrected bounds assume vision judge error rates measured on calibration rollouts reflect certification rollouts. Mitigated by margin-stratified bucketed FPR, frozen judge weights, and drift monitoring.
 3. **Distribution-Specific Scope:** Guarantees apply strictly to scenario distribution D. When tested outside distribution D, the certificate drops and honestly refuses certification.
 

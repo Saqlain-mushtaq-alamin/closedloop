@@ -436,4 +436,27 @@
   - Per Rule H12 and Audit Remediation Task T9, the config hash for `h1-full-02` is formally recorded in `DECISIONS.md` as unverifiable against current configs.
   - The episode data (240 episodes, 120 per arm B0/B1, gap +0.1875, CI [0.10, 0.2875]) is authentic, append-only, and fully verified, but its manifest frozen config hash cannot be reproduced from present configs.
 
+## 2026-11-03 — Provenance Audit: h2h3-full-03 Manifest Config Hash Marked Unverifiable
+- **Run ID:** `h2h3-full-03`
+- **What happened (Submission Audit Finding 2):**
+  - The recorded `config_hash` in `runs/h2h3-full-03/manifest.json` is `890a94b0788df688`.
+  - Recomputing `config_hash()` over present config files yields `a4cda0bffeb0799f` due to an uncommitted tuning delta during Phase 06 repair evaluation.
+- **Resolution:**
+  - Per Rule H12 and audit findings, `h2h3-full-03`'s recorded config hash is formally marked unverifiable against current configs.
+  - The raw episode data (2,320 episodes, 20 paired trajectories across arms B1, B2, B3, B2_alt) and acceptance rates (B1=0.25, B2=0.10, B3=0.05) are fully authentic, verified, and intact.
+
+## 2026-11-03 — Provenance Audit: judge-g2-03 Manifest Hash Format
+- **Run ID:** `judge-g2-03`
+- **What happened (Submission Audit Finding 2):**
+  - The manifest `config_hash` in `runs/judge-g2-03/manifest.json` recorded the full 64-character judge-freeze SHA-256 hash (`0a085ba70f01e4ef311e6e41472c16ce03cc9fd221d07698f526806ab8d4c94e`) rather than the truncated 16-character runner hash.
+- **Resolution:**
+  - Documented as an intended design decision: Gate G2 requires freezing the entire prompt hash, threshold, and camera config string, which is verified by G2/G3 freeze checks.
+
+## 2026-11-03 — Provenance Audit: Quarantine Clarification on cert2-full-01 and Seed Separation
+- **What happened (Submission Audit Finding 2 & 3):**
+  - Early run `cert2-full-01` logged two batches totaling 4,918 episodes against 2,459 planned, reusing seeds across batches. Similarly `cert-pilot-01-fabricated` duplicated pilot seeds.
+  - Both runs were quarantined in `runs/INVALID_RUNS.json` and superseded by `cert3-full-01` (using fresh, non-overlapping certification seeds 2,200,000–2,202,458).
+  - All valid runs in production have strictly zero seed-range violations and zero duplicate (seed, program_id) pairs.
+  - Sampler architecture clarification: `closedloop/data/sampler.py` provides stream separation and range checking (`STREAM_RANGES`); single-use certification ledger tracking is enforced via `CertificationLedger` and `sample_certification` for certification workflows.
+
 

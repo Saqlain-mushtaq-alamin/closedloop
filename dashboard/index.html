@@ -2377,20 +2377,20 @@
 
       <!-- Segmented Subnav -->
       <div class="evidence-subnav" role="tablist" aria-label="Evidence subviews">
-        <button type="button" class="evidence-tab-btn active" data-sub="safezone" onclick="switchEvidenceSub('safezone')">Safe-zone map</button>
+        <button type="button" class="evidence-tab-btn active" data-sub="safezone" onclick="switchEvidenceSub('safezone')">Operating envelope map</button>
         <button type="button" class="evidence-tab-btn" data-sub="spotcheck" onclick="switchEvidenceSub('spotcheck')">Spot-checks vs certificate</button>
         <button type="button" class="evidence-tab-btn" data-sub="replays" onclick="switchEvidenceSub('replays')">Replays and repairs</button>
         <button type="button" class="evidence-tab-btn" data-sub="camera" onclick="switchEvidenceSub('camera')">Camera judge</button>
         <button type="button" class="evidence-tab-btn" data-sub="shift" onclick="switchEvidenceSub('shift')">Distribution shift</button>
       </div>
 
-      <!-- Subview 1: Safe-zone map -->
+      <!-- Subview 1: Operating envelope map -->
       <div id="evidence-safezone" class="evidence-subview active">
         <div id="section-probe" class="evidence-inner-wrap">
-          <!-- STAGE 4: WHERE IS IT SAFE? -->
+          <!-- STAGE 4: WHERE IS IT CERTIFIED UNDER D? -->
       <div class="tt-stage-card">
         <div class="tt-stage-header">
-          <div class="tt-stage-title"><span>4</span> Where Is It Safe? (Operating Envelopes)</div>
+          <div class="tt-stage-title"><span>4</span> Where Is It Certified Under D? (Operating Envelopes)</div>
           <span class="badge-pill badge-pill-neutral">OPERATING DOMAIN CERTIFICATE</span>
         </div>
 
@@ -2409,7 +2409,7 @@
       </div>
           <div class="section-header">
         <div>
-          <h2 class="section-title">Safe-zone map</h2>
+          <h2 class="section-title">Operating envelope map</h2>
           <p class="section-desc">
             Explore physical parameter boundaries over mass and friction. Lower bounds are recomputed live in the browser using exact Clopper-Pearson binomial inversion.
           </p>

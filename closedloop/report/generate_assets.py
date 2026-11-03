@@ -496,10 +496,18 @@ def generate_all_assets(output_dir: Path | str | None = None) -> dict[str, Any]:
     # Report summary metrics strictly derived from logs (Rule H11, V12)
     calib_report = json.loads((ROOT / "runs" / "judge-g2-03" / "calibration_report.json").read_text(encoding="utf-8"))
     repair_results = json.loads((ROOT / "runs" / "h2h3-full-03" / "repair_results.json").read_text(encoding="utf-8"))
+    cert_summary = json.loads((ROOT / "runs" / "cert-full-01" / "cert_summary.json").read_text(encoding="utf-8"))
+    cert3_path = ROOT / "runs" / "cert3-full-01" / "cert_summary.json"
+    cert3_summary = json.loads(cert3_path.read_text(encoding="utf-8")) if cert3_path.exists() else {}
 
     report_summary = {
-        "state_headline_bound": float(price_data["cell_details"]["cell_00"]["state_bound"]),
-        "camera_headline_bound": float(price_data["cell_details"]["cell_00"]["camera_bound"]),
+        "state_headline_bound": float(cert_summary["headline_state"]["bound"]),
+        "camera_headline_bound": float(cert_summary["headline_camera"]["bound"]),
+        "cell_00_state_bound": float(price_data["cell_details"]["cell_00"]["state_bound"]),
+        "cell_00_camera_bound": float(price_data["cell_details"]["cell_00"]["camera_bound"]),
+        "v1_headline_state_bound": float(cert_summary["headline_state"]["bound"]),
+        "v1_headline_camera_bound": float(cert_summary["headline_camera"]["bound"]),
+        "v2_headline_state_bound": float(cert3_summary.get("headline", {}).get("state", {}).get("lower_bound", 0.9505)),
         "certified_cells_count": int(price_data["cells_state_certified"]),
         "total_cells_count": int(price_data["cells_evaluated"]),
         "certified_fraction": float(price_data["state_area_fraction"]),

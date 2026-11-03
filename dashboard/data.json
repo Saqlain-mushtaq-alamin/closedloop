@@ -4671,7 +4671,7 @@
       "cert_id": "cert3-full-01",
       "config_hash": "3c069b2fd32ce8c2",
       "delta": 0.05,
-      "episodes_sha256": "e10d77c3b88b36ad0686632d2c0707ebb16fceb82176bc45aa04219619467417",
+      "episodes_sha256": "a7d8eb24bf3b5e136b610dcefe98d0485543ffd9fa9e40e896f825e46603123a",
       "evidence_platform": "win_amd64",
       "program_id": "5f74f7762ee1f378",
       "program_sha256": "5f74f7762ee1f378b2d71f6938a288fa12aa51a0ee93ee33a2639944cd66aaa1",
@@ -4837,7 +4837,7 @@
     "cert3-full-01": {
       "config_hash": "3c069b2fd32ce8c2",
       "episode_count": 2459,
-      "episodes_sha256": "e10d77c3b88b36ad0686632d2c0707ebb16fceb82176bc45aa04219619467417",
+      "episodes_sha256": "a7d8eb24bf3b5e136b610dcefe98d0485543ffd9fa9e40e896f825e46603123a",
       "git_sha": "02e9b9ea1c9e552b2c7ae5264ec3ece49f8a80b5",
       "run_id": "cert3-full-01"
     },

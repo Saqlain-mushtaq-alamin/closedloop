@@ -1,7 +1,7 @@
 {
   "budget_cap_usd": 60.0,
-  "valid_runs_spend_usd": 4.584327,
-  "total_all_runs_spend_usd": 5.467327,
+  "valid_runs_spend_usd": 5.120462,
+  "total_all_runs_spend_usd": 6.003462,
   "sam_metering_note": "SAM 3.1 costs are labeled as ESTIMATE because token counts are synthetic (1,000 in, 50 out per image).",
   "runs": [
     {
@@ -41,6 +41,24 @@
       "notes": "Accepted v2 candidate policy"
     },
     {
+      "run_id": "h1-full-02",
+      "stage": "Baselines Synthesis (H1)",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.023398,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Initial policy generation for B0/B1 evaluation"
+    },
+    {
+      "run_id": "h2h3-full-03",
+      "stage": "Repair Search (H2/H3)",
+      "model": "muse-spark-1.3",
+      "spend_usd": 0.512737,
+      "is_estimate": false,
+      "status": "valid",
+      "notes": "Repair synthesis across 80 traces (Arms B1/B2/B3/B2_alt)"
+    },
+    {
       "run_id": "judge-g2-03-pilot",
       "stage": "Judge Calibration Pilot",
       "model": "muse-spark-1.3 + sam-3.1",
@@ -74,7 +92,7 @@
       "spend_usd": 2.594031,
       "is_estimate": true,
       "status": "valid",
-      "notes": "Vision judge evaluation on 16 cells (ESTIMATE)"
+      "notes": "Vision judge evaluation on 16 cells (ESTIMATE; stamped run total)"
     },
     {
       "run_id": "cert3-full-01",
