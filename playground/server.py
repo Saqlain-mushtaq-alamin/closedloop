@@ -364,14 +364,16 @@ def root_redirect():
     return RedirectResponse(url="/dashboard/index.html")
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8000):
+def run_server(host: str = "0.0.0.0", port: int = 8000):
     import uvicorn
     uvicorn.run(app, host=host, port=port)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="ClosedLoop Playground Server")
-    parser.add_argument("--host", default="127.0.0.1", help="Host interface to bind")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind")
+    default_host = os.environ.get("HOST", "0.0.0.0")
+    default_port = int(os.environ.get("PORT", "8000"))
+    parser.add_argument("--host", default=default_host, help="Host interface to bind")
+    parser.add_argument("--port", type=int, default=default_port, help="Port to bind")
     args = parser.parse_args()
     run_server(host=args.host, port=args.port)

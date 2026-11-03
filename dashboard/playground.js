@@ -430,13 +430,35 @@
     }
   }
 
+  // Resolve API endpoint relative to base or cloud runner (Render / Tier L)
+  function apiUrl(endpoint) {
+    var base = "";
+    if (root.CLOSEDLOOP_API_BASE) {
+      base = root.CLOSEDLOOP_API_BASE;
+    } else {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var qp = params.get("api");
+        if (qp) {
+          base = qp;
+          try { localStorage.setItem("CLOSEDLOOP_API_BASE", qp); } catch (e) {}
+        } else {
+          var saved = localStorage.getItem("CLOSEDLOOP_API_BASE");
+          if (saved) base = saved;
+        }
+      } catch (e) {}
+    }
+    base = (base || "").replace(/\/+$/, "");
+    return base + endpoint;
+  }
+
   // Check backend server availability
   async function checkBackend() {
     var svcBadge = getElement("pg-service-badge");
     try {
       var controller = new AbortController();
-      var timeoutId = setTimeout(function () { controller.abort(); }, 1200);
-      var resp = await fetch("/health", { signal: controller.signal });
+      var timeoutId = setTimeout(function () { controller.abort(); }, 1800);
+      var resp = await fetch(apiUrl("/health"), { signal: controller.signal });
       clearTimeout(timeoutId);
 
       if (resp.ok) {
@@ -454,8 +476,16 @@
 
     state.backendAlive = false;
     if (svcBadge) {
-      svcBadge.className = "badge-pill badge-pill-fail";
-      svcBadge.textContent = "Offline (HTTP 404): Simulator Server Not Running";
+      var isGhPages = typeof window !== "undefined" && window.location && window.location.hostname.indexOf("github.io") !== -1;
+      var hasCustomApi = apiUrl("/health").startsWith("http");
+      if (isGhPages && !hasCustomApi) {
+        svcBadge.className = "badge-pill badge-pill-neutral";
+        svcBadge.textContent = "Tier 0 (Hash Lab) — Cloud Simulator Offline";
+        svcBadge.title = "GitHub Pages hosts static verification & telemetry. Deploy to Render or run `make playground-local` for live simulation.";
+      } else {
+        svcBadge.className = "badge-pill badge-pill-fail";
+        svcBadge.textContent = "Offline: Simulator Server Not Running";
+      }
     }
     return false;
   }
@@ -557,7 +587,7 @@
       var robotPreset = (robotEl && robotEl.value) || state.robotPreset || "certified_default";
       var taskPreset = (taskEl && taskEl.value) || state.taskPreset || "mixed_bin";
 
-      var repairResp = await fetch("/repair", {
+      var repairResp = await fetch(apiUrl("/repair"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -674,13 +704,20 @@
         runBtn.disabled = false;
         runBtn.textContent = "Run Simulation";
       }
+      var isGhPages = typeof window !== "undefined" && window.location && window.location.hostname.indexOf("github.io") !== -1;
       if (resHeadline) {
-        resHeadline.textContent = "Error: Simulator Backend Offline (HTTP 404)";
+        resHeadline.textContent = isGhPages ? "Tier 0 (Hash Lab): Simulator Server Offline" : "Error: Simulator Backend Offline";
         resHeadline.style.color = "var(--bad-text)";
       }
       var ptext = getElement("pg-progress-text");
       if (ptext) {
-        ptext.innerHTML = '<span style="color:var(--bad-text); font-weight:700;">Backend Offline (HTTP 404):</span> Live simulation requires the PyBullet FastAPI backend.<br><strong>To fix:</strong> Run <code style="padding:2px 6px; background:var(--bg-inset); border-radius:4px; font-weight:700;">python -m playground.server --port 8000</code> in your terminal.<br><span style="font-size:11px; color:var(--text-dim);">(Do not run <code>python -m http.server</code> as it only serves static files and cannot execute simulations).</span>';
+        if (isGhPages) {
+          ptext.innerHTML = '<span style="color:var(--bad-text); font-weight:700;">Live Simulation Offline:</span> GitHub Pages hosts the static Hash Lab and precomputed telemetry.<br>' +
+            '• <strong>To run in the cloud:</strong> Deploy backend to Render using <code>render.yaml</code>, then append <code>?api=https://your-service.onrender.com</code> to this URL.<br>' +
+            '• <strong>To run locally:</strong> Run <code style="padding:2px 6px; background:var(--bg-inset); border-radius:4px; font-weight:700;">python -m playground.server --port 8000</code> in your terminal.';
+        } else {
+          ptext.innerHTML = '<span style="color:var(--bad-text); font-weight:700;">Backend Offline:</span> Live simulation requires the PyBullet FastAPI backend.<br><strong>To fix:</strong> Run <code style="padding:2px 6px; background:var(--bg-inset); border-radius:4px; font-weight:700;">python -m playground.server --port 8000</code> in your terminal.<br><span style="font-size:11px; color:var(--text-dim);">(Do not run <code>python -m http.server</code> as it only serves static files and cannot execute simulations).</span>';
+        }
       }
       if (camBadge) {
         camBadge.className = "badge-pill badge-pill-fail text-xs";
@@ -715,7 +752,7 @@
         stream: true,
       };
 
-      var resp = await fetch("/run", {
+      var resp = await fetch(apiUrl("/run"), {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "text/event-stream, application/json" },
         body: JSON.stringify(payload),
@@ -838,7 +875,7 @@
                   }
 
                   // Request repair patch
-                  var repairResp = await fetch("/repair", {
+                  var repairResp = await fetch(apiUrl("/repair"), {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -996,7 +1033,7 @@
     await ensureCEs();
 
     try {
-      var resp = await fetch("/repair/recorded");
+      var resp = await fetch(apiUrl("/repair/recorded"));
       if (resp.ok) {
         var data = await resp.json();
         var item = data.catalog && data.catalog[0];
@@ -1079,7 +1116,7 @@
     setVerdict("", "");
 
     try {
-      var resp = await fetch("/falsify", {
+      var resp = await fetch(apiUrl("/falsify"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1178,7 +1215,7 @@
         }
       }
 
-      var resp = await fetch("/repair", {
+      var resp = await fetch(apiUrl("/repair"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reqBody),
@@ -1244,7 +1281,7 @@
     var ce2 = ces.severe;
 
     try {
-      var resp = await fetch("/gates", {
+      var resp = await fetch(apiUrl("/gates"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1417,7 +1454,7 @@
       autoStage(2, "running", "Testing 20 scenarios on the real simulator...");
       var fr, data;
       try {
-        fr = await fetch("/falsify", {
+        fr = await fetch(apiUrl("/falsify"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1479,7 +1516,7 @@
           autoStage(3, "running", "Muse Spark is writing a repair from the failing cases...");
           var rr, rj;
           try {
-            rr = await fetch("/repair", {
+            rr = await fetch(apiUrl("/repair"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

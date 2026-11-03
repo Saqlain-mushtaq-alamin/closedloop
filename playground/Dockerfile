@@ -35,5 +35,5 @@ USER appuser
 
 EXPOSE 8000
 
-# Default entrypoint runs the Tier L local playground server
-CMD ["python", "-m", "playground.server", "--host", "0.0.0.0", "--port", "8000"]
+# Default entrypoint runs the playground server (binds to $PORT or 8000)
+CMD ["python", "-m", "playground.server", "--host", "0.0.0.0"]

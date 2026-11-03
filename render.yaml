@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: closedloop-simulator
+    runtime: docker
+    dockerfilePath: ./playground/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PLAYGROUND_ENABLED
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"
