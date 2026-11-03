@@ -21,7 +21,7 @@
           badge: "CERTIFIED",
           badgeClass: "badge-pill-pass",
           message:
-            "Certified in simulation under distribution D (Run ID: " +
+            "Certificate applies: certified in simulation under distribution D (Run ID: " +
             cert.cert_id +
             ", evidence platform: " +
             (cert.evidence_platform || "win_amd64") +
@@ -68,7 +68,7 @@
       status: "VOID",
       badge: "VOID",
       badgeClass: "badge-pill-fail",
-      message: "This code has no certificate. Re-certify.",
+      message: "No certificate for this exact code. Re-certify.",
       cert_id: null,
       evidence_platform: null,
     };

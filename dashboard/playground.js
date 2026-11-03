@@ -189,7 +189,7 @@
   // Normalize LF and compute SHA-256
   function computeHash(text) {
     if (!text) return "";
-    var normalized = text.replace(/\r\n/g, "\n");
+    var normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     return sha256_pure(normalized);
   }
 
@@ -1687,6 +1687,10 @@
 
     checkBackend();
     updateBadge();
+    console.log("[ClosedLoop Playground] Loaded v20261103-v2, SHA-256 engine active. Templates:", {
+      v2: computeHash(TEMPLATES.v2_certified),
+      v1: computeHash(TEMPLATES.v1_certified)
+    });
   }
 
   root.Playground = {
