@@ -56,7 +56,6 @@
       "    env.open_gripper()",
       "    env.move_to(place_pos, steps=20)",
       "    env.move_to(above_pad, steps=80)",
-      "",
     ].join("\n"),
 
     initial_flawed: [
@@ -85,65 +84,104 @@
 
   // Pure JavaScript SHA-256 implementation (works offline, in HTTP and non-secure contexts)
   function sha256_pure(ascii) {
-    function rightRotate(value, amount) {
-      return (value >>> amount) | (value << (32 - amount));
+    function ror(v, n) { return (v >>> n) | (v << (32 - n)); }
+    var K = [
+      0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+      0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+      0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+      0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+      0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+      0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+      0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+      0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+    ];
+
+    var H = [
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+    ];
+
+    var bytes = [];
+    for (var i = 0; i < ascii.length; i++) {
+      var c = ascii.charCodeAt(i);
+      if (c < 0x80) {
+        bytes.push(c);
+      } else if (c < 0x800) {
+        bytes.push(0xc0 | (c >> 6));
+        bytes.push(0x80 | (c & 0x3f));
+      } else if (c < 0xd800 || c >= 0xe000) {
+        bytes.push(0xe0 | (c >> 12));
+        bytes.push(0x80 | ((c >> 6) & 0x3f));
+        bytes.push(0x80 | (c & 0x3f));
+      } else {
+        i++;
+        c = 0x10000 + (((c & 0x3ff) << 10) | (ascii.charCodeAt(i) & 0x3ff));
+        bytes.push(0xf0 | (c >> 18));
+        bytes.push(0x80 | ((c >> 12) & 0x3f));
+        bytes.push(0x80 | ((c >> 6) & 0x3f));
+        bytes.push(0x80 | (c & 0x3f));
+      }
     }
-    var mathPow = Math.pow;
-    var maxWord = mathPow(2, 32);
-    var lengthProperty = "length";
-    var i, j;
+
+    var bitLen = bytes.length * 8;
+    bytes.push(0x80);
+    while ((bytes.length % 64) !== 56) bytes.push(0);
+
+    var hiLen = Math.floor(bitLen / 0x100000000);
+    var loLen = bitLen >>> 0;
+    for (var j = 3; j >= 0; j--) bytes.push((hiLen >> (j * 8)) & 0xff);
+    for (var j = 3; j >= 0; j--) bytes.push((loLen >> (j * 8)) & 0xff);
+
+    var W = new Array(64);
+    for (var chunk = 0; chunk < bytes.length; chunk += 64) {
+      for (var i = 0; i < 16; i++) {
+        W[i] = ((bytes[chunk + i * 4] << 24) |
+                (bytes[chunk + i * 4 + 1] << 16) |
+                (bytes[chunk + i * 4 + 2] << 8) |
+                (bytes[chunk + i * 4 + 3])) >>> 0;
+      }
+      for (var i = 16; i < 64; i++) {
+        var s0 = ror(W[i - 15], 7) ^ ror(W[i - 15], 18) ^ (W[i - 15] >>> 3);
+        var s1 = ror(W[i - 2], 17) ^ ror(W[i - 2], 19) ^ (W[i - 2] >>> 10);
+        W[i] = ((W[i - 16] + s0 + W[i - 7] + s1) | 0) >>> 0;
+      }
+
+      var a = H[0], b = H[1], c = H[2], d = H[3],
+          e = H[4], f = H[5], g = H[6], h = H[7];
+
+      for (var i = 0; i < 64; i++) {
+        var S1 = ror(e, 6) ^ ror(e, 11) ^ ror(e, 25);
+        var ch = (e & f) ^ ((~e) & g);
+        var temp1 = (h + S1 + ch + K[i] + W[i]) | 0;
+        var S0 = ror(a, 2) ^ ror(a, 13) ^ ror(a, 22);
+        var maj = (a & b) ^ (a & c) ^ (b & c);
+        var temp2 = (S0 + maj) | 0;
+
+        h = g;
+        g = f;
+        f = e;
+        e = (d + temp1) | 0;
+        d = c;
+        c = b;
+        b = a;
+        a = (temp1 + temp2) | 0;
+      }
+
+      H[0] = (H[0] + a) | 0;
+      H[1] = (H[1] + b) | 0;
+      H[2] = (H[2] + c) | 0;
+      H[3] = (H[3] + d) | 0;
+      H[4] = (H[4] + e) | 0;
+      H[5] = (H[5] + f) | 0;
+      H[6] = (H[6] + g) | 0;
+      H[7] = (H[7] + h) | 0;
+    }
+
     var result = "";
-    var words = [];
-    var asciiBitLength = ascii[lengthProperty] * 8;
-    var hash = [];
-    var k = [];
-    var primeCounter = 0;
-    var isComposite = {};
-    for (var candidate = 2; primeCounter < 64; candidate++) {
-      if (!isComposite[candidate]) {
-        for (i = 0; i < 300; i += candidate) isComposite[i] = candidate;
-        hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
-        k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-      }
-    }
-    ascii += "\x80";
-    while ((ascii[lengthProperty] % 64) - 56) ascii += "\x00";
-    for (i = 0; i < ascii[lengthProperty]; i++) {
-      j = ascii.charCodeAt(i);
-      if (j >> 8) return "";
-      words[i >> 2] |= j << ((3 - (i % 4)) * 8);
-    }
-    words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
-    words[words[lengthProperty]] = asciiBitLength | 0;
-    for (j = 0; j < words[lengthProperty]; ) {
-      var w = words.slice(j, (j += 16));
-      var oldHash = hash;
-      hash = hash.slice(0, 8);
-      for (i = 0; i < 64; i++) {
-        var w15 = w[i - 15],
-          w2 = w[i - 2];
-        var s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
-        var s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
-        w[i] =
-          i < 16
-            ? w[i]
-            : (w[i - 16] + s0 + w[i - 7] + s1) | 0;
-        var s1_maj = rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22);
-        var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
-        var t2 = (s1_maj + maj) | 0;
-        var s0_ch = rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25);
-        var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
-        var t1 = (hash[7] + s0_ch + ch + k[i] + w[i]) | 0;
-        hash = [(t1 + t2) | 0].concat(hash);
-        hash[4] = (hash[4] + t1) | 0;
-      }
-      for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
-    }
-    for (i = 0; i < 8; i++) {
-      for (var b = 3; b >= 0; b--) {
-        var byteVal = (hash[i] >> (8 * b)) & 255;
-        result += (byteVal < 16 ? "0" : "") + byteVal.toString(16);
-      }
+    for (var i = 0; i < 8; i++) {
+      var hex = (H[i] >>> 0).toString(16);
+      while (hex.length < 8) hex = "0" + hex;
+      result += hex;
     }
     return result;
   }
@@ -315,7 +353,7 @@
       );
     }
 
-    var isCertified = badgeInfo.status === "PASS";
+    var isCertified = badgeInfo.status === "CERTIFIED" || badgeInfo.status === "PASS";
 
     var badgePill = getElement("pg-badge-pill");
     if (badgePill) {
